@@ -1,593 +1,375 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0B0F14">
-<meta name="description" content="LamiGrade Pro — a private PVC laminate inventory management tool for internal business stock tracking.">
+<meta name="description" content="LamiGrade Pro — Premium PVC Laminate Inventory Management System">
 <meta name="application-name" content="LamiGrade Pro">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="LamiGrade Pro">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="referrer" content="no-referrer">
-<meta name="robots" content="noindex, nofollow">
 <title>LamiGrade Pro</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin>
-<link rel="preconnect" href="https://securetoken.googleapis.com" crossorigin>
-<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
-<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=optional" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-:root{
-  --bg:#0B0F14; --bg2:#0F151C; --panel:#151C25; --panel2:#1A222D;
-  --ink:#EAF0F6; --ink2:#9FB0C0; --muted:#6C7C8C; --line:#232E3A;
-  --gold:#E4C568; --gold2:#B98F2F; --gold-soft:rgba(228,197,104,.12);
-  --teal:#33C7B4;
-  --in:#34D399; --in-soft:rgba(52,211,153,.13);
-  --out:#F87171; --out-soft:rgba(248,113,113,.13);
-  --A:#34D399; --A-bg:rgba(52,211,153,.14);
-  --B:#F59E0B; --B-bg:rgba(245,158,11,.14);
-  --C:#A78BFA; --C-bg:rgba(167,139,250,.14);
-  --radius:16px; --shadow:0 2px 8px rgba(0,0,0,.35), 0 12px 40px rgba(0,0,0,.28);
+:root {
+  --bg: #F4F6F8;
+  --panel: #FFFFFF;
+  --panel2: #F8FAFC;
+  --ink: #0F172A;
+  --ink2: #475569;
+  --muted: #94A3B8;
+  --line: #E2E8F0;
+  --dark-header: #0B0F14;
+  --dark-accent: #1E293B;
+  --in: #10B981;
+  --in-soft: rgba(16, 185, 129, 0.12);
+  --out: #EF4444;
+  --out-soft: rgba(239, 68, 68, 0.12);
+  --A: #10B981;
+  --A-bg: rgba(16, 185, 129, 0.12);
+  --B: #F59E0B;
+  --B-bg: rgba(245, 158, 11, 0.12);
+  --C: #8B5CF6;
+  --C-bg: rgba(139, 92, 246, 0.12);
+  --radius: 16px;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
 }
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45;
-  background-image:radial-gradient(1200px 600px at 80% -10%,rgba(228,197,104,.06),transparent 60%),radial-gradient(900px 500px at -10% 10%,rgba(51,199,180,.05),transparent 55%);background-attachment:fixed}
-h1,h2,h3,h4{font-family:'Sora',sans-serif;margin:0}
-button{font-family:inherit}
-::-webkit-scrollbar{width:0;height:0}
-header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:linear-gradient(180deg,rgba(11,15,20,.92),rgba(11,15,20,.72));border-bottom:1px solid var(--line);padding:13px 16px;display:flex;align-items:center;justify-content:space-between;overflow:visible}
-header .brand{display:flex;align-items:center;gap:11px;position:relative}
-.logo-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(150deg,#1b2530,#0d1218);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
-header h1{font-size:17px;font-weight:800;letter-spacing:.2px;background:linear-gradient(90deg,#fff,#C9D4DE);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-header .sub{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700}
-.headerRight{display:flex;align-items:center;gap:8px;position:relative;z-index:6}
-.userchip{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:7px;cursor:pointer}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--in);box-shadow:0 0 8px var(--in)}
-.dot.off{background:var(--out);box-shadow:0 0 8px var(--out)}
-.menuBtn{width:38px;height:38px;flex:0 0 38px;border-radius:11px;background:var(--panel);border:1px solid var(--line);color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
-main{max-width:820px;margin:0 auto;padding:14px}
-.card{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:13px;scroll-margin-top:78px}
-.card h2{font-size:15.5px;margin-bottom:4px}
-.card .desc{font-size:12.5px;color:var(--ink2);margin:0 0 10px}
-.eyebrow{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:5px}
-.card.dspot{animation:dspotPulse 1.5s ease}
-@keyframes dspotPulse{0%,100%{box-shadow:var(--shadow)}30%{box-shadow:0 0 0 2px var(--gold),0 12px 40px rgba(0,0,0,.28)}}
-/* ---- drawer sidebar navigation ---- */
-.drawer-overlay{position:fixed;inset:0;background:rgba(6,9,13,.6);backdrop-filter:blur(2px);z-index:70;opacity:0;pointer-events:none;transition:opacity .22s ease}
-.drawer-overlay.show{opacity:1;pointer-events:auto}
-.drawer{position:fixed;top:0;right:0;bottom:0;width:82%;max-width:320px;background:linear-gradient(180deg,var(--panel),var(--bg2));border-left:1px solid var(--line);z-index:71;transform:translateX(100%);transition:transform .26s cubic-bezier(.2,.8,.3,1);display:flex;flex-direction:column;will-change:transform}
-.drawer.open{transform:translateX(0)}
-.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid var(--line)}
-.drawer-close{background:var(--panel2);border:1px solid var(--line);color:var(--ink);width:32px;height:32px;border-radius:9px;cursor:pointer;font-size:14px}
-.drawer-body{flex:1;overflow-y:auto;padding:10px;-webkit-overflow-scrolling:touch}
-.dnav{width:100%;display:flex;align-items:center;gap:12px;background:none;border:none;color:var(--ink2);font-size:14px;font-weight:700;padding:12px 10px;border-radius:11px;cursor:pointer;text-align:left}
-.dnav svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.9;flex:0 0 auto}
-.dnav.active{background:var(--gold-soft);color:var(--gold)}
-.dnav.active svg{stroke:var(--gold)}
-.dgroup-head{position:relative}
-.dgroup-head .chev{width:15px;height:15px;margin-left:auto;stroke-width:2.4;transition:transform .2s ease}
-.dgroup.open .dgroup-head .chev{transform:rotate(180deg)}
-.dsub{max-height:0;overflow:hidden;transition:max-height .25s ease;padding-left:18px;border-left:1.5px solid var(--line);margin-left:20px}
-.dgroup.open .dsub{max-height:400px}
-.dsub button{display:block;width:100%;text-align:left;background:none;border:none;color:var(--ink2);font-size:13px;font-weight:600;padding:9px 10px;border-radius:9px;cursor:pointer}
-.dsub button:active{background:var(--panel2)}
-.page{display:none}
-.page.active{display:block;animation:fade .2s ease}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-label.f{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin:11px 0 5px}
-input,select,textarea{width:100%;padding:12px 13px;font-size:15px;font-family:inherit;border:1.5px solid var(--line);border-radius:11px;background:var(--bg2);color:var(--ink);outline:none;transition:.15s}
-input:focus,select:focus,textarea:focus{border-color:var(--gold)}
-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236C7C8C' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:34px}
-.btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--panel2);color:var(--ink);font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;border:1px solid var(--line);transition:.12s}
-.btn:active{transform:scale(.985)}
-.btn.gold{background:linear-gradient(160deg,#F7ECC0,#E4C568 45%,#B98F2F);color:#241B06;border:none;box-shadow:0 8px 22px rgba(190,150,60,.3)}
-.btn.teal{background:linear-gradient(160deg,#3ee0cb,#1fae9c);color:#062b26;border:none}
-.btn.ghost{background:var(--panel2)}
-.btn.danger{background:linear-gradient(160deg,#fb7185,#e11d48);color:#fff;border:none}
-.btn.sm{width:auto;padding:9px 15px;font-size:13px;margin-top:0}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.chip{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:7px}
-.chip.A{background:var(--A-bg);color:var(--A)}.chip.B{background:var(--B-bg);color:var(--B)}.chip.C{background:var(--C-bg);color:var(--C)}
-.chip.in{background:var(--in-soft);color:var(--in)}.chip.out{background:var(--out-soft);color:var(--out)}.chip.gold{background:var(--gold-soft);color:var(--gold)}
-.seg{display:flex;gap:6px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:5px;margin-bottom:12px}
-.seg button{flex:1;padding:10px;border:none;background:none;color:var(--ink2);font-weight:700;font-size:13.5px;border-radius:8px;cursor:pointer;transition:.15s}
-.seg button.on{background:var(--panel2);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.3)}
-.seg button.on.in{color:var(--in)}.seg button.on.out{color:var(--out)}
-.mv-group-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:12px 2px 7px}
-.mv-btn{width:100%;text-align:left;padding:14px 15px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg2);color:var(--ink);font-weight:600;font-size:14px;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;transition:.13s}
-.mv-btn:active{transform:scale(.99)}
-.mv-btn.sel{border-color:var(--gold);background:var(--gold-soft)}
-.mv-btn .arrow{color:var(--muted);font-size:16px}
-.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:13px}
-.summary .box{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:14px;padding:13px 8px;text-align:center}
-.summary .box b{font-family:'Sora';font-size:19px;display:block}
-.summary .box span{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
-.cat-head{font-size:12px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.6px;margin:14px 2px 8px;display:flex;align-items:center;gap:8px}
-.cat-head .count{color:var(--muted);font-weight:500;text-transform:none;letter-spacing:0;font-size:11px}
-.subcat-head{font-size:11.5px;font-weight:700;color:var(--ink2);margin:10px 2px 6px 10px;border-left:2px solid var(--line);padding-left:8px}
-.stock-head{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:4px;padding:6px 12px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase}
-.stock-row{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:4px;align-items:center;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:11px;margin-bottom:6px;cursor:pointer;content-visibility:auto;contain-intrinsic-size:auto 56px}
-.stock-row .code{font-family:'Sora';font-weight:700;font-size:14px}
-.stock-row .nm{font-size:10px;color:var(--muted)}
-.stock-row .v{text-align:center;font-weight:600;font-size:14px}
-.stock-row .v.zero{color:var(--muted);opacity:.5}
-.stock-row .v.A{color:var(--A)}.stock-row .v.B{color:var(--B)}.stock-row .v.tot{color:var(--ink)}
-.mv{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:7px;display:flex;justify-content:space-between;gap:10px;content-visibility:auto;contain-intrinsic-size:auto 60px}
-.mv .l{flex:1;min-width:0}
-.mv .t1{font-weight:700;font-size:13.5px}
-.mv .t2{font-size:11.5px;color:var(--muted);margin-top:2px}
-.mv .qty{font-family:'Sora';font-weight:800;font-size:16px;align-self:center;white-space:nowrap}
-.mv .qty.plus{color:var(--in)}.mv .qty.minus{color:var(--out)}
-.mv .act{border:none;background:none;color:var(--muted);font-size:16px;cursor:pointer;align-self:center;padding:4px}
-.searchbar{position:relative;margin-bottom:10px}
-.searchbar input{padding-left:40px}
-.searchbar svg{position:absolute;left:13px;top:13px;width:18px;height:18px;stroke:var(--muted);fill:none;stroke-width:2}
-.pill-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
-.pill{border:1.5px solid var(--line);background:var(--bg2);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:600;color:var(--ink2);cursor:pointer}
-.pill.on{background:var(--gold);color:#241B06;border-color:var(--gold)}
-.notice{background:var(--gold-soft);border:1px solid rgba(228,197,104,.3);color:#E9D9A8;border-radius:12px;padding:11px 13px;font-size:13px;margin-bottom:12px}
-.empty{text-align:center;color:var(--muted);padding:28px 10px;font-size:13.5px}
-.fmt-tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin:6px 0 8px}
-.fmt-tbl table{border-collapse:collapse;width:100%;font-size:11px;min-width:420px}
-.fmt-tbl th{background:var(--panel2);color:var(--gold);font-weight:700;padding:6px 8px;text-align:left;border-bottom:1px solid var(--line);font-size:10px;line-height:1.3}
-.fmt-tbl td{padding:6px 8px;border-bottom:1px solid var(--line);color:var(--ink2);white-space:nowrap}
-.fmt-tbl tr:last-child td{border-bottom:none}
-.rep-item{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px}
-.rep-item h4{font-family:'Sora';font-size:14px;margin:0 0 6px}
-.rep-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 12px;font-size:12.5px}
-.rep-grid div{display:flex;justify-content:space-between}
-.oc{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:11px;text-align:center}
-.oc b{display:block;font-size:13px}
-.overlay{position:fixed;inset:0;background:rgba(4,7,10,.7);z-index:100;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
-.overlay.show{display:flex}
-.sheet{background:linear-gradient(180deg,var(--panel),var(--bg2));width:100%;max-width:820px;max-height:88vh;overflow-y:auto;border-radius:22px 22px 0 0;padding:20px 16px calc(22px + env(safe-area-inset-bottom));border:1px solid var(--line)}
-.sheet h3{font-size:17px;margin-bottom:12px}
-.sheet .close{float:right;border:none;background:var(--panel2);color:var(--ink);border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer}
-#toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--panel2);border:1px solid var(--line);color:var(--ink);padding:12px 18px;border-radius:12px;font-size:13.5px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:200;max-width:90vw;text-align:center;box-shadow:var(--shadow)}
-#confirmOverlay{align-items:center;z-index:400}
-.confirm-box{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:18px;padding:22px 20px;width:100%;max-width:340px;margin:20px;box-shadow:var(--shadow);animation:cpop .18s ease}
-@keyframes cpop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
-.confirm-box h3{font-size:17px;margin-bottom:8px;color:var(--ink)}
-.confirm-box p{font-size:14px;color:var(--ink2);margin:0 0 18px;line-height:1.5;white-space:pre-line}
-.confirm-btns{display:flex;gap:10px}
-.confirm-btns .btn{margin-top:0;flex:1}
-#toast.show{opacity:1;transform:translateX(-50%)}
-#toast.err{border-color:var(--out);color:#FCA5A5}
-#toast.ok{border-color:var(--in);color:#86EFAC}
-#loginPage{position:fixed;inset:0;background:radial-gradient(ellipse at 30% 30%,#211D14 0%,#12100B 55%,#0B0A07 100%);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;overflow:hidden}
-#loginPage.show{display:flex}
-.scene{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:900px}
-@media(min-width:700px){.scene{flex-direction:row;justify-content:center;gap:60px}}
-.lamp-wrap{position:relative;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
-.lamp{position:relative;width:200px;height:240px}
-.dome{position:absolute;top:18px;left:50%;transform:translateX(-50%);width:180px;height:88px;background:#8A8378;border-radius:110px 110px 14px 14px;transition:background .6s,box-shadow .8s}
-.stem{position:absolute;top:100px;left:50%;transform:translateX(-50%);width:20px;height:110px;background:#B7AF9F;border-radius:8px;transition:background .6s}
-.lamp-base{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:120px;height:16px;background:#B7AF9F;border-radius:10px;transition:background .6s}
-.lamp-glow{position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(255,236,170,.35) 0%,rgba(255,220,130,.12) 40%,transparent 70%);opacity:0;transition:opacity 1s;pointer-events:none}
-#loginPage.lit .dome{background:#FFFDF4;box-shadow:0 0 50px 22px rgba(255,240,190,.55),0 0 130px 65px rgba(255,215,130,.22),inset 0 -14px 26px rgba(255,200,90,.5)}
-#loginPage.lit .stem,#loginPage.lit .lamp-base{background:#E9E2D2}
-#loginPage.lit .lamp-glow{opacity:1}
-.cord{position:absolute;top:96px;left:calc(50% + 52px);width:44px;height:130px;cursor:grab;touch-action:none;z-index:2}
-.cord:active{cursor:grabbing}
-.cord-line{position:absolute;top:0;left:50%;transform:translateX(-50%);width:2px;height:76px;background:#CFC7B4;transition:height .25s cubic-bezier(.3,1.6,.5,1)}
-.knob{position:absolute;left:50%;transform:translate(-50%,0);top:70px;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#F4E9C8,#B9A468);box-shadow:0 2px 6px rgba(0,0,0,.5);transition:top .25s cubic-bezier(.3,1.6,.5,1)}
-#loginPage:not(.lit) .knob{animation:knobSway 2.4s ease-in-out infinite}
-@keyframes knobSway{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,5px)}}
-.pull-hint{margin-top:2px;font-size:12.5px;color:#B9AE93;animation:hintPulse 2s ease-in-out infinite}
-@keyframes hintPulse{0%,100%{opacity:.55}50%{opacity:1}}
-#loginPage.lit .pull-hint{display:none}
-.login-card{width:100%;max-width:380px;border-radius:20px;padding:26px 24px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 20px 60px rgba(0,0,0,.45);opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity .8s .25s,transform .8s .25s}
-#loginPage.lit .login-card{opacity:1;transform:none;pointer-events:auto}
-.login-card h2{font-size:24px;color:#fff;text-align:center;margin:4px 0 4px}
-.login-card p{font-size:12.5px;color:#C9C0AC;text-align:center;margin:0 0 6px}
-.login-card label.f{color:#C9C0AC}
-.login-card input{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#F5EFE0}
-.login-card input::placeholder{color:#8F866F}
-.chat-list{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:9px;-webkit-overflow-scrolling:touch}
-.chat-msg{max-width:82%;padding:8px 12px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);font-size:13.5px;align-self:flex-start;word-break:break-word}
-.chat-msg.me{align-self:flex-end;background:linear-gradient(160deg,#F7ECC0,#E4C568 45%,#B98F2F);color:#241B06;border:none}
-.chat-msg .who{font-size:10.5px;font-weight:800;color:var(--gold);margin-bottom:2px}
-.chat-msg.me .who{color:#5b430c}
-.chat-msg .tag{display:inline-block;font-size:10px;font-weight:700;background:var(--gold-soft);color:var(--gold);padding:2px 7px;border-radius:6px;margin-bottom:4px}
-.chat-msg.me .tag{background:rgba(36,27,6,.14);color:#3a2a10}
-.chat-msg .tm{font-size:9.5px;color:var(--muted);margin-top:3px;text-align:right}
-.chat-msg.me .tm{color:rgba(36,27,6,.55)}
-.chat-input-bar{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:var(--bg2)}
-.chat-input-bar input{width:auto}
-.chat-input-bar input#chatItemTag{flex:0 0 92px;text-align:center}
-.chat-input-bar input#chatText{flex:1}
-.chat-input-bar button{width:auto;margin-top:0;flex:0 0 auto}
 
-/* ---- header mouse mascot ---- */
-header .brand{overflow:visible}
-.mouse-stage{position:absolute;inset:0;pointer-events:none;overflow:visible;z-index:9}
-.mouse-char{position:absolute;top:9px;left:-80px;width:30px;height:30px;opacity:0;cursor:default}
-.m-ear{position:absolute;width:12px;height:12px;border-radius:50%;background:#241a10;top:-6px;box-shadow:inset -2px -2px 3px rgba(0,0,0,.3)}
-.m-ear-l{left:-3px}.m-ear-r{right:-3px}
-.m-head{position:absolute;top:2px;left:3px;width:24px;height:19px;border-radius:50% 50% 45% 45%;background:linear-gradient(160deg,#3a2c1e,#241a10)}
-.m-eye{position:absolute;top:6px;width:3px;height:4px;border-radius:50%;background:#fff}
-.m-eye-l{left:5px}.m-eye-r{right:5px}
-.m-nose{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:8px;height:6px;border-radius:50%;background:#d8b877}
-.m-body{position:absolute;top:19px;left:5px;width:19px;height:13px;border-radius:9px 9px 6px 6px;background:linear-gradient(160deg,#F7ECC0,#E4C568 55%,#B98F2F)}
-.m-arm{position:absolute;top:20px;width:5px;height:9px;border-radius:3px;background:#241a10;transform-origin:top center}
-.m-arm-l{left:0px}.m-arm-r{right:0px}
-.m-leg{position:absolute;top:29px;width:5px;height:7px;border-radius:2px;background:#241a10;transform-origin:top center}
-.m-leg-l{left:7px}.m-leg-r{right:7px}
-.mouse-char.walking{animation:mouseBob .28s ease-in-out infinite}
-.mouse-char.walking .m-arm-l{animation:mArmL .28s ease-in-out infinite}
-.mouse-char.walking .m-arm-r{animation:mArmR .28s ease-in-out infinite}
-.mouse-char.walking .m-leg-l{animation:mArmR .28s ease-in-out infinite}
-.mouse-char.walking .m-leg-r{animation:mArmL .28s ease-in-out infinite}
-@keyframes mouseBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
-@keyframes mArmL{0%,100%{transform:rotate(-22deg)}50%{transform:rotate(22deg)}}
-@keyframes mArmR{0%,100%{transform:rotate(22deg)}50%{transform:rotate(-22deg)}}
-.mouse-board{position:absolute;top:2px;left:36px;background:#fff8e6;border:2px solid #8a6a2f;border-radius:5px;padding:3px 8px;font-family:'Sora',sans-serif;font-weight:800;font-size:10.5px;color:#3a2a10;white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,.35);opacity:0;transform:translateX(6px) scale(.85);transition:opacity .35s ease,transform .35s ease}
-.mouse-board:after{content:"";position:absolute;left:-6px;top:50%;margin-top:-4px;border-width:4px 6px 4px 0;border-style:solid;border-color:transparent #8a6a2f transparent transparent}
-.mouse-board.show{opacity:1;transform:translateX(0) scale(1)}
-.mouse-board .mb-text{display:inline-block;overflow:hidden;white-space:nowrap;width:0;vertical-align:bottom}
-.mouse-board.show .mb-text{animation:mbType 1.1s steps(30,end) forwards .25s}
-@keyframes mbType{to{width:calc(var(--chars,10) * 1ch)}}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', system-ui, sans-serif; font-size: 15px; line-height: 1.45; }
+h1, h2, h3, h4 { font-family: 'Sora', sans-serif; margin: 0; }
+button { font-family: inherit; }
+::-webkit-scrollbar { width: 0; height: 0; }
+
+header {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--dark-header); color: #FFFFFF;
+  padding: 14px 18px; display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+header .brand { display: flex; align-items: center; gap: 12px; }
+.logo-mark { width: 40px; height: 40px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); }
+header h1 { font-size: 18px; font-weight: 800; letter-spacing: .3px; color: #FFFFFF; }
+header .sub { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+
+.headerRight { display: flex; align-items: center; gap: 8px; }
+.userchip { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: #FFFFFF; border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--in); box-shadow: 0 0 8px var(--in); }
+.dot.off { background: var(--out); box-shadow: 0 0 8px var(--out); }
+
+main { max-width: 820px; margin: 0 auto; padding: 16px 16px 100px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; margin-bottom: 16px; }
+.card h2 { font-size: 16px; margin-bottom: 6px; color: var(--ink); }
+.card .desc { font-size: 13px; color: var(--ink2); margin: 0 0 12px; }
+.eyebrow { font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--dark-accent); font-weight: 800; margin-bottom: 6px; }
+
+/* Bottom Nav Bar */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--dark-header); border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex; justify-content: space-around; padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+  z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+}
+.bnav-btn {
+  background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; cursor: pointer; flex: 1; padding: 6px 0;
+}
+.bnav-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; }
+.bnav-btn.active { color: #FFFFFF; }
+.bnav-btn.active svg { stroke: #FFFFFF; }
+
+.page { display: none; }
+.page.active { display: block; animation: fadeIn .2s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+label.f { display: block; font-size: 12px; font-weight: 700; color: var(--ink2); margin: 12px 0 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+input, select, textarea { width: 100%; padding: 12px 14px; font-size: 15px; font-family: inherit; border: 1.5px solid var(--line); border-radius: 12px; background: var(--panel2); color: var(--ink); outline: none; transition: border-color .15s; }
+input:focus, select:focus, textarea:focus { border-color: var(--dark-header); background: #FFF; }
+select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23475569' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+
+.btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--dark-header); color: #FFF; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 14px; transition: transform .1s, background .15s; box-shadow: 0 4px 12px rgba(15,23,42,0.15); }
+.btn:active { transform: scale(.98); }
+.btn.teal { background: var(--dark-accent); }
+.btn.ghost { background: var(--panel2); color: var(--ink); border: 1.5px solid var(--line); box-shadow: none; }
+.btn.danger { background: var(--out); color: #FFF; box-shadow: none; }
+.btn.sm { width: auto; padding: 8px 14px; font-size: 12.5px; margin-top: 0; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.chip { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 6px; }
+.chip.A { background: var(--A-bg); color: var(--A); }
+.chip.B { background: var(--B-bg); color: var(--B); }
+.chip.C { background: var(--C-bg); color: var(--C); }
+.chip.in { background: var(--in-soft); color: var(--in); }
+.chip.out { background: var(--out-soft); color: var(--out); }
+.chip.dark { background: rgba(15,23,42,0.08); color: var(--dark-header); }
+
+.seg { display: flex; gap: 6px; background: var(--panel2); border: 1.5px solid var(--line); border-radius: 12px; padding: 4px; margin-bottom: 14px; }
+.seg button { flex: 1; padding: 10px; border: none; background: none; color: var(--ink2); font-weight: 700; font-size: 13.5px; border-radius: 8px; cursor: pointer; transition: .15s; }
+.seg button.on { background: #FFF; color: var(--ink); box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+
+.mv-group-title { font-size: 11px; font-weight: 800; color: var(--dark-accent); text-transform: uppercase; letter-spacing: 1px; margin: 16px 2px 8px; border-bottom: 2px solid var(--line); padding-bottom: 4px; }
+.mv-btn { width: 100%; text-align: left; padding: 14px 16px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--panel); color: var(--ink); font-weight: 600; font-size: 14px; cursor: pointer; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; transition: .12s; }
+.mv-btn:active { transform: scale(.99); }
+.mv-btn.sel { border-color: var(--dark-header); background: var(--panel2); }
+
+.summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+.summary .box { background: var(--panel); border: 1.5px solid var(--line); border-radius: 14px; padding: 14px 8px; text-align: center; box-shadow: var(--shadow); }
+.summary .box b { font-family: 'Sora'; font-size: 20px; display: block; color: var(--ink); }
+.summary .box span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
+
+.cat-head { font-size: 13px; font-weight: 800; color: var(--dark-header); text-transform: uppercase; letter-spacing: .8px; margin: 18px 2px 8px; border-bottom: 2px solid var(--dark-header); padding-bottom: 4px; }
+.subcat-head { font-size: 12px; font-weight: 700; color: var(--ink2); margin: 12px 2px 6px 4px; }
+
+.stock-head { display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 4px; padding: 6px 12px; font-size: 10.5px; font-weight: 800; color: var(--muted); text-transform: uppercase; }
+.stock-row { display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 4px; align-items: center; background: var(--panel); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 8px; cursor: pointer; box-shadow: var(--shadow); }
+.stock-row .code { font-family: 'Sora'; font-weight: 800; font-size: 15px; color: var(--ink); }
+.stock-row .nm { font-size: 11px; color: var(--muted); }
+.stock-row .v { text-align: center; font-weight: 700; font-size: 14px; }
+.stock-row .v.zero { color: var(--muted); opacity: 0.4; }
+.stock-row .v.A { color: var(--A); }
+.stock-row .v.B { color: var(--B); }
+
+.mv { background: var(--panel); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; gap: 10px; box-shadow: var(--shadow); }
+.mv .l { flex: 1; min-width: 0; }
+.mv .t1 { font-weight: 700; font-size: 14px; color: var(--ink); }
+.mv .t2 { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.mv .qty { font-family: 'Sora'; font-weight: 800; font-size: 16px; align-self: center; white-space: nowrap; }
+.mv .qty.plus { color: var(--in); } .mv .qty.minus { color: var(--out); }
+.mv .act { border: none; background: none; color: var(--muted); font-size: 16px; cursor: pointer; align-self: center; padding: 4px; }
+
+.searchbar { position: relative; margin-bottom: 12px; }
+.searchbar input { padding-left: 42px; background: var(--panel); }
+.searchbar svg { position: absolute; left: 14px; top: 14px; width: 18px; height: 18px; stroke: var(--muted); fill: none; stroke-width: 2.2; }
+
+.pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.pill { border: 1.5px solid var(--line); background: var(--panel); border-radius: 999px; padding: 7px 16px; font-size: 12.5px; font-weight: 700; color: var(--ink2); cursor: pointer; }
+.pill.on { background: var(--dark-header); color: #FFF; border-color: var(--dark-header); }
+
+.fmt-tbl { overflow-x: auto; border: 1.5px solid var(--line); border-radius: 12px; margin: 8px 0 12px; background: var(--panel); }
+.fmt-tbl table { border-collapse: collapse; width: 100%; font-size: 12px; min-width: 400px; }
+.fmt-tbl th { background: var(--panel2); color: var(--dark-header); font-weight: 800; padding: 8px 10px; text-align: left; border-bottom: 1.5px solid var(--line); }
+.fmt-tbl td { padding: 8px 10px; border-bottom: 1px solid var(--line); color: var(--ink2); }
+
+.rep-item { background: var(--panel); border: 1.5px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 10px; box-shadow: var(--shadow); }
+.rep-item h4 { font-family: 'Sora'; font-size: 15px; margin: 0 0 8px; }
+.rep-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 14px; font-size: 13px; }
+.rep-grid div { display: flex; justify-content: space-between; }
+
+.overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 200; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); }
+.overlay.show { display: flex; }
+.sheet { background: var(--panel); width: 100%; max-width: 820px; max-height: 88vh; overflow-y: auto; border-radius: 24px 24px 0 0; padding: 22px 18px calc(24px + env(safe-area-inset-bottom)); border: 1.5px solid var(--line); }
+.sheet h3 { font-size: 18px; margin-bottom: 14px; }
+.sheet .close { float: right; border: none; background: var(--panel2); color: var(--ink); border-radius: 50%; width: 34px; height: 34px; font-size: 16px; cursor: pointer; font-weight: bold; }
+
+#toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--dark-header); color: #FFF; padding: 12px 22px; border-radius: 12px; font-size: 14px; font-weight: 600; opacity: 0; pointer-events: none; transition: .25s; z-index: 300; max-width: 90vw; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+#toast.show { opacity: 1; transform: translateX(-50%); }
+#toast.err { background: var(--out); color: #FFF; }
+
+#loginPage { position: fixed; inset: 0; background: var(--dark-header); z-index: 400; display: none; align-items: center; justify-content: center; padding: 20px; }
+#loginPage.show { display: flex; }
+.login-card { width: 100%; max-width: 380px; border-radius: 20px; padding: 28px 24px; background: #FFFFFF; color: var(--ink); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+.login-card h2 { font-size: 24px; text-align: center; margin: 6px 0 4px; color: var(--dark-header); }
+.login-card p { font-size: 13px; color: var(--ink2); text-align: center; margin: 0 0 16px; }
 </style>
 </head>
 <body>
-<div id="bootSplash" style="position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#0c1614;transition:opacity .25s ease">
-  <img src="./icon-192.png" width="64" height="64" style="border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.4)">
-  <div style="width:34px;height:34px;border-radius:50%;border:3px solid rgba(212,175,55,.25);border-top-color:#d4af37;animation:bootspin .8s linear infinite"></div>
-</div>
-<style>@keyframes bootspin{to{transform:rotate(360deg)}}</style>
-<div id="loginPage">
-  <div class="scene">
-    <div class="lamp-wrap">
-      <div class="lamp">
-        <div class="lamp-glow"></div><div class="dome"></div><div class="stem"></div><div class="lamp-base"></div>
-        <div class="cord" id="cord"><div class="cord-line" id="cordLine"></div><div class="knob" id="cordKnob"></div></div>
-      </div>
-      <div class="pull-hint" id="pullHint">Pull the cord to switch on ⬇</div>
-    </div>
-    <div class="login-card">
-      <div class="eyebrow" style="color:#C9A857;text-align:center">LamiGrade Pro</div>
-      <h2 id="loginTitle">Welcome</h2>
-      <p id="loginHint">Sign in with your username and password.</p>
-      <label class="f">Username</label>
-      <input id="loginName" placeholder="Enter name" maxlength="30">
-      <label class="f" id="pinLabel">Password</label>
-      <input id="loginPin" type="password" placeholder="Enter Password (min 6 characters)" maxlength="30">
-      <button class="btn gold" id="signInBtn" onclick="doLogin()">Sign In</button>
-    </div>
+
+<div id="loginPage" class="show">
+  <div class="login-card">
+    <div class="eyebrow" style="text-align:center">LamiGrade Pro</div>
+    <h2 id="loginTitle">Welcome Back</h2>
+    <p id="loginHint">Sign in to manage your laminate inventory.</p>
+    <label class="f">Username</label>
+    <input id="loginName" placeholder="Enter username" maxlength="30">
+    <label class="f">Password</label>
+    <input id="loginPin" type="password" placeholder="Enter password" maxlength="30">
+    <button class="btn" id="signInBtn" onclick="doLogin()">Sign In</button>
   </div>
 </div>
 
 <header>
   <div class="brand">
-    <div class="logo-mark" onclick="runMouseShow()" title="Tap to say hi 🐭">
-      <img src="icon-192.png" alt="LamiGrade Pro" width="38" height="38" style="width:100%;height:100%;object-fit:cover;border-radius:11px">
+    <div class="logo-mark">
+      <img src="icon-192.png" alt="LamiGrade Pro" width="40" height="40" style="width:100%;height:100%;object-fit:cover;">
     </div>
     <div><h1>LamiGrade Pro</h1><div class="sub">Inventory System</div></div>
   </div>
   <div class="headerRight">
     <div class="userchip" onclick="switchUser()"><span class="dot" id="connDot"></span><span id="userName">—</span></div>
-    <button class="menuBtn" id="menuBtn" onclick="openDrawer()" aria-label="Menu">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
-    </button>
-  </div>
-  <div class="mouse-stage" id="mouseStage">
-    <div class="mouse-char" id="mouseChar">
-      <div class="mouse-board" id="mouseBoard"><span class="mb-text" id="mouseBoardName"></span></div>
-      <div class="m-ear m-ear-l"></div><div class="m-ear m-ear-r"></div>
-      <div class="m-head"><div class="m-eye m-eye-l"></div><div class="m-eye m-eye-r"></div><div class="m-nose"></div></div>
-      <div class="m-leg m-leg-l"></div><div class="m-leg m-leg-r"></div>
-      <div class="m-body"></div>
-      <div class="m-arm m-arm-l"></div><div class="m-arm m-arm-r"></div>
-    </div>
   </div>
 </header>
 
 <main>
+<!-- PAGE: STOCK -->
 <div class="page active" id="page-stock">
   <div class="summary" id="stockSummary"></div>
-  <div class="searchbar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-    <input id="stockSearch" placeholder="Search item code or name…" oninput="renderStockD()"></div>
+  <div class="searchbar">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="stockSearch" placeholder="Search item code or name…" oninput="renderStockD()">
+  </div>
   <div class="pill-row" id="catFilterRow"></div>
   <div id="stockList"></div>
 </div>
 
+<!-- PAGE: ENTRY -->
 <div class="page" id="page-entry">
-  <div class="notice" id="entryNoPerm" style="display:none">Your ID cannot record entries. Ask the Master ID to enable it.</div>
   <div id="entryArea">
     <div class="card">
-      <div class="eyebrow">New movement</div><h2>Choose movement type</h2>
+      <div class="eyebrow">Record Movement</div><h2>Choose Movement Type</h2>
       <div class="seg" id="dirSeg">
-        <button class="on in" data-d="in" onclick="setDir('in')">▼ Inward</button>
-        <button data-d="out" onclick="setDir('out')">▲ Outward</button>
+        <button class="on" data-d="in" onclick="setDir('in')">▼ Stock Inward</button>
+        <button data-d="out" onclick="setDir('out')">▲ Stock Outward</button>
       </div>
       <div id="mvTree"></div>
     </div>
+    
     <div class="card" id="mvFormCard" style="display:none">
-      <div class="eyebrow" id="mvFormEye">Selected movement</div><h2 id="mvFormTitle">—</h2>
-      <div class="seg" id="mvModeSeg" style="margin-top:10px">
-        <button class="on" data-m="single" onclick="setMvMode('single')">Single item</button>
-        <button data-m="bulk" onclick="setMvMode('bulk')">Bulk (many items)</button>
+      <div class="eyebrow" id="mvFormEye">Selected Movement</div><h2 id="mvFormTitle">—</h2>
+      <div class="seg" id="mvModeSeg" style="margin-top:12px">
+        <button class="on" data-m="single" onclick="setMvMode('single')">Single Item</button>
+        <button data-m="bulk" onclick="setMvMode('bulk')">Bulk (CSV / Excel)</button>
       </div>
+      
       <div id="mvSingle">
         <label class="f">Item</label>
-        <input id="mvItemSearch" placeholder="Type item code to search…" oninput="filterItemSelectD()" autocomplete="off">
+        <input id="mvItemSearch" placeholder="Type code to search…" oninput="filterItemSelectD()" autocomplete="off">
         <select id="mvItem" size="1" style="margin-top:6px" onchange="showItemStock()"></select>
-        <div id="mvItemStock" style="font-size:12.5px;color:var(--muted);margin-top:6px"></div>
-        <label class="f">Quantity (pcs)</label>
+        <div id="mvItemStock" style="font-size:13px;color:var(--muted);margin-top:6px"></div>
+        <label class="f">Quantity (Pcs)</label>
         <input id="mvQty" type="number" min="1" inputmode="numeric" placeholder="0">
       </div>
+      
       <div id="mvBulk" style="display:none">
-        <p class="desc">Enter one item per line as <b>code, quantity</b> — or upload a CSV/Excel file. The selected movement type above is applied to every row.</p>
-        <div class="fmt-tbl"><table><thead><tr><th>Item Code</th><th>Quantity</th></tr></thead>
-          <tbody><tr><td>101</td><td>50</td></tr><tr><td>102</td><td>30</td></tr><tr><td>201</td><td>12</td></tr></tbody></table></div>
-        <label class="f">Type item &amp; quantity (one per line)</label>
-        <textarea id="mvBulkText" rows="5" placeholder="101, 50&#10;102, 30&#10;201, 12"></textarea>
-        <label class="f">Or upload CSV / Excel (Column A = Code, B = Quantity)</label>
+        <p class="desc">Enter entries line by line as <b>Code, Quantity</b> or upload a CSV / Excel file.</p>
+        <textarea id="mvBulkText" rows="4" placeholder="101, 50&#10;102, 30"></textarea>
+        <label class="f">Upload CSV / Excel File</label>
         <input type="file" id="mvBulkFile" accept=".xlsx,.xls,.csv" onchange="parseMvBulkFile(this)">
-        <button class="btn ghost" onclick="downloadMvTemplate()">⬇ Sample template (CSV)</button>
-        <div id="mvBulkPreview"></div>
       </div>
-      <div id="partyWrap" style="display:none"><label class="f" id="partyLabel">Party name</label>
-        <input id="mvParty" placeholder="e.g. Sharma Traders" maxlength="60"></div>
-      <label class="f">Note (optional)</label><input id="mvNote" placeholder="Any remark…" maxlength="80">
-      <button class="btn gold" id="saveMvBtn" onclick="saveMovement()">Save movement</button>
+      
+      <div id="partyWrap" style="display:none">
+        <label class="f" id="partyLabel">Party Name</label>
+        <input id="mvParty" placeholder="e.g. Sharma Traders" maxlength="60">
+      </div>
+      <label class="f">Note (Optional)</label>
+      <input id="mvNote" placeholder="Any remarks…" maxlength="80">
+      <button class="btn" id="saveMvBtn" onclick="saveMovement()">Save Movement</button>
     </div>
   </div>
-  <div class="card"><h2>Recent entries</h2><div id="recentList"><div class="empty">No entries yet.</div></div></div>
+  <div class="card"><h2>Recent Entries</h2><div id="recentList"><div class="empty">No entries yet.</div></div></div>
 </div>
 
-<div class="page" id="page-history">
-  <div class="card"><div class="eyebrow">Movement history</div><h2>Search between two dates</h2>
-    <div class="row2"><div><label class="f">From</label><input type="date" id="histFrom"></div>
-      <div><label class="f">To</label><input type="date" id="histTo"></div></div>
-    <div class="row2"><div><label class="f">Item (optional)</label><select id="histItem"><option value="">All items</option></select></div>
-      <div><label class="f">Type (optional)</label><select id="histType"><option value="">All types</option></select></div></div>
-    <button class="btn gold" onclick="runHistory()">Search</button></div>
-  <div id="histSummary"></div><div id="histList"></div>
-</div>
-
-<div class="page" id="page-report">
-  <div class="notice" id="reportNoPerm" style="display:none">Your ID cannot generate reports. Ask the Master ID to enable it.</div>
-  <div class="card" id="repDailyCard"><div class="eyebrow">Report 1 — Daily balance</div><h2>Opening &amp; closing balance</h2>
-    <p class="desc">Each item's opening stock, the day's movements, and closing stock — per grade.</p>
-    <label class="f">Date</label><input type="date" id="repDate">
-    <label class="f">Item (optional)</label><select id="repItem"><option value="">All items with activity</option></select>
-    <button class="btn gold" onclick="runReport()">Show report</button>
-    <button class="btn ghost" id="repDailyXlsx" style="display:none" onclick="exportDailyXLSX()">⬇ Download (Excel)</button></div>
-  <div id="repOut"></div>
-  <div class="card" id="repStockCard"><div class="eyebrow">Report 2 — Current stock</div><h2>Current stock (CSV)</h2>
-    <p class="desc">Full stock of every item with category, grades and total.</p>
-    <button class="btn gold" onclick="exportStockCSV()">⬇ Download stock (CSV)</button></div>
-  <div class="card" id="repHistCard"><div class="eyebrow">Report 3 — Movement report</div><h2>Movement history (CSV)</h2>
-    <p class="desc">Every movement between two dates, with date, time, item, party and the user ID who made the entry.</p>
-    <div class="row2"><div><label class="f">From</label><input type="date" id="repCsvFrom"></div>
-      <div><label class="f">To</label><input type="date" id="repCsvTo"></div></div>
-    <label class="f">Item (optional)</label><select id="repCsvItem"><option value="">All items</option></select>
-    <button class="btn gold" onclick="exportHistReport()">⬇ Download movement report (CSV)</button></div>
-  <div class="card" id="repMasterCard"><div class="eyebrow">Report 4 — Master Sales Report</div><h2>Sales analysis</h2>
-    <p class="desc">Month-wise sales, item × party breakdown, product analysis, top &amp; down ranked products. Screen + Excel.</p>
-    <div class="pill-row" style="margin-top:8px"><button class="pill" onclick="msQuick(0)">This month</button>
-      <button class="pill" onclick="msQuick(2)">3 months</button><button class="pill" onclick="msQuick(5)">6 months</button>
-      <button class="pill" onclick="msQuick(11)">One year</button></div>
-    <div class="row2"><div><label class="f">From</label><input type="date" id="msFrom"></div>
-      <div><label class="f">To</label><input type="date" id="msTo"></div></div>
-    <button class="btn gold" onclick="runMasterReport()">Generate master report</button></div>
-  <div id="msOut"></div>
-  <div class="card" id="repLowCard"><div class="eyebrow">Report 5 — Production Needed</div><h2>Low stock — A-Grade PVC Laminate Sheet</h2>
-    <p class="desc">Items in <b>A-Grade PVC Laminate Sheet</b> whose A-Grade quantity is below the threshold are flagged <b>Production Needed</b>.</p>
-    <label class="f">Threshold (pcs)</label><input type="number" id="lowStockThreshold" value="15" min="1">
-    <button class="btn gold" onclick="runLowStockReport()">Generate report</button>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="btn ghost sm" id="lowStockCsvBtn" style="display:none" onclick="exportLowStockCSV()">⬇ CSV</button>
-      <button class="btn ghost sm" id="lowStockXlsxBtn" style="display:none" onclick="exportLowStockXLSX()">⬇ Excel</button>
-    </div></div>
-  <div id="lowStockOut"></div>
-</div>
-
-<div class="page" id="page-chat">
-  <div class="card" style="padding:0;overflow:hidden;display:flex;flex-direction:column;height:calc(100vh - 220px);min-height:430px">
-    <div style="padding:14px 16px 10px;border-bottom:1px solid var(--line)">
-      <div class="eyebrow" style="margin:0">Team Chat</div>
-      <h2 style="font-size:15.5px">Talk with your team</h2>
-      <p class="desc" style="margin:2px 0 0">Chat with everyone, or tag an item code to leave an instruction about it.</p>
-    </div>
-    <div id="chatList" class="chat-list"></div>
-    <div class="chat-input-bar">
-      <input id="chatItemTag" placeholder="Item # (optional)">
-      <input id="chatText" placeholder="Type a message…" maxlength="500" onkeydown="if(event.key==='Enter')sendChatMsg()">
-      <button class="btn gold sm" onclick="sendChatMsg()">Send</button>
-    </div>
-  </div>
-</div>
-
+<!-- PAGE: ITEMS -->
 <div class="page" id="page-items">
-  <div class="card" id="addItemCard"><div class="eyebrow">Manage items</div><h2>Add a single item</h2>
-    <div class="row2"><div><label class="f">Item code</label><input id="newCode" placeholder="e.g. 1003" maxlength="14"></div>
-      <div><label class="f">Item name</label><input id="newName" value="MD PVC Laminate 1.25 MM" maxlength="60"></div></div>
-    <label class="f">Category</label><select id="newCat"></select>
-    <button class="btn teal" onclick="addItem()">Add item</button></div>
-  <div class="card" id="qaCard"><div class="eyebrow">Manage items</div><h2>Add opening balance / quantity</h2>
-    <p class="desc">For an item that already exists — add stock to any of the 4 grades, anytime, as many times as you like. Pick the item, see its current stock, and add.</p>
-    <label class="f">Item</label>
-    <div class="searchbar" style="margin-top:2px"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input id="qaSearch" placeholder="Search item code or name…" oninput="filterQaSelect()" autocomplete="off"></div>
+  <div class="card" id="qaCard">
+    <div class="eyebrow">Opening Balance</div><h2>Add Opening Balance / Quantity</h2>
+    <p class="desc">Add opening stock to individual items across grades.</p>
+    <label class="f">Item Code / Name</label>
+    <input id="qaSearch" placeholder="Search item…" oninput="filterQaSelect()" autocomplete="off">
     <select id="qaItem" size="1" style="margin-top:6px" onchange="showQaStock()"></select>
     <div id="qaStock"></div>
-    <div class="row2" style="margin-top:10px"><div><label class="f">A-Grade qty to add</label><input type="number" id="qaA" min="0" placeholder="0"></div>
-      <div><label class="f">B-Grade/Damage qty to add</label><input type="number" id="qaB" min="0" placeholder="0"></div></div>
-    <div class="row2"><div><label class="f">Colour Mismatch qty to add</label><input type="number" id="qaC" min="0" placeholder="0"></div>
-      <div><label class="f">Sample qty to add</label><input type="number" id="qaS" min="0" placeholder="0"></div></div>
-    <button class="btn gold" style="margin-top:10px" onclick="addSingleGradeQty()">Add quantity</button></div>
-  <div class="card" id="seedCard" style="display:none"><h2>Load default items</h2>
-    <p class="desc">Database is empty. Load the <b id="seedCount"></b> default codes into <b>A-Grade PVC Laminate Sheet</b>.</p>
-    <button class="btn gold" onclick="seedItems()">Load default items</button></div>
-  <div class="card"><h2>All items <span id="itemCount" style="font-weight:400;font-size:13px;color:var(--muted)"></span></h2>
-    <div class="searchbar" style="margin-top:8px"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input id="itemSearch" placeholder="Search…" oninput="renderItemManageD()"></div>
-    <div id="itemManageList"></div></div>
-  <div class="card" id="itemBulkCard"><div class="eyebrow">Bulk add items</div><h2>Add many items at once</h2>
-    <h3 style="font-size:13px;color:var(--teal);margin:10px 0 4px">Way 1 — Type codes (with optional quantity)</h3>
-    <label class="f">One item per line. Add quantity with <b>=</b> like <b>1003=100,10,0,0</b> (A, B, Colour MM, Sample)</label><textarea id="biCodes" rows="3" placeholder="1003=100,10&#10;1004=50&#10;1005"></textarea>
-    <div class="row2"><div><label class="f">Name (for all)</label><input id="biName" value="MD PVC Laminate 1.25 MM" maxlength="60"></div>
-      <div><label class="f">Category (for all)</label><select id="biCat"></select></div></div>
-    <button class="btn teal" onclick="applyItemManual()">Add these items</button>
-    <h3 style="font-size:13px;color:var(--teal);margin:18px 0 4px">Way 2 — Excel / CSV upload</h3>
-    <p class="desc">You can also set opening quantity for each item. Columns in order:</p>
-    <div class="fmt-tbl"><table><thead><tr><th>A<br>Item Code</th><th>B<br>Item Name</th><th>C<br>Category</th><th>D<br>A-Grade Qty</th><th>E<br>B-Grade Qty</th><th>F<br>Colour MM Qty</th><th>G<br>Sample Qty</th></tr></thead>
-    <tbody><tr><td>1003</td><td>MD PVC Laminate 1.25 MM</td><td>A-Grade PVC Laminate Sheet</td><td>100</td><td>10</td><td>0</td><td>0</td></tr>
-    <tr><td>1101</td><td>Liner Sheet</td><td>Liner White</td><td>50</td><td>5</td><td>0</td><td>0</td></tr></tbody></table></div>
-    <p class="desc">Only <b>Item Code</b> (column A) is required. Name, category and all quantities are optional — blank = 0.</p>
-    <input type="file" id="itemFile" accept=".xlsx,.xls,.csv" onchange="parseItemFile(this)">
-    <div id="itemBulkPreview"></div>
-    <button class="btn teal" id="applyItemBulkBtn" style="display:none" onclick="applyItemBulk()">Add all items</button>
-    <button class="btn gold" id="applyExistUpdateBtn" style="display:none;margin-top:8px" onclick="applyExistUpdate()">Add quantities to existing items</button>
-    <button class="btn ghost" onclick="downloadItemTemplate()">⬇ Sample template (CSV)</button></div>
-  <div class="card" id="gradeBulkCard"><div class="eyebrow">Bulk quantity update</div><h2>Add opening balance / stock in bulk</h2>
-    <p class="desc">For items that already exist. Upload a CSV/Excel with how much <b>A-Grade</b>, <b>B-Grade/Damage</b>, <b>Colour Mismatch</b> and <b>Sample</b> quantity to add to each item — works across categories, any item code matched against your existing items.</p>
-    <div class="fmt-tbl"><table><thead><tr><th>A<br>Item Code</th><th>B<br>A-Grade Qty to Add</th><th>C<br>B-Grade/Damage Qty to Add</th><th>D<br>Colour Mismatch Qty to Add</th><th>E<br>Sample Qty to Add</th></tr></thead>
-    <tbody><tr><td>1003</td><td>20</td><td>10</td><td>0</td><td>0</td></tr><tr><td>1004</td><td>0</td><td>0</td><td>5</td><td>2</td></tr></tbody></table></div>
-    <p class="desc">Leave a column blank or 0 if nothing to add there. Quantities are <b>added</b> to current stock, not replaced.</p>
+    <div class="row2" style="margin-top:10px">
+      <div><label class="f">A-Grade Qty</label><input type="number" id="qaA" min="0" placeholder="0"></div>
+      <div><label class="f">B-Grade Qty</label><input type="number" id="qaB" min="0" placeholder="0"></div>
+    </div>
+    <div class="row2">
+      <div><label class="f">Colour MM Qty</label><input type="number" id="qaC" min="0" placeholder="0"></div>
+      <div><label class="f">Sample Qty</label><input type="number" id="qaS" min="0" placeholder="0"></div>
+    </div>
+    <button class="btn" style="margin-top:12px" onclick="addSingleGradeQty()">Add Quantity</button>
+    
+    <hr style="border:none;border-top:1px solid var(--line);margin:20px 0;">
+    <div class="eyebrow">Bulk Opening Stock Upload</div>
+    <p class="desc">Upload CSV/Excel file to add opening stock to multiple items at once.</p>
+    <div class="fmt-tbl">
+      <table>
+        <thead><tr><th>Col A: Code</th><th>Col B: A-Grade</th><th>Col C: B-Grade</th><th>Col D: Colour MM</th><th>Col E: Sample</th></tr></thead>
+        <tbody><tr><td>1003</td><td>100</td><td>10</td><td>0</td><td>0</td></tr></tbody>
+      </table>
+    </div>
     <input type="file" id="gradeBulkFile" accept=".xlsx,.xls,.csv" onchange="parseGradeBulkFile(this)">
     <div id="gradeBulkPreview"></div>
-    <button class="btn teal" id="applyGradeBulkBtn" style="display:none" onclick="applyGradeBulk()">Add quantities</button>
-    <button class="btn ghost" onclick="downloadGradeBulkTemplate()">⬇ Sample template (CSV)</button></div>
-  <div class="card" id="batchCard"><div class="eyebrow">Uploaded files</div><h2>Delete a bulk upload</h2>
-    <p class="desc">Every Excel/CSV item upload is saved here. Tap "Delete file" to remove all items that came from that upload in one go.</p>
-    <div id="batchList"><div class="empty">No bulk uploads yet.</div></div></div>
-  <div class="card" id="catBulkCard"><div class="eyebrow">Bulk category update</div><h2>Move items to a category</h2>
-    <label class="f">Category</label><select id="mcCat"></select>
-    <label class="f">Item codes (comma / space / new line)</label><textarea id="mcCodes" rows="3" placeholder="101, 102, 103"></textarea>
-    <button class="btn teal" onclick="applyCatManual()">Apply category</button>
-    <h3 style="font-size:13px;color:var(--teal);margin:18px 0 4px">Or Excel / CSV upload</h3>
-    <p class="desc">Format:</p>
-    <div class="fmt-tbl"><table><thead><tr><th>A<br>Item Code</th><th>B<br>Category</th></tr></thead>
-    <tbody><tr><td>101</td><td>Colour Mismatch</td></tr><tr><td>102</td><td>Liner White</td></tr></tbody></table></div>
-    <input type="file" id="catFile" accept=".xlsx,.xls,.csv" onchange="parseCatFile(this)">
-    <div id="catPreview"></div>
-    <button class="btn teal" id="applyCatBtn" style="display:none" onclick="applyCatBulk()">Apply all rows</button></div>
-  <div class="card" id="catManageCard"><div class="eyebrow">Manage categories</div><h2>Categories</h2>
-    <p class="desc">Add or delete your own category. Items keep their assigned category name.</p>
-    <input id="newCatName" placeholder="New category name" maxlength="40">
-    <button class="btn teal" onclick="addCategory()">Add category</button>
-    <div id="catManageList" style="margin-top:10px"></div></div>
-  <div class="card" id="ctCard"><div class="eyebrow">Manage movements</div><h2>Custom movement type</h2>
-    <p class="desc">Create your own transfer route (From → To). Appears in the Entry tab.</p>
-    <div class="row2"><div><label class="f">From</label><select id="ctFrom"><option value="">Outside (inward)</option><option value="a">A-Grade</option><option value="b">B-Grade</option><option value="c">Colour Mismatch</option><option value="s">Sample</option></select></div>
-      <div><label class="f">To</label><select id="ctTo"><option value="">Outside (outward)</option><option value="a">A-Grade</option><option value="b">B-Grade</option><option value="c">Colour Mismatch</option><option value="s">Sample</option></select></div></div>
-    <label class="f">Movement name (optional)</label><input id="ctLabel" maxlength="50" placeholder="e.g. A-Grade → Colour Mismatch">
-    <label class="f" style="display:flex;align-items:center;gap:8px;margin-top:12px"><input type="checkbox" id="ctParty" style="width:auto"> Ask for a party name</label>
-    <button class="btn teal" onclick="addCustomType()">Add movement type</button>
-    <div id="customTypeList" style="margin-top:14px"></div></div>
-  <div class="card" id="acctCard"><div class="eyebrow">My account</div><h2>Change my password</h2>
-    <p class="desc">You'll be asked for your current password first.</p>
-    <button class="btn ghost" onclick="changeMyPass()">Change my password</button></div>
-  <div class="card" id="auditLogCard"><h2>Audit log</h2><p class="desc">Who added, edited or deleted what — with date &amp; time.</p>
-    <div id="auditList"><div class="empty">Nothing yet.</div></div></div>
+    <button class="btn teal" id="applyGradeBulkBtn" style="display:none;" onclick="applyGradeBulk()">Apply Bulk Quantities</button>
+    <button class="btn ghost" onclick="downloadGradeBulkTemplate()" style="margin-top:8px">⬇ Download CSV Template</button>
+  </div>
+
+  <div class="card" id="ctCard">
+    <div class="eyebrow">Movements</div><h2>Custom Movement Type</h2>
+    <p class="desc">Create custom inward/outward transfer routes.</p>
+    <div class="row2">
+      <div><label class="f">From</label><select id="ctFrom"><option value="">Outside (Inward)</option><option value="a">A-Grade</option><option value="b">B-Grade</option><option value="c">Colour MM</option><option value="s">Sample</option></select></div>
+      <div><label class="f">To</label><select id="ctTo"><option value="">Outside (Outward)</option><option value="a">A-Grade</option><option value="b">B-Grade</option><option value="c">Colour MM</option><option value="s">Sample</option></select></div>
+    </div>
+    <label class="f">Movement Name</label><input id="ctLabel" maxlength="50" placeholder="e.g. A-Grade → Damage">
+    <button class="btn teal" onclick="addCustomType()">Add Movement Type</button>
+    <div id="customTypeList" style="margin-top:12px"></div>
+  </div>
+
+  <div class="card" id="addItemCard">
+    <div class="eyebrow">All Items</div><h2>Manage All Items <span id="itemCount" style="font-weight:400;font-size:13px;color:var(--muted)"></span></h2>
+    <div class="searchbar" style="margin-top:8px">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="itemSearch" placeholder="Search item…" oninput="renderItemManageD()">
+    </div>
+    <div id="itemManageList"></div>
+  </div>
 </div>
 
+<!-- PAGE: REPORT -->
+<div class="page" id="page-report">
+  <div class="card">
+    <div class="eyebrow">Reports</div><h2>Current Stock Report</h2>
+    <p class="desc">Download current full inventory breakdown in CSV format.</p>
+    <button class="btn" onclick="exportStockCSV()">⬇ Download Stock CSV</button>
+  </div>
+  <div class="card">
+    <div class="eyebrow">Reports</div><h2>Production Needed Report</h2>
+    <p class="desc">Flag items in <b>PVC Laminate Sheet</b> below minimum threshold.</p>
+    <label class="f">Threshold (Pcs)</label><input type="number" id="lowStockThreshold" value="15" min="1">
+    <button class="btn teal" onclick="runLowStockReport()">Generate Low Stock Report</button>
+    <div id="lowStockOut" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- PAGE: MASTER -->
 <div class="page" id="page-master">
-  <div class="card" id="adminCard" style="border-color:rgba(228,197,104,.35)"><div class="eyebrow">★ Master control</div>
-    <h2>User IDs &amp; permissions</h2>
-    <p class="desc">Only the Master sees this. Staff cannot self-register — you create every account here.</p>
-    <div style="border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px;background:var(--bg2)">
-      <div class="eyebrow">Create a new user ID</div>
-      <div class="row2"><div><label class="f">Username</label><input id="nuName" placeholder="e.g. Ramesh" maxlength="30"></div>
-        <div><label class="f">Email (optional)</label><input id="nuEmail" placeholder="for reset" maxlength="60"></div></div>
-      <label class="f">Password (min 6)</label><input id="nuPass" type="password" placeholder="Give to the user" maxlength="30">
-      <button class="btn teal" onclick="createStaffUser()">Create user ID</button></div>
-    <div id="adminList"><div class="empty">Loading users…</div></div>
-    <button class="btn ghost" onclick="changeMyPass()">Change my Master password</button></div>
+  <div class="card">
+    <div class="eyebrow">★ Master Control</div>
+    <h2>User Access & Permissions</h2>
+    <p class="desc">Create and manage accounts for staff members.</p>
+    <div id="adminList"></div>
+  </div>
 </div>
 </main>
 
-<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
-<aside class="drawer" id="drawer">
-  <div class="drawer-head">
-    <div><div class="eyebrow" style="margin:0">Menu</div><div style="font-size:14px;font-weight:800" id="drawerUserLine">—</div></div>
-    <button class="drawer-close" onclick="closeDrawer()" aria-label="Close">✕</button>
-  </div>
-  <div class="drawer-body" id="drawerBody">
-    <button class="dnav active" data-p="stock" onclick="drawerGo('stock')">
-      <svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg><span>Stock</span></button>
-    <button class="dnav" data-p="entry" onclick="drawerGo('entry')">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>Entry</span></button>
-    <button class="dnav" data-p="history" onclick="drawerGo('history')">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span>History</span></button>
-    <button class="dnav" data-p="chat" onclick="drawerGo('chat')">
-      <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span>Chat</span></button>
+<!-- Bottom Nav Bar -->
+<div class="bottom-nav">
+  <button class="bnav-btn active" onclick="goPage('stock')">
+    <svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>Stock
+  </button>
+  <button class="bnav-btn" onclick="goPage('entry')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Entry
+  </button>
+  <button class="bnav-btn" onclick="goPage('items')">
+    <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Items
+  </button>
+  <button class="bnav-btn" onclick="goPage('report')">
+    <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Report
+  </button>
+  <button class="bnav-btn" id="masterNavBtn" style="display:none;" onclick="goPage('master')">
+    <svg viewBox="0 0 24 24"><path d="M3 17l3-9 4 5 2-6 2 6 4-5 3 9z"/><path d="M4 20h16"/></svg>Master
+  </button>
+</div>
 
-    <div class="dgroup" id="dgroupReport">
-      <button class="dnav dgroup-head" data-p="report" onclick="toggleDGroup(this,'report')">
-        <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Report</span>
-        <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
-      <div class="dsub">
-        <button onclick="drawerGo('report','repDailyCard')">Daily balance</button>
-        <button onclick="drawerGo('report','repStockCard')">Current stock</button>
-        <button onclick="drawerGo('report','repHistCard')">Movement report</button>
-        <button onclick="drawerGo('report','repMasterCard')">Master sales report</button>
-        <button onclick="drawerGo('report','repLowCard')">Production needed</button>
-      </div>
-    </div>
-
-    <div class="dgroup" id="dgroupItems">
-      <button class="dnav dgroup-head" data-p="items" onclick="toggleDGroup(this,'items')">
-        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Items</span>
-        <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
-      <div class="dsub">
-        <button onclick="drawerGo('items','addItemCard')">Add item</button>
-        <button onclick="drawerGo('items','qaCard')">Opening balance</button>
-        <button onclick="drawerGo('items','itemBulkCard')">Bulk add items</button>
-        <button onclick="drawerGo('items','gradeBulkCard')">Bulk quantity update</button>
-        <button onclick="drawerGo('items','catBulkCard')">Bulk category update</button>
-        <button onclick="drawerGo('items','catManageCard')">Manage categories</button>
-        <button onclick="drawerGo('items','ctCard')">Movement types</button>
-        <button onclick="drawerGo('items','batchCard')">Uploaded files</button>
-        <button onclick="drawerGo('items','acctCard')">My account</button>
-        <button onclick="drawerGo('items','auditLogCard')">Audit log</button>
-      </div>
-    </div>
-
-    <button class="dnav" data-p="master" id="drawerMasterBtn" style="display:none" onclick="drawerGo('master')">
-      <svg viewBox="0 0 24 24"><path d="M3 17l3-9 4 5 2-6 2 6 4-5 3 9z"/><path d="M4 20h16"/></svg><span>Master control</span></button>
-
-    <button class="dnav" style="margin-top:10px;color:var(--out)" onclick="switchUser()">
-      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg><span>Log out</span></button>
-  </div>
-</aside>
-
-<div class="overlay" id="detailOverlay" onclick="if(event.target===this)this.classList.remove('show')"><div class="sheet" id="detailSheet"></div></div>
-<div class="overlay" id="confirmOverlay"><div class="confirm-box">
-  <h3 id="confirmTitle">Confirm</h3>
-  <p id="confirmMsg"></p>
-  <div class="confirm-btns">
-    <button class="btn ghost" id="confirmCancel">Cancel</button>
-    <button class="btn gold" id="confirmOk">OK</button>
-  </div>
-</div></div>
-<div class="overlay" id="promptOverlay"><div class="confirm-box">
-  <h3 id="promptTitle">Enter</h3>
-  <p id="promptMsg" style="margin-bottom:10px"></p>
-  <input id="promptInput" type="password" autocomplete="off">
-  <div class="confirm-btns" style="margin-top:16px">
-    <button class="btn ghost" id="promptCancel">Cancel</button>
-    <button class="btn gold" id="promptOk">OK</button>
-  </div>
-</div></div>
 <div id="toast"></div>
+
 <script>
-/* ============ FIREBASE CONFIG — paste yours below ============ */
+/* ============ FIREBASE CONFIG ============ */
 const firebaseConfig = {
   apiKey: "AIzaSyAAYoU3tQrm10jYR9j2lmd-3r6-G5-f41c",
   authDomain: "lamigradepro-e9437.firebaseapp.com",
@@ -596,1341 +378,216 @@ const firebaseConfig = {
   messagingSenderId: "292070102662",
   appId: "1:292070102662:web:d285e068ca1e8ebcd32307"
 };
-/* ============================================================ */
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
-db.enablePersistence({synchronizeTabs:true}).catch(()=>{});
 
-/* ---------- Default item codes ---------- */
-const RANGES=[[101,149],[151,154],[161,161],[201,209],[301,340],[401,436],[441,468],[481,488],[604,624],[626,644],[661,665],[701,724],[726,726],[728,730],[733,736],[739,747],[751,754],[757,759],[783,789],[801,808],[1001,1002]];
-const DEFAULT_CODES=[]; RANGES.forEach(([a,b])=>{for(let c=a;c<=b;c++)DEFAULT_CODES.push(String(c));});
-const DEFAULT_NAME="MD PVC Laminate 1.25 MM";
-
-/* ---------- Categories (built-in) ---------- */
+/* Categories Structure */
 const BUILTIN_CATS = [
-  "A-Grade PVC Laminate Sheet",
-  "Colour Mismatch",
-  "1.25MM B Grade PVC Laminate Sheet",
-  "Liner White","Liner Off White","Colour Liner","Design Liner",
-  "Louvers"
+  "PVC Laminate Sheet",
+  "Liner White", "Liner Off White", "Colour Liner", "Design Liner", "Louvers"
 ];
-const DEFAULT_CAT = "A-Grade PVC Laminate Sheet";
-// grouping of categories under top headings for the Stock page
-const CAT_GROUPS = [
-  {group:"1.25MM PVC Laminate Sheet", cats:["A-Grade PVC Laminate Sheet","Colour Mismatch","1.25MM B Grade PVC Laminate Sheet"]},
-  {group:"Liner", cats:["Liner White","Liner Off White","Colour Liner","Design Liner"]},
-  {group:"Louvers", cats:["Louvers"]}
-];
+const DEFAULT_CAT = "PVC Laminate Sheet";
 
-/* ---------- Grade buckets ----------
-   a = A-Grade, b = B-Grade / Damage, c = Colour Mismatch */
-const BUCKETS = {a:"A-Grade", b:"B-Grade / Damage", c:"Colour Mismatch", s:"Sample"};
-
-/* ---------- Movement types (new inward/outward structure) ---------- */
+/* Master Control Movement Groups (4 Categories) */
 const BUILTIN_TYPES = {
-  PROD_A:      {label:"Production → A-Grade",              dir:"in",  eff:{a:+1},        party:false, group:"Production"},
-  PROD_S:      {label:"Production → Sample",                dir:"in",  eff:{s:+1},        party:false, group:"Production"},
-  PROD_B:      {label:"Production → B-Grade",              dir:"in",  eff:{b:+1},        party:false, group:"Production"},
-  PROD_C:      {label:"Production → Colour Mismatch",       dir:"in",  eff:{c:+1},        party:false, group:"Production"},
-  RET_A:       {label:"Return From Party → A-Grade",       dir:"in",  eff:{a:+1},        party:true,  group:"Return From Party"},
-  RET_B:       {label:"Return From Party → Damage/B-Grade",dir:"in",  eff:{b:+1},        party:true,  group:"Return From Party"},
-  SALE_A:      {label:"Sale To Party ← A-Grade",           dir:"out", eff:{a:-1},        party:true,  group:"Sale To Party", sale:true},
-  A_TO_B:      {label:"A-Grade → B-Grade",                 dir:"out", eff:{a:-1,b:+1},   party:false, group:"Stock Inter Transfer"},
-  B_TO_A:      {label:"B-Grade → A-Grade",                 dir:"out", eff:{b:-1,a:+1},   party:false, group:"Stock Inter Transfer"},
-  A_TO_C:      {label:"A-Grade → Colour Mismatch",         dir:"out", eff:{a:-1,c:+1},   party:false, group:"Stock Inter Transfer"},
-  B_TO_C:      {label:"B-Grade → Colour Mismatch",         dir:"out", eff:{b:-1,c:+1},   party:false, group:"Stock Inter Transfer"},
-  C_TO_A:      {label:"Colour Mismatch → A-Grade",         dir:"out", eff:{c:-1,a:+1},   party:false, group:"Stock Inter Transfer"},
-  C_TO_B:      {label:"Colour Mismatch → B-Grade",         dir:"out", eff:{c:-1,b:+1},   party:false, group:"Stock Inter Transfer"},
-  A_TO_SAMPLE: {label:"A-Grade → Sample",                  dir:"out", eff:{a:-1,s:+1},   party:false, group:"Sample"},
-  B_TO_SAMPLE: {label:"B-Grade → Sample",                  dir:"out", eff:{b:-1,s:+1},   party:false, group:"Sample"}
+  // 1. Stock Inward Entry
+  PROD_A: { label: "Production → PVC Laminate", dir: "in", eff: { a: +1 }, party: false, group: "Stock Inward Entry" },
+  PROD_B: { label: "Production → B-Grade", dir: "in", eff: { b: +1 }, party: false, group: "Stock Inward Entry" },
+  RET_A:  { label: "Return From Party → PVC Laminate", dir: "in", eff: { a: +1 }, party: true, group: "Stock Inward Entry" },
+
+  // 2. Sale To Party
+  SALE_A: { label: "Sale To Party ← PVC Laminate", dir: "out", eff: { a: -1 }, party: true, group: "Sale To Party", sale: true },
+
+  // 3. Stock Inter Transfer
+  A_TO_B: { label: "PVC Laminate → B-Grade", dir: "out", eff: { a: -1, b: +1 }, party: false, group: "Stock Inter Transfer" },
+  B_TO_A: { label: "B-Grade → PVC Laminate", dir: "out", eff: { b: -1, a: +1 }, party: false, group: "Stock Inter Transfer" },
+
+  // 4. Sample
+  PROD_S: { label: "Production → Sample", dir: "in", eff: { s: +1 }, party: false, group: "Sample" },
+  A_TO_SAMPLE: { label: "PVC Laminate → Sample", dir: "out", eff: { a: -1, s: +1 }, party: false, group: "Sample" }
 };
-let TYPES = {...BUILTIN_TYPES};
 
-/* ---------- State ---------- */
-let ITEMS={}, USER="", UID="", ME=null, PERMS={};
-let CATS = [...BUILTIN_CATS];
-let unsubMe=null, unsubUsers=null, USERS_CACHE=[];
-let CUSTOM_TYPES={}, STOCK_LIMIT=300, stockCat="", histRows=[], REPORT_DATA=null, MASTER_DATA=null;
-const SALE_A_CAT_ORDER=["A-Grade PVC Laminate Sheet","1.25MM B Grade PVC Laminate Sheet","Colour Mismatch"];
-function mvItemCodes(){
-  const codes=sortedCodes();
-  if(curType!=="SALE_A")return codes;
-  const rank=c=>{const i=SALE_A_CAT_ORDER.indexOf(catOf(ITEMS[c]));return i===-1?SALE_A_CAT_ORDER.length:i;};
-  return [...codes].sort((x,y)=>rank(x)-rank(y)||(parseInt(x)||0)-(parseInt(y)||0)||x.localeCompare(y));
-}
-let curDir="in", curType="";
-let RECENT_CACHE=[], ITEM_HIST_CACHE={};
+let TYPES = { ...BUILTIN_TYPES };
+let ITEMS = {}, USER = "", UID = "", ME = null;
+let curDir = "in", curType = "";
 
-const PERM_DEFS={entry:"Record new entries",edit:"Edit entries",del:"Delete entries",items:"Add/edit/delete items & categories",types:"Add/delete movement types",reports:"Generate reports"};
-const DEFAULT_STAFF_PERMS={entry:true,edit:false,del:false,items:false,types:false,reports:true};
-const ALL_PERMS={entry:true,edit:true,del:true,items:true,types:true,reports:true};
+const $ = id => document.getElementById(id);
+function toast(m, err) { const t = $("toast"); t.textContent = m; t.className = err ? "show err" : "show"; setTimeout(() => t.className = "", 2600); }
+function num(v) { return (v || 0).toLocaleString("en-IN"); }
+function sortedCodes() { return Object.keys(ITEMS).sort((x, y) => (parseInt(x) || 0) - (parseInt(y) || 0)); }
 
-/* ---------- Helpers ---------- */
-const $=id=>document.getElementById(id);
-function toast(m,err){const t=$("toast");t.textContent=m;t.className=err?"show err":"show ok";setTimeout(()=>t.className="",2600);}
-/* Custom in-app confirm — replaces the browser popup that shows the site domain */
-function confirmDialog(message,title){
-  return new Promise(resolve=>{
-    const ov=$("confirmOverlay"),ok=$("confirmOk"),cancel=$("confirmCancel");
-    $("confirmTitle").textContent=title||"Please confirm";
-    $("confirmMsg").textContent=message;
-    ov.classList.add("show");
-    const done=v=>{ov.classList.remove("show");ok.onclick=null;cancel.onclick=null;ov.onclick=null;resolve(v);};
-    ok.onclick=()=>done(true);
-    cancel.onclick=()=>done(false);
-    ov.onclick=e=>{if(e.target===ov)done(false);};
-  });
+function goPage(pg) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".bnav-btn").forEach(b => b.classList.remove("active"));
+  $("page-" + pg).classList.add("active");
+  event.currentTarget.classList.add("active");
 }
-/* Route any leftover native confirm() through the custom dialog too */
-window.confirm=(msg)=>{throw new Error("use confirmDialog");};
-function promptDialog(message,title){
-  return new Promise(resolve=>{
-    const ov=$("promptOverlay"),ok=$("promptOk"),cancel=$("promptCancel"),inp=$("promptInput");
-    $("promptTitle").textContent=title||"Enter";
-    $("promptMsg").textContent=message;inp.value="";
-    ov.classList.add("show");setTimeout(()=>inp.focus(),80);
-    const done=v=>{ov.classList.remove("show");ok.onclick=null;cancel.onclick=null;ov.onclick=null;inp.onkeydown=null;resolve(v);};
-    ok.onclick=()=>done(inp.value);
-    cancel.onclick=()=>done(null);
-    inp.onkeydown=e=>{if(e.key==="Enter")done(inp.value);};
-    ov.onclick=e=>{if(e.target===ov)done(null);};
-  });
-}
-function fmtTS(ts){if(!ts)return"";const d=ts.toDate?ts.toDate():new Date(ts);return d.toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})+" · "+d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});}
-function num(v){return (v||0).toLocaleString("en-IN");}
-let _sortedCodesCache=null;
-function sortedCodes(){if(_sortedCodesCache)return _sortedCodesCache;return _sortedCodesCache=Object.keys(ITEMS).sort((x,y)=>(parseInt(x)||0)-(parseInt(y)||0)||x.localeCompare(y));}
-function today(){return new Date().toISOString().slice(0,10);}
-function can(p){return !!PERMS[p];}
-function denied(){toast("You don't have permission for this — ask the Master ID",true);}
-function fire(pr){pr.catch(e=>toast(e.message||"Sync failed — check internet",true));}
-function audit(action,detail){fire(db.collection("audit").add({action,detail,user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()}));}
-function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);};}
-function catOf(it){return (it&&it.cat)?it.cat:DEFAULT_CAT;}
-function effUnitOf(m){return m.eff||(TYPES[m.type]?TYPES[m.type].eff:null);}
-function labelOf(m){return m.label||(TYPES[m.type]?TYPES[m.type].label:m.type);}
-function tagOf(eff){if(!eff)return"A";if(eff.c)return"C";if(eff.b>0&&!eff.a)return"B";if(eff.a>0)return"A";if(eff.a<0)return"A";if(eff.b<0)return"B";return"A";}
-function dirOf(m){const T=TYPES[m.type];if(T)return T.dir; const e=effUnitOf(m);if(!e)return"in";let net=0;for(const v of Object.values(e))net+=v;return net>=0?"in":"out";}
-function isSale(m){const T=TYPES[m.type];if(T&&T.sale)return true;const eff=effUnitOf(m);if(!eff)return false;let neg=false,pos=false;for(const v of Object.values(eff)){if(v<0)neg=true;if(v>0)pos=true;}return neg&&!pos;}
 
-/* ---------- Auth login ---------- */
-const EMAIL_DOMAIN="@lamigrade.app";
-function emailFor(name){const n=name.trim().toLowerCase();if(n.includes("@"))return n;const c=n.replace(/[^a-z0-9._-]+/g,".").replace(/^\.+|\.+$/g,"");return (c||"user")+EMAIL_DOMAIN;}
-let SETUP_NEEDED=false;
-async function checkSetup(){try{const d=await db.collection("meta").doc("setup").get();SETUP_NEEDED=!d.exists;}catch(e){SETUP_NEEDED=false;}
-  if(SETUP_NEEDED){$("loginTitle").textContent="Create the Master ID";$("loginHint").textContent="You are the first user. This ID becomes the MASTER ID with full control. Choose a username and a strong password (min 6).";}
-  else{$("loginTitle").textContent="Welcome";$("loginHint").textContent="Sign in with your username and password.";}}
-function hideBootSplash(){
-  const s=$("bootSplash");if(!s)return;
-  const go=()=>{s.style.opacity="0";setTimeout(()=>s.remove(),260);};
-  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(go).catch(go);else go();
-}
-function checkLogin(){
-  auth.onAuthStateChanged(user=>{
-    hideBootSplash();
-    if(user){$("loginPage").classList.remove("show");subscribeMe(user.uid);}
-    else{if(unsubMe){unsubMe();unsubMe=null;}detachUsersAdmin();detachChat();mouseShownOnce=false;ME=null;PERMS={};USER="";UID="";resetLamp();$("loginPage").classList.add("show");checkSetup();}
-  });
-}
-async function doLogin(){
-  const n=$("loginName").value.trim(), pass=$("loginPin").value;
-  if(!n){toast("Enter your username",true);return;}
-  if(pass.length<6){toast("Password must be at least 6 characters",true);return;}
-  const email=emailFor(n), btn=$("signInBtn"); btn.disabled=true; btn.textContent="Signing in…";
-  try{
-    if(SETUP_NEEDED){
-      const cred=await auth.createUserWithEmailAndPassword(email,pass);
-      await db.collection("users").doc(cred.user.uid).set({name:n,email,role:"master",perms:ALL_PERMS,active:true,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-      await db.collection("meta").doc("setup").set({done:true,ts:firebase.firestore.FieldValue.serverTimestamp()});
-      toast("Master ID created. Welcome, "+n+"!");
-    } else { await auth.signInWithEmailAndPassword(email,pass); toast("Welcome, "+n+"!"); }
-    $("loginPin").value=""; $("loginPage").classList.remove("show");
-  }catch(e){const c=e.code||"";
-    if(c.includes("user-not-found"))toast("No such ID. Ask the Master ID to create your account.",true);
-    else if(c.includes("wrong-password")||c.includes("invalid-credential")||c.includes("invalid-login"))toast("Wrong username or password",true);
-    else if(c.includes("too-many-requests"))toast("Too many attempts — wait a minute",true);
-    else if(c.includes("email-already-in-use"))toast("This username is already taken",true);
-    else if(c.includes("network"))toast("No internet — check your connection",true);
-    else toast("Login failed: "+e.message,true);
+/* Auth Handling */
+auth.onAuthStateChanged(user => {
+  if (user) {
+    $("loginPage").classList.remove("show");
+    UID = user.uid;
+    db.collection("users").doc(UID).get().then(doc => {
+      ME = doc.data() || {};
+      USER = ME.name || "User";
+      $("userName").textContent = (ME.role === "master" ? "★ " : "") + USER;
+      if (ME.role === "master") $("masterNavBtn").style.display = "flex";
+    });
+  } else {
+    $("loginPage").classList.add("show");
   }
-  btn.disabled=false; btn.textContent="Sign In";
-}
-function subscribeMe(uid){
-  if(unsubMe)unsubMe(); UID=uid;
-  unsubMe=db.collection("users").doc(uid).onSnapshot(doc=>{
-    if(!doc.exists){forceLogout("Your ID was removed by the Master ID.");return;}
-    ME=doc.data();
-    if(ME.active===false){forceLogout("Your ID has been deactivated by the Master ID.");return;}
-    USER=ME.name||"User";
-    PERMS=ME.role==="master"?{...ALL_PERMS}:{...DEFAULT_STAFF_PERMS,...(ME.perms||{})};
-    $("userName").textContent=(ME.role==="master"?"★ ":"")+USER;
-    applyPerms();
-    if(!mouseShownOnce){mouseShownOnce=true;setTimeout(()=>runMouseShow(),900);}
-    if(ME.role==="master")attachUsersAdmin(); else detachUsersAdmin();
-  },err=>{});
-}
-function forceLogout(msg){toast(msg,true);auth.signOut();}
-async function switchUser(){if(!isMaster()){auth.signOut();return;}if(await confirmDialog("Log out?","Log out"))auth.signOut();}
-
-/* ---------- Nav ---------- */
-function goPage(pg){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  const el=$("page-"+pg); if(!el)return;
-  el.classList.add("active"); window.scrollTo(0,0);
-  document.querySelectorAll(".dnav[data-p]").forEach(b=>b.classList.toggle("active",b.dataset.p===pg));
-  if(pg==="items"){renderItemManage();renderCatManage();renderBatches();}
-  if(pg==="chat"){attachChat();setTimeout(()=>{const b=$("chatList");if(b)b.scrollTop=b.scrollHeight;},60);}
-}
-function drawerGo(pg,cardId){
-  goPage(pg);
-  closeDrawer();
-  if(cardId){
-    setTimeout(()=>{
-      const el=$(cardId); if(!el)return;
-      el.scrollIntoView({behavior:"smooth",block:"start"});
-      el.classList.add("dspot"); setTimeout(()=>el.classList.remove("dspot"),1600);
-    },260);
-  }
-}
-function toggleDGroup(btn,pg){
-  const grp=btn.closest(".dgroup"); if(!grp)return;
-  const wasOpen=grp.classList.contains("open");
-  document.querySelectorAll(".dgroup.open").forEach(g=>{if(g!==grp)g.classList.remove("open");});
-  grp.classList.toggle("open",!wasOpen);
-  if(!wasOpen&&pg)goPage(pg);
-}
-function openDrawer(){
-  $("drawer").classList.add("open"); $("drawerOverlay").classList.add("show");
-  document.body.style.overflow="hidden";
-  const line=$("drawerUserLine"); if(line)line.textContent=(ME&&ME.role==="master"?"★ ":"")+(USER||"—");
-}
-function closeDrawer(){
-  $("drawer").classList.remove("open"); $("drawerOverlay").classList.remove("show");
-  document.body.style.overflow="";
-}
-function applyPerms(){
-  const hide=(id,ok)=>{const el=$(id);if(el)el.style.display=ok?"":"none";};
-  hide("entryArea",can("entry")); hide("entryNoPerm",!can("entry"));
-  hide("addItemCard",can("items")); hide("qaCard",can("items")); hide("itemBulkCard",can("items")); hide("gradeBulkCard",can("items"));
-  hide("catBulkCard",can("items")); hide("catManageCard",can("items")); hide("batchCard",can("items"));
-  hide("ctCard",can("types"));
-  hide("repDailyCard",can("reports")); hide("repStockCard",can("reports"));
-  hide("repHistCard",can("reports")); hide("repMasterCard",can("reports")); hide("repLowCard",can("reports")); hide("reportNoPerm",!can("reports"));
-  const seed=$("seedCard"); if(seed&&!can("items"))seed.style.display="none";
-  renderRecent(); renderItemManage();
-}
-
-/* ---------- Categories listener ---------- */
-db.collection("meta").doc("categories").onSnapshot(doc=>{
-  const extra=(doc.exists&&doc.data().list)?doc.data().list:[];
-  CATS=[...new Set([...BUILTIN_CATS,...extra])];
-  fillCatSelects(); renderCatManage(); renderCatFilter(); renderStock();
-},err=>{});
-function fillCatSelects(){
-  const opts=CATS.map(c=>`<option value="${c}">${c}</option>`).join("");
-  ["newCat","biCat","mcCat"].forEach(id=>{const el=$(id);if(el){const cur=el.value;el.innerHTML=opts;if(CATS.includes(cur))el.value=cur;}});
-}
-
-/* ---------- Custom movement types listener ---------- */
-db.collection("movementTypes").onSnapshot(snap=>{
-  CUSTOM_TYPES={};
-  snap.forEach(d=>{const x=d.data();CUSTOM_TYPES["CT_"+d.id]={...x,custom:true,docId:d.id,dir:(()=>{let net=0;for(const v of Object.values(x.eff||{}))net+=v;return net>=0?"in":"out";})(),group:"Custom"};});
-  TYPES={...BUILTIN_TYPES,...CUSTOM_TYPES};
-  buildMvTree(); fillHistType(); renderCustomTypes();
-},err=>{});
-
-/* ---------- Items listener ---------- */
-let _itemsRenderQueued=false, _itemSelectsDirty=true;
-function scheduleItemRender(){
-  if(_itemsRenderQueued)return; _itemsRenderQueued=true;
-  requestAnimationFrame(()=>{
-    _itemsRenderQueued=false;
-    renderStock(); renderCatFilter();
-    // only rebuild the big <option> lists + item-manage list when their tab is active or first time
-    const itemsActive=$("page-items")?.classList.contains("active");
-    if(_itemSelectsDirty){ fillItemSelects(); _itemSelectsDirty=false; }
-    if(itemsActive) renderItemManage();
-  });
-}
-db.collection("items").onSnapshot({includeMetadataChanges:false},snap=>{
-  ITEMS={}; snap.forEach(d=>ITEMS[d.id]=d.data());
-  _sortedCodesCache=null;
-  $("connDot").classList.remove("off");
-  _itemSelectsDirty=true;
-  scheduleItemRender();
-  const seed=$("seedCard"); if(seed) seed.style.display=(snap.empty&&can("items"))?"block":"none";
-  $("seedCount").textContent=DEFAULT_CODES.length; $("itemCount").textContent="("+snap.size+")";
-},err=>{$("connDot").classList.add("off");});
-
-/* ---------- Recent movements ---------- */
-db.collection("movements").orderBy("ts","desc").limit(25).onSnapshot(snap=>{
-  RECENT_CACHE=[]; snap.forEach(d=>RECENT_CACHE.push([d.id,d.data()])); ITEM_HIST_CACHE={}; renderRecent();
-});
-function isMaster(){return ME&&ME.role==="master";}
-function renderRecent(){const box=$("recentList");if(!box)return;
-  const card=box.closest(".card");
-  if(!isMaster()){ if(card)card.style.display="none"; box.innerHTML=""; return; }
-  if(card)card.style.display="";
-  box.innerHTML=RECENT_CACHE.length?RECENT_CACHE.map(([id,m])=>mvHTML(id,m,true)).join(""):'<div class="empty">No entries yet.</div>';}
-
-/* ---------- Audit ---------- */
-db.collection("audit").orderBy("ts","desc").limit(25).onSnapshot(snap=>{
-  const box=$("auditList");if(!box)return;
-  if(snap.empty){box.innerHTML='<div class="empty">Nothing yet.</div>';return;}
-  let h="";snap.forEach(d=>{const a=d.data();h+=`<div class="mv"><div class="l"><div class="t1">${a.action}</div><div class="t2">${a.detail||""} · by <b>${a.user}</b> · ${fmtTS(a.ts)}</div></div></div>`;});
-  box.innerHTML=h;
 });
 
-function mvHTML(id,m,canAct){
-  const eff=effUnitOf(m),tag=tagOf(eff),d=dirOf(m);
-  const cls=d==="in"?"plus":"minus", sign=d==="in"?"+":"−";
-  const edited=m.editedBy?` · <i>edited by ${m.editedBy}</i>`:"";
-  const editBtn=(canAct&&can("edit"))?`<button class="act" style="color:#7CA9F5" onclick="openEditMovement('${id}')">✎</button>`:"";
-  const delBtn=(canAct&&can("del"))?`<button class="act" onclick="deleteMovement('${id}')">✕</button>`:"";
-  return `<div class="mv"><div class="l">
-    <div class="t1"><span class="chip ${tag}">${m.code}</span> ${labelOf(m)}</div>
-    <div class="t2">${m.party?("Party: <b>"+m.party+"</b> · "):""}${m.note?(m.note+" · "):""}by <b>${m.user}</b> · ${fmtTS(m.ts)}${edited}</div>
-  </div><div class="qty ${cls}">${sign}${num(m.qty)}</div>${editBtn}${delBtn}</div>`;
+function doLogin() {
+  const n = $("loginName").value.trim(), p = $("loginPin").value;
+  if (!n || !p) return toast("Enter details", true);
+  auth.signInWithEmailAndPassword(n + "@lamigrade.app", p).catch(e => toast("Login failed: " + e.message, true));
 }
 
-/* ---------- Stock page ---------- */
-const renderStockD=debounce(()=>{STOCK_LIMIT=300;renderStock();},180);
-function renderCatFilter(){
-  const box=$("catFilterRow");if(!box)return;
-  const used=[...new Set(Object.values(ITEMS).map(catOf))];
-  const cats=CATS.filter(c=>used.includes(c));
-  box.innerHTML=`<button class="pill ${stockCat===""?"on":""}" onclick="setStockCat('')">All</button>`+
-    cats.map(c=>`<button class="pill ${stockCat===c?"on":""}" onclick="setStockCat('${c.replace(/'/g,"\\'")}')">${c}</button>`).join("");
-}
-function setStockCat(c){stockCat=c;STOCK_LIMIT=300;renderCatFilter();renderStock();}
-function renderStock(){
-  const q=($("stockSearch")?.value||"").trim().toLowerCase();
-  const codes=sortedCodes();
-  let tot={a:0,b:0,c:0,s:0};
-  const byCat={};
-  codes.forEach(code=>{
-    const it=ITEMS[code]; tot.a+=it.a||0; tot.b+=it.b||0; tot.c+=it.c||0; tot.s+=it.s||0;
-    const cat=catOf(it);
-    if(stockCat&&cat!==stockCat)return;
-    if(q&&!code.toLowerCase().includes(q)&&!(it.name||"").toLowerCase().includes(q)&&!cat.toLowerCase().includes(q))return;
-    (byCat[cat]=byCat[cat]||[]).push(code);
-  });
-  let h="",shown=0,total=0;
-  Object.values(byCat).forEach(a=>total+=a.length);
-  // render grouped by CAT_GROUPS order, then any extra cats
-  const orderedCats=[]; CAT_GROUPS.forEach(g=>g.cats.forEach(c=>orderedCats.push(c)));
-  CATS.forEach(c=>{if(!orderedCats.includes(c))orderedCats.push(c);});
-  const groupOfCat={}; CAT_GROUPS.forEach(g=>g.cats.forEach(c=>groupOfCat[c]=g.group));
-  let lastGroup=null;
-  outer:
-  for(const cat of orderedCats){
-    if(!byCat[cat])continue;
-    const grp=groupOfCat[cat]||"Other";
-    if(grp!==lastGroup){h+=`<div class="cat-head">${grp}</div>`;lastGroup=grp;}
-    h+=`<div class="subcat-head">${cat} <span style="color:var(--muted);font-weight:400">(${byCat[cat].length})</span></div>`;
-    h+=`<div class="stock-head"><div>Item</div><div style="text-align:center">A</div><div style="text-align:center">B</div><div style="text-align:center">Total</div></div>`;
-    for(const code of byCat[cat]){
-      if(shown>=STOCK_LIMIT){break outer;}
-      const it=ITEMS[code]; const t=(it.a||0)+(it.b||0)+(it.c||0);
-      h+=`<div class="stock-row" onclick="openDetail('${code}')">
-        <div><div class="code">${code}</div><div class="nm">${it.name||""}</div></div>
-        <div class="v A ${!it.a?'zero':''}">${num(it.a)}</div>
-        <div class="v B ${!it.b?'zero':''}">${num(it.b)}</div>
-        <div class="v tot ${!t?'zero':''}">${num(t)}</div></div>`;
-      shown++;
-    }
-  }
-  if(total>shown)h+=`<button class="btn ghost" onclick="STOCK_LIMIT+=300;renderStock()">Show more (${num(total-shown)} more)</button>`;
-  $("stockList").innerHTML=h||'<div class="empty">No items match. Add items from the Items tab.</div>';
-  $("stockSummary").innerHTML=`
-    <div class="box"><b style="color:var(--A)">${num(tot.a)}</b><span>A-Grade</span></div>
-    <div class="box"><b style="color:var(--B)">${num(tot.b)}</b><span>B / Damage</span></div>
-    <div class="box"><b style="color:var(--C)">${num(tot.c)}</b><span>Colour Mismatch</span></div>
-    <div class="box"><b style="color:var(--gold)">${num(tot.s)}</b><span>Sample</span></div>`;
-  $("stockSummary").style.gridTemplateColumns="repeat(4,1fr)";
-}
+function switchUser() { auth.signOut(); }
 
-/* ---------- Item detail ---------- */
-async function openDetail(code){
-  const it=ITEMS[code];if(!it)return;
-  const sh=$("detailSheet");
-  sh.innerHTML=`<button class="close" onclick="detailOverlay.classList.remove('show')">✕</button>
-    <h3>${code} <span style="font-weight:400;font-size:12px;color:var(--muted)">${it.name||""}</span></h3>
-    <div style="margin:4px 0 10px"><span class="chip gold">${catOf(it)}</span></div>
-    <div class="summary" style="grid-template-columns:repeat(4,1fr)"><div class="box"><b style="color:var(--A)">${num(it.a)}</b><span>A-Grade</span></div>
-      <div class="box"><b style="color:var(--B)">${num(it.b)}</b><span>B / Damage</span></div>
-      <div class="box"><b style="color:var(--C)">${num(it.c)}</b><span>Colour Mismatch</span></div>
-      <div class="box"><b style="color:var(--gold)">${num(it.s)}</b><span>Sample</span></div></div>
-    <div class="eyebrow" style="margin:10px 0 8px">Movement history (latest 200)</div>
-    <div id="detailMv"><div class="empty">Loading…</div></div>`;
-  $("detailOverlay").classList.add("show");
-  const paint=rows=>{const box=$("detailMv");if(!box)return;box.innerHTML=rows.length?rows.map(r=>mvHTML(r[0],r[1],true)).join(""):'<div class="empty">No movements yet.</div>';};
-  if(ITEM_HIST_CACHE[code])paint(ITEM_HIST_CACHE[code]);
-  const render=snap=>{let rows=[];snap.forEach(d=>rows.push([d.id,d.data()]));rows.sort((x,y)=>(y[1].ts?.toMillis?.()||0)-(x[1].ts?.toMillis?.()||0));rows=rows.slice(0,200);ITEM_HIST_CACHE[code]=rows;paint(rows);};
-  try{await cachedThenServer(db.collection("movements").where("code","==",code),render);}
-  catch(e){if(!ITEM_HIST_CACHE[code]){const box=$("detailMv");if(box)box.innerHTML='<div class="empty">Could not load history.</div>';}}
-}
+/* Items Listener */
+db.collection("items").onSnapshot(snap => {
+  ITEMS = {}; snap.forEach(d => ITEMS[d.id] = d.data());
+  renderStock();
+});
 
-/* ---------- Entry: movement tree ---------- */
-function setDir(d){curDir=d;curType="";document.querySelectorAll("#dirSeg button").forEach(b=>{b.classList.toggle("on",b.dataset.d===d);b.classList.toggle("in",b.dataset.d==="in");b.classList.toggle("out",b.dataset.d==="out");});$("mvFormCard").style.display="none";buildMvTree();}
-function buildMvTree(){
-  const box=$("mvTree");if(!box)return;
-  const list=Object.entries(TYPES).filter(([k,t])=>t.dir===curDir);
-  const groups={};list.forEach(([k,t])=>{(groups[t.group||"Other"]=groups[t.group||"Other"]||[]).push([k,t]);});
-  let h="";
-  Object.entries(groups).forEach(([g,arr])=>{
-    h+=`<div class="mv-group-title">${g}</div>`;
-    arr.forEach(([k,t])=>{h+=`<button class="mv-btn ${curType===k?'sel':''}" onclick="pickType('${k}')"><span>${t.label}${t.party?' <small>party name required</small>':''}</span><span class="arrow">›</span></button>`;});
-  });
-  box.innerHTML=h||'<div class="empty">No movement types here.</div>';
-}
-function pickType(k){
-  curType=k;const T=TYPES[k];if(!T)return;
-  buildMvTree();
-  $("mvFormCard").style.display="";
-  $("mvFormEye").textContent=(T.dir==="in"?"Inward":"Outward")+" movement";
-  $("mvFormTitle").textContent=T.label;
-  $("partyWrap").style.display=T.party?"block":"none";
-  $("partyLabel").textContent=T.sale?"Party name (required)":"Party name";
-  if($("mvItemSearch"))$("mvItemSearch").value="";
-  fillMvItemOptions();
-  showItemStock();
-  $("mvFormCard").scrollIntoView({behavior:"smooth",block:"nearest"});
-}
-function fillMvItemOptions(){
-  const sel=$("mvItem");if(!sel)return;
-  const cur=sel.value;
-  const codes=mvItemCodes();
-  sel.innerHTML=codes.map(c=>`<option value="${c}">${c} — ${ITEMS[c].name||""}</option>`).join("");
-  if(codes.includes(cur))sel.value=cur;
-}
-function fillItemSelects(){
-  const codes=sortedCodes();
-  const opts=codes.map(c=>`<option value="${c}">${c} — ${ITEMS[c].name||""}</option>`).join("");
-  if($("histItem"))$("histItem").innerHTML='<option value="">All items</option>'+opts;
-  if($("repItem"))$("repItem").innerHTML='<option value="">All items with activity</option>'+opts;
-  if($("repCsvItem"))$("repCsvItem").innerHTML='<option value="">All items</option>'+opts;
-  fillMvItemOptions();
-  fillQaSelect();
-  showItemStock();
-}
-function fillQaSelect(){
-  const sel=$("qaItem");if(!sel)return;
-  const cur=sel.value;
-  const q=($("qaSearch")?.value||"").trim().toLowerCase();
-  const codes=sortedCodes().filter(c=>!q||c.toLowerCase().includes(q)||(ITEMS[c].name||"").toLowerCase().includes(q));
-  sel.innerHTML=codes.map(c=>`<option value="${c}">${c} — ${ITEMS[c].name||""}</option>`).join("");
-  if(codes.includes(cur))sel.value=cur;
-  showQaStock();
-}
-function filterQaSelect(){fillQaSelect();}
-function showQaStock(){
-  const sel=$("qaItem"),box=$("qaStock");if(!sel||!box)return;
-  const it=ITEMS[sel.value];
-  if(!it){box.innerHTML="";return;}
-  box.innerHTML=`<div class="summary" style="grid-template-columns:repeat(4,1fr);margin-top:8px;margin-bottom:0">
-    <div class="box"><b style="color:var(--A)">${num(it.a||0)}</b><span>A-Grade</span></div>
-    <div class="box"><b style="color:var(--B)">${num(it.b||0)}</b><span>B / Damage</span></div>
-    <div class="box"><b style="color:var(--C)">${num(it.c||0)}</b><span>Colour MM</span></div>
-    <div class="box"><b style="color:var(--gold)">${num(it.s||0)}</b><span>Sample</span></div></div>`;
-}
-async function addSingleGradeQty(){
-  if(!can("items")){denied();return;}
-  const code=$("qaItem").value;if(!code||!ITEMS[code]){toast("Choose an item",true);return;}
-  const a=parseInt($("qaA").value)||0,b=parseInt($("qaB").value)||0,c=parseInt($("qaC").value)||0,s=parseInt($("qaS").value)||0;
-  if(!a&&!b&&!c&&!s){toast("Enter at least one quantity",true);return;}
-  const parts=[];if(a)parts.push(a+" pcs A-Grade");if(b)parts.push(b+" pcs B-Grade/Damage");if(c)parts.push(c+" pcs Colour Mismatch");if(s)parts.push(s+" pcs Sample");
-  if(!await confirmDialog("Add "+parts.join(", ")+" to "+code+"?","Add quantity"))return;
-  try{
-    const itemRef=db.collection("items").doc(code);
-    await db.runTransaction(async tr=>{
-      const doc=await tr.get(itemRef);if(!doc.exists)throw new Error("Item not found");
-      const d=doc.data(),upd={};
-      if(a)upd.a=(d.a||0)+a; if(b)upd.b=(d.b||0)+b; if(c)upd.c=(d.c||0)+c; if(s)upd.s=(d.s||0)+s;
-      tr.update(itemRef,upd);
-      const mk=(type,qty)=>tr.set(db.collection("movements").doc(),{code,type,label:TYPES[type].label,eff:TYPES[type].eff,dir:"in",qty,party:null,note:"Opening balance / quick update",user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()});
-      if(a)mk("PROD_A",a); if(b)mk("PROD_B",b); if(c)mk("PROD_C",c); if(s)mk("PROD_S",s);
-    });
-    audit("Opening balance / quantity added",code+" (+"+a+"A +"+b+"B +"+c+"C +"+s+"S)");
-    toast("Quantity added ✔");$("qaA").value="";$("qaB").value="";$("qaC").value="";$("qaS").value="";
-  }catch(e){toast(e.message,true);}
-}
-function filterItemSelect(){const q=$("mvItemSearch").value.trim().toLowerCase();const codes=mvItemCodes().filter(c=>!q||c.toLowerCase().includes(q)||(ITEMS[c].name||"").toLowerCase().includes(q));$("mvItem").innerHTML=codes.map(c=>`<option value="${c}">${c} — ${ITEMS[c].name||""}</option>`).join("");showItemStock();}
-const filterItemSelectD=debounce(filterItemSelect,120);
-function showItemStock(){const c=$("mvItem")?.value,it=ITEMS[c];$("mvItemStock").innerHTML=it?`Stock — <b style="color:var(--A)">A: ${num(it.a)}</b> · <b style="color:var(--B)">B: ${num(it.b)}</b> · <b style="color:var(--C)">CM: ${num(it.c)}</b> · <b style="color:var(--gold)">Sample: ${num(it.s)}</b>`:"";}
-
-let MV_MODE="single", MV_BULK_ROWS=[];
-function setMvMode(m){MV_MODE=m;document.querySelectorAll("#mvModeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.m===m));$("mvSingle").style.display=m==="single"?"":"none";$("mvBulk").style.display=m==="bulk"?"":"none";}
-function downloadMvTemplate(){downloadCSV("movement_template.csv",[["Item Code","Quantity"],["101","50"],["102","30"],["201","12"]]);}
-function parseMvBulkFile(input){
-  MV_BULK_ROWS=[];$("mvBulkPreview").innerHTML="";
-  const file=input.files&&input.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{try{
-    const wb=XLSX.read(e.target.result,{type:"array"});const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:""});
-    let start=0;if(rows.length&&String(rows[0][0]).toLowerCase().includes("code"))start=1;
-    const lines=[];for(let i=start;i<rows.length;i++){const c=String(rows[i][0]??"").trim().replace(/\.0$/,"");const q=String(rows[i][1]??"").trim();if(!c)continue;lines.push(c+","+q);}
-    $("mvBulkText").value=lines.join("\n");toast(lines.length+" rows loaded — review & save");
-  }catch(err){toast("Could not read file: "+err.message,true);}};
-  reader.readAsArrayBuffer(file);
-}
-function parseMvBulkText(){
-  const raw=$("mvBulkText").value.split(/\n+/).map(x=>x.trim()).filter(Boolean);
-  const rows=[],invalid=[];
-  raw.forEach((line,i)=>{const parts=line.split(/[,\s:=|]+/).map(x=>x.trim());const code=parts[0];const qty=parseInt(parts[1],10);
-    if(!code)return;if(!ITEMS[code]){invalid.push(code+" (not found)");return;}if(!qty||qty<1){invalid.push(code+" (bad qty)");return;}rows.push({code,qty});});
-  return {rows,invalid};
-}
-
-async function saveMovement(){
-  if(!can("entry")){denied();return;}
-  if(!curType){toast("Choose a movement type",true);return;}
-  const T=TYPES[curType];
-  const party=$("mvParty").value.trim(),note=$("mvNote").value.trim();
-  if(T.sale&&!party){toast("Party name is required for a sale",true);return;}
-  if(T.party&&!party&&!T.sale){toast("Enter party name",true);return;}
-
-  if(MV_MODE==="bulk"){
-    const {rows,invalid}=parseMvBulkText();
-    if(!rows.length){toast(invalid.length?("No valid rows. "+invalid[0]):"Enter items & quantities",true);return;}
-    if(!await confirmDialog(rows.length+" entries of \""+T.label+"\""+(invalid.length?" ("+invalid.length+" skipped)":"")+". Save all?","Bulk movement"))return;
-    $("saveMvBtn").disabled=true;$("saveMvBtn").textContent="Saving…";let ok=0,fail=0;const errs=[];
-    const one=async r=>{
-      try{
-        const itemRef=db.collection("items").doc(r.code),mvRef=db.collection("movements").doc();
-        await db.runTransaction(async tr=>{
-          const doc=await tr.get(itemRef);if(!doc.exists)throw new Error("not found");
-          const d=doc.data(),upd={};
-          for(const[b,mult]of Object.entries(T.eff)){const next=(d[b]||0)+mult*r.qty;if(next<0)throw new Error("low "+BUCKETS[b]);upd[b]=next;}
-          tr.update(itemRef,upd);
-          tr.set(mvRef,{code:r.code,type:curType,label:T.label,eff:T.eff,dir:T.dir,qty:r.qty,party:party||null,note:note||null,user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()});
-        });ok++;
-      }catch(e){fail++;errs.push(r.code+": "+e.message);}
-    };
-    // run in parallel chunks of 20 for speed while staying within limits
-    for(let i=0;i<rows.length;i+=20){await Promise.all(rows.slice(i,i+20).map(one));$("saveMvBtn").textContent="Saving… "+Math.min(i+20,rows.length)+"/"+rows.length;}
-    audit("Bulk movement",ok+" × "+T.label+(fail?" ("+fail+" failed)":""));
-    $("mvBulkText").value="";$("mvParty").value="";$("mvNote").value="";
-    toast(ok+" entries saved ✔"+(fail?" · "+fail+" failed":""),fail>0);
-    if(errs.length)$("mvBulkPreview").innerHTML='<div class="notice">Some rows failed:<br>'+errs.slice(0,8).join("<br>")+'</div>';
-    $("saveMvBtn").disabled=false;$("saveMvBtn").textContent="Save movement";return;
-  }
-
-  const code=$("mvItem").value,qty=parseInt($("mvQty").value,10);
-  if(!code){toast("Select an item",true);return;}
-  if(!qty||qty<1){toast("Enter a valid quantity",true);return;}
-  $("saveMvBtn").disabled=true;
-  try{
-    const itemRef=db.collection("items").doc(code),mvRef=db.collection("movements").doc();
-    await db.runTransaction(async tr=>{
-      const doc=await tr.get(itemRef);if(!doc.exists)throw new Error("Item not found");
-      const d=doc.data(),upd={};
-      for(const[b,mult]of Object.entries(T.eff)){const next=(d[b]||0)+mult*qty;if(next<0)throw new Error("Not enough stock in "+BUCKETS[b]+" (available: "+(d[b]||0)+")");upd[b]=next;}
-      tr.update(itemRef,upd);
-      tr.set(mvRef,{code,type:curType,label:T.label,eff:T.eff,dir:T.dir,qty,party:party||null,note:note||null,user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()});
-    });
-    $("mvQty").value="";$("mvParty").value="";$("mvNote").value="";
-    toast("Saved: "+T.label+" · "+code+" · "+qty+" pcs");
-  }catch(e){toast(e.message,true);}
-  $("saveMvBtn").disabled=false;
-}
-
-async function deleteMovement(id){
-  if(!can("del")){denied();return;}
-  if(!await confirmDialog("Delete this entry? Stock will be reversed automatically.","Delete entry"))return;
-  try{
-    const mvRef=db.collection("movements").doc(id);
-    await db.runTransaction(async tr=>{
-      const mv=await tr.get(mvRef);if(!mv.exists)throw new Error("Entry already deleted");
-      const m=mv.data(),T=effUnitOf(m);const itemRef=db.collection("items").doc(m.code);const doc=await tr.get(itemRef);
-      if(doc.exists&&T){const d=doc.data(),upd={};for(const[b,mult]of Object.entries(T)){const next=(d[b]||0)-mult*m.qty;if(next<0)throw new Error("Cannot reverse — "+BUCKETS[b]+" would go below zero");upd[b]=next;}tr.update(itemRef,upd);}
-      tr.delete(mvRef);
-      tr.set(db.collection("audit").doc(),{action:"Entry deleted",detail:labelOf(m)+" · "+m.code+" · "+m.qty+" pcs (by "+m.user+")",user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()});
-    });
-    toast("Entry deleted & stock reversed");
-  }catch(e){toast(e.message,true);}
-}
-
-async function openEditMovement(id){
-  if(!can("edit")){denied();return;}
-  try{
-    const doc=await db.collection("movements").doc(id).get();if(!doc.exists){toast("Entry not found",true);return;}
-    const m=doc.data();
-    const itemOpts=sortedCodes().map(c=>`<option value="${c}" ${c===m.code?"selected":""}>${c} — ${ITEMS[c].name||""}</option>`).join("");
-    const typeOpts=Object.entries(TYPES).map(([k,t])=>`<option value="${k}" ${k===m.type?"selected":""}>${t.label}</option>`).join("");
-    const sh=$("detailSheet");
-    sh.innerHTML=`<button class="close" onclick="detailOverlay.classList.remove('show')">✕</button>
-      <h3>Edit entry</h3>
-      <div class="notice"><span class="chip ${tagOf(effUnitOf(m))}">${m.code}</span> ${labelOf(m)}<br>Original: <b>${num(m.qty)} pcs</b> · by ${m.user} · ${fmtTS(m.ts)}</div>
-      <label class="f">Item</label><select id="editItem">${itemOpts}</select>
-      <label class="f">Movement type</label><select id="editType">${typeOpts}</select>
-      <label class="f">Quantity (pcs)</label><input id="editQty" type="number" min="1" value="${m.qty}">
-      <label class="f">Party name</label><input id="editParty" maxlength="60" value="${(m.party||"").replace(/"/g,"&quot;")}">
-      <label class="f">Note</label><input id="editNote" maxlength="80" value="${(m.note||"").replace(/"/g,"&quot;")}">
-      <button class="btn gold" onclick="saveEditMovement('${id}')">Save changes</button>`;
-    $("detailOverlay").classList.add("show");
-  }catch(e){toast(e.message,true);}
-}
-async function saveEditMovement(id){
-  if(!can("edit")){denied();return;}
-  const newCode=$("editItem").value,newType=$("editType").value,newQty=parseInt($("editQty").value,10);
-  const newParty=$("editParty").value.trim(),newNote=$("editNote").value.trim();
-  const NT=TYPES[newType];
-  if(!newCode||!ITEMS[newCode]){toast("Select a valid item",true);return;}
-  if(!NT){toast("Select a valid movement type",true);return;}
-  if(!newQty||newQty<1){toast("Enter a valid quantity",true);return;}
-  if(NT.sale&&!newParty){toast("Party name required for a sale",true);return;}
-  try{
-    const mvRef=db.collection("movements").doc(id);
-    await db.runTransaction(async tr=>{
-      const mv=await tr.get(mvRef);if(!mv.exists)throw new Error("Entry was deleted");
-      const m=mv.data(),oldEff=effUnitOf(m);if(!oldEff)throw new Error("This old entry cannot be edited");
-      const oldRef=db.collection("items").doc(m.code),newRef=db.collection("items").doc(newCode);
-      const sameItem=m.code===newCode;const oldDoc=await tr.get(oldRef);const newDoc=sameItem?oldDoc:await tr.get(newRef);
-      if(!newDoc.exists)throw new Error("Item "+newCode+" no longer exists");
-      const delta={};delta[m.code]={};for(const[b,mult]of Object.entries(oldEff))delta[m.code][b]=(delta[m.code][b]||0)-mult*m.qty;
-      delta[newCode]=delta[newCode]||{};for(const[b,mult]of Object.entries(NT.eff))delta[newCode][b]=(delta[newCode][b]||0)+mult*newQty;
-      for(const code of Object.keys(delta)){
-        const ref=code===m.code?oldRef:newRef;const d=(code===m.code?(oldDoc.exists?oldDoc.data():{}):newDoc.data());const upd={};
-        for(const[b,ch]of Object.entries(delta[code])){if(ch===0)continue;const next=(d[b]||0)+ch;if(next<0)throw new Error("Not enough stock in "+BUCKETS[b]+" of "+code);upd[b]=next;}
-        if(Object.keys(upd).length){if(code===m.code&&!oldDoc.exists)continue;tr.update(ref,upd);}
-      }
-      tr.update(mvRef,{code:newCode,type:newType,label:NT.label,eff:NT.eff,dir:NT.dir,qty:newQty,party:newParty||null,note:newNote||null,editedBy:USER,editedAt:firebase.firestore.FieldValue.serverTimestamp()});
-      tr.set(db.collection("audit").doc(),{action:"Entry edited",detail:labelOf(m)+" "+m.code+" "+m.qty+" → "+NT.label+" "+newCode+" "+newQty+" (by "+m.user+")",user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()});
-    });
-    $("detailOverlay").classList.remove("show");toast("Entry updated & stock adjusted");
-  }catch(e){toast(e.message,true);}
-}
-
-/* ---------- Custom movement types ---------- */
-async function addCustomType(){
-  if(!can("types")){denied();return;}
-  const from=$("ctFrom").value,to=$("ctTo").value,party=$("ctParty").checked;let label=$("ctLabel").value.trim();
-  if(from===""&&to===""){toast("Choose at least a From or a To",true);return;}
-  if(from!==""&&from===to){toast("From and To cannot be the same",true);return;}
-  const eff={};if(from!=="")eff[from]=-1;if(to!=="")eff[to]=(eff[to]||0)+1;
-  if(!label){const nm=k=>k===""?"Outside":BUCKETS[k];label=nm(from)+" → "+nm(to);}
-  fire(db.collection("movementTypes").add({label,eff,party,createdBy:USER,createdAt:firebase.firestore.FieldValue.serverTimestamp()}));
-  audit("Movement type added",label);$("ctLabel").value="";toast("Movement type added: "+label);
-}
-function renderCustomTypes(){
-  const box=$("customTypeList");if(!box)return;
-  const list=Object.values(CUSTOM_TYPES);
-  if(!list.length){box.innerHTML='<div class="empty">No custom movements yet.</div>';return;}
-  box.innerHTML='<div class="eyebrow">Your custom movements</div>'+list.map(t=>`<div class="mv"><div class="l"><div class="t1">${t.label}</div><div class="t2">${t.dir==="in"?"Inward":"Outward"}${t.party?" · party required":""}</div></div>${can("types")?`<button class="btn danger sm" onclick="deleteCustomType('${t.docId}')">Delete</button>`:""}</div>`).join("");
-}
-async function deleteCustomType(docId){
-  if(!can("types")){denied();return;}
-  const t=CUSTOM_TYPES["CT_"+docId];
-  if(!await confirmDialog("Delete this movement type? Old entries stay in history.","Delete movement type"))return;
-  fire(db.collection("movementTypes").doc(docId).delete());audit("Movement type deleted",t?t.label:docId);toast("Movement type deleted");
-}
-function fillHistType(){
-  const opts=Object.entries(TYPES).map(([k,t])=>`<option value="${k}">${t.label}</option>`).join("");
-  if($("histType")){const cur=$("histType").value;$("histType").innerHTML='<option value="">All types</option>'+opts;if(TYPES[cur])$("histType").value=cur;}
-}
-
-/* ---------- History ---------- */
-async function runHistory(){
-  const f=$("histFrom").value,t=$("histTo").value;
-  if(!f||!t){toast("Pick both dates",true);return;}
-  const start=new Date(f+"T00:00:00"),end=new Date(t+"T23:59:59.999");
-  if(start>end){toast("From date is after To date",true);return;}
-  $("histList").innerHTML='<div class="empty">Loading…</div>';$("histSummary").innerHTML="";
-  const itemF=$("histItem").value,typeF=$("histType").value;
-  const q=db.collection("movements").where("ts",">=",start).where("ts","<=",end).orderBy("ts","desc");
-  const render=snap=>{
-    histRows=[];snap.forEach(d=>{const m=d.data();if(itemF&&m.code!==itemF)return;if(typeF&&m.type!==typeF)return;histRows.push([d.id,m]);});
-    if(!histRows.length){$("histList").innerHTML='<div class="empty">No movements found.</div>';$("histSummary").innerHTML="";return;}
-    const sums={};histRows.forEach(([,m])=>{const L=labelOf(m);sums[L]=(sums[L]||0)+m.qty;});
-    let sh='<div class="card"><h2>Summary</h2><div class="rep-grid" style="margin-top:6px">';
-    Object.entries(sums).forEach(([L,q2])=>{sh+=`<div><span>${L}</span><b>${num(q2)} pcs</b></div>`;});
-    sh+=`</div><div style="font-size:12.5px;color:var(--muted);margin-top:8px">${histRows.length} entries · ${f} to ${t}</div></div>`;
-    $("histSummary").innerHTML=sh;
-    $("histList").innerHTML=histRows.map(r=>mvHTML(r[0],r[1],true)).join("");
-  };
-  try{await cachedThenServer(q,render);}catch(e){$("histList").innerHTML='<div class="empty">Search failed: '+e.message+'</div>';}
-}
-
-/* ---------- Cache-first ---------- */
-async function cachedThenServer(query,render){
-  let served=false;
-  try{const c=await query.get({source:"cache"});if(!c.empty){render(c);served=true;}}catch(e){}
-  try{const fresh=await query.get();render(fresh);}catch(e){if(!served)throw e;}
-}
-
-/* ---------- Daily report ---------- */
-function effOf(m){const eff=effUnitOf(m);const o={a:0,b:0,c:0,s:0};if(eff)for(const[k,v]of Object.entries(eff))o[k]=v*m.qty;return o;}
-async function runReport(){
-  if(!can("reports")){denied();return;}
-  const d=$("repDate").value;if(!d){toast("Pick a date",true);return;}
-  const itemF=$("repItem").value;
-  const dayStart=new Date(d+"T00:00:00"),dayEnd=new Date(d+"T23:59:59.999");
-  $("repOut").innerHTML='<div class="empty">Calculating…</div>';$("repDailyXlsx").style.display="none";
-  const q=db.collection("movements").where("ts",">=",dayStart);
-  const render=snap=>{
-    const during={},after={};
-    snap.forEach(doc=>{const m=doc.data();if(!m.ts)return;if(itemF&&m.code!==itemF)return;
-      const e=effOf(m),tgt=(m.ts.toDate()<=dayEnd)?during:after;
-      if(!tgt[m.code])tgt[m.code]={a:0,b:0,c:0,s:0,types:{}};
-      for(const k in e)tgt[m.code][k]+=e[k];
-      if(m.ts.toDate()<=dayEnd){const L=labelOf(m);tgt[m.code].types[L]=(tgt[m.code].types[L]||0)+m.qty;}
-    });
-    const codes=itemF?[itemF]:sortedCodes().filter(c=>during[c]);
-    if(!codes.length){$("repOut").innerHTML='<div class="empty">No movements on this date.</div>';REPORT_DATA=null;return;}
-    REPORT_DATA={date:d,rows:[]};let h="";
-    codes.forEach(c=>{
-      const it=ITEMS[c]||{};const du=during[c]||{a:0,b:0,c:0,s:0,types:{}};const af=after[c]||{a:0,b:0,c:0,s:0};
-      const closing={},opening={};["a","b","c","s"].forEach(k=>{closing[k]=(it[k]||0)-af[k];opening[k]=closing[k]-du[k];});
-      REPORT_DATA.rows.push({code:c,name:it.name||"",cat:catOf(it),opening,closing,moves:Object.entries(du.types).map(([L,q2])=>L+": "+q2).join(" | ")});
-      let mvLines=Object.entries(du.types).map(([L,q2])=>`<div><span>${L}</span><b>${num(q2)} pcs</b></div>`).join("")||'<div><span>No movement</span><b>—</b></div>';
-      h+=`<div class="rep-item"><h4>${c} <span style="font-weight:400;font-size:11px;color:var(--muted)">${it.name||""}</span></h4>
-        <div class="rep-grid">${mvLines}</div>
-        <div class="oc" style="grid-template-columns:repeat(4,1fr)"><div style="color:var(--A)"><b>${num(opening.a)} → ${num(closing.a)}</b>A</div>
-          <div style="color:var(--B)"><b>${num(opening.b)} → ${num(closing.b)}</b>B/Damage</div>
-          <div style="color:var(--C)"><b>${num(opening.c)} → ${num(closing.c)}</b>Colour MM</div>
-          <div style="color:var(--gold)"><b>${num(opening.s)} → ${num(closing.s)}</b>Sample</div></div></div>`;
-    });
-    $("repOut").innerHTML=`<div class="notice">Report for <b>${d}</b>. "Open → Close" = stock at start and end of that day.</div>`+h;
-    $("repDailyXlsx").style.display="block";
-  };
-  try{await cachedThenServer(q,render);}catch(e){$("repOut").innerHTML='<div class="empty">Report failed: '+e.message+'</div>';}
-}
-function exportDailyXLSX(){
-  if(!can("reports")){denied();return;}
-  if(!REPORT_DATA||!REPORT_DATA.rows.length){toast("Run the report first",true);return;}
-  const D=REPORT_DATA;
-  const header=["Item Code","Item Name","Category","A Opening","A Closing","B Opening","B Closing","Colour MM Opening","Colour MM Closing","Sample Opening","Sample Closing","Movements of the day"];
-  const aoa=[["Opening & Closing Balance Report — "+D.date],[],header];
-  D.rows.forEach(r=>aoa.push([r.code,r.name,r.cat,r.opening.a,r.closing.a,r.opening.b,r.closing.b,r.opening.c,r.closing.c,r.opening.s,r.closing.s,r.moves]));
-  const ws=XLSX.utils.aoa_to_sheet(aoa);ws["!cols"]=[{wch:10},{wch:26},{wch:24},{wch:9},{wch:9},{wch:9},{wch:9},{wch:11},{wch:11},{wch:10},{wch:10},{wch:50}];
-  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Daily Report");XLSX.writeFile(wb,"daily_report_"+D.date+".xlsx");toast("Excel downloaded ✔");
-}
-
-/* ---------- CSV / reports ---------- */
-function downloadCSV(name,rows){const csv=rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv"}));a.download=name;a.click();}
-function exportStockCSV(){
-  if(!can("reports")){denied();return;}
-  const rows=[["Item Code","Item Name","Category","A-Grade","B-Grade/Damage","Colour Mismatch","Sample","Total"]];
-  sortedCodes().forEach(c=>{const it=ITEMS[c];rows.push([c,it.name||"",catOf(it),it.a||0,it.b||0,it.c||0,it.s||0,(it.a||0)+(it.b||0)+(it.c||0)+(it.s||0)]);});
-  downloadCSV("stock_"+today()+".csv",rows);toast("Stock CSV downloaded ✔");
-}
-async function exportHistReport(){
-  if(!can("reports")){denied();return;}
-  const f=$("repCsvFrom").value,t=$("repCsvTo").value;
-  if(!f||!t){toast("Pick both dates",true);return;}
-  const start=new Date(f+"T00:00:00"),end=new Date(t+"T23:59:59.999");if(start>end){toast("From after To",true);return;}
-  toast("Preparing report…");
-  try{
-    const snap=await db.collection("movements").where("ts",">=",start).where("ts","<=",end).orderBy("ts","asc").get();
-    const itemF=$("repCsvItem").value;
-    const rows=[["Date & Time","Item Code","Category","Movement","Direction","Qty","Party","Note","User ID","Edited By"]];
-    snap.forEach(d=>{const m=d.data();if(itemF&&m.code!==itemF)return;rows.push([fmtTS(m.ts),m.code,catOf(ITEMS[m.code]),labelOf(m),dirOf(m)==="in"?"Inward":"Outward",m.qty,m.party||"",m.note||"",m.user,m.editedBy||""]);});
-    if(rows.length===1){toast("No movements found",true);return;}
-    downloadCSV("movement_report_"+f+"_to_"+t+".csv",rows);toast("Report downloaded: "+(rows.length-1)+" entries");
-  }catch(e){toast(e.message,true);}
-}
-
-/* ---------- Report 5: Low Stock / Production Needed ---------- */
-let LOWSTOCK_DATA=null;
-function computeLowStock(threshold){
-  const cat="A-Grade PVC Laminate Sheet";
-  const rows=[];
-  sortedCodes().forEach(c=>{
-    const it=ITEMS[c]; if(catOf(it)!==cat)return;
-    const aQty=it.a||0;
-    if(aQty<threshold)rows.push({code:c,name:it.name||"",aQty});
-  });
-  rows.sort((x,y)=>x.aQty-y.aQty);
-  return rows;
-}
-function runLowStockReport(){
-  if(!can("reports")){denied();return;}
-  const threshold=parseInt($("lowStockThreshold").value)||15;
-  const rows=computeLowStock(threshold);
-  LOWSTOCK_DATA={threshold,rows,date:today()};
-  $("lowStockCsvBtn").style.display=rows.length?"inline-block":"none";
-  $("lowStockXlsxBtn").style.display=rows.length?"inline-block":"none";
-  if(!rows.length){$("lowStockOut").innerHTML='<div class="empty">No item below '+threshold+' pcs. All A-Grade PVC Laminate Sheet items are healthy.</div>';return;}
-  let h=`<div class="notice"><b>${rows.length}</b> item(s) below <b>${threshold} pcs</b> A-Grade — flagged <span class="chip out">Production Needed</span></div>`;
-  rows.forEach(r=>{
-    h+=`<div class="rep-item"><h4>${r.code} <span style="font-weight:400;font-size:11px;color:var(--muted)">${r.name}</span></h4>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
-        <span style="color:var(--out);font-weight:700">${num(r.aQty)} pcs left</span>
-        <span class="chip out">Production Needed</span>
-      </div></div>`;
-  });
-  $("lowStockOut").innerHTML=h;
-}
-function exportLowStockCSV(){
-  if(!can("reports")){denied();return;}
-  if(!LOWSTOCK_DATA||!LOWSTOCK_DATA.rows.length){toast("Run the report first",true);return;}
-  const rows=[["Item Code","Item Name","Category","A-Grade Qty","Threshold","Status"]];
-  LOWSTOCK_DATA.rows.forEach(r=>rows.push([r.code,r.name,"A-Grade PVC Laminate Sheet",r.aQty,LOWSTOCK_DATA.threshold,"Production Needed"]));
-  downloadCSV("production_needed_"+LOWSTOCK_DATA.date+".csv",rows);toast("CSV downloaded ✔");
-}
-function exportLowStockXLSX(){
-  if(!can("reports")){denied();return;}
-  if(!LOWSTOCK_DATA||!LOWSTOCK_DATA.rows.length){toast("Run the report first",true);return;}
-  const header=["Item Code","Item Name","Category","A-Grade Qty","Threshold","Status"];
-  const aoa=[["Production Needed Report — A-Grade PVC Laminate Sheet — "+LOWSTOCK_DATA.date],[],header];
-  LOWSTOCK_DATA.rows.forEach(r=>aoa.push([r.code,r.name,"A-Grade PVC Laminate Sheet",r.aQty,LOWSTOCK_DATA.threshold,"Production Needed"]));
-  const ws=XLSX.utils.aoa_to_sheet(aoa);ws["!cols"]=[{wch:10},{wch:28},{wch:26},{wch:12},{wch:10},{wch:18}];
-  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Production Needed");XLSX.writeFile(wb,"production_needed_"+LOWSTOCK_DATA.date+".xlsx");toast("Excel downloaded ✔");
-}
-
-/* ---------- Master Sales Report ---------- */
-function msQuick(mb){const n=new Date();$("msFrom").value=new Date(n.getFullYear(),n.getMonth()-mb,1).toISOString().slice(0,10);$("msTo").value=today();runMasterReport();}
-async function runMasterReport(){
-  if(!can("reports")){denied();return;}
-  const f=$("msFrom").value,t=$("msTo").value;if(!f||!t){toast("Pick both dates",true);return;}
-  const start=new Date(f+"T00:00:00"),end=new Date(t+"T23:59:59.999");if(start>end){toast("From after To",true);return;}
-  $("msOut").innerHTML='<div class="empty">Analysing sales…</div>';
-  const q=db.collection("movements").where("ts",">=",start).where("ts","<=",end);
-  const render=snap=>{
-    const byMonth={},byItem={},byParty={},byItemParty={};let totalQty=0,entries=0;
-    snap.forEach(d=>{const m=d.data();if(!m.ts||!isSale(m))return;
-      const qty=m.qty||0,code=m.code,party=(m.party||"(no party)").trim()||"(no party)";
-      const dt=m.ts.toDate(),ym=dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0");
-      totalQty+=qty;entries++;byMonth[ym]=(byMonth[ym]||0)+qty;
-      if(!byItem[code])byItem[code]={qty:0,parties:new Set()};byItem[code].qty+=qty;byItem[code].parties.add(party);
-      if(!byParty[party])byParty[party]={qty:0,items:new Set()};byParty[party].qty+=qty;byParty[party].items.add(code);
-      const key=code+"|||"+party;byItemParty[key]=(byItemParty[key]||0)+qty;
-    });
-    if(!entries){$("msOut").innerHTML='<div class="empty">No sales found in this period.</div>';MASTER_DATA=null;return;}
-    const itemsRanked=Object.entries(byItem).sort((a,b)=>b[1].qty-a[1].qty);
-    const partiesRanked=Object.entries(byParty).sort((a,b)=>b[1].qty-a[1].qty);
-    const months=Object.keys(byMonth).sort();
-    const zeroSale=sortedCodes().filter(c=>!byItem[c]);
-    MASTER_DATA={f,t,totalQty,entries,byMonth,byItemParty,itemsRanked,partiesRanked,months,zeroSale};
-    const MN=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-    const monLabel=ym=>MN[parseInt(ym.slice(5),10)-1]+" "+ym.slice(0,4);
-    const medal=i=>i===0?"🥇":i===1?"🥈":i===2?"🥉":"#"+(i+1);
-    const pct=q2=>(q2*100/totalQty).toFixed(1)+"%";
-    let h=`<div class="summary" style="grid-template-columns:repeat(4,1fr)">
-      <div class="box"><b style="color:var(--A)">${num(totalQty)}</b><span>Pcs sold</span></div>
-      <div class="box"><b>${num(entries)}</b><span>Sale entries</span></div>
-      <div class="box"><b style="color:var(--B)">${num(itemsRanked.length)}</b><span>Items sold</span></div>
-      <div class="box"><b style="color:var(--C)">${num(partiesRanked.length)}</b><span>Parties</span></div></div>`;
-    h+=`<button class="btn gold" style="margin:0 0 12px" onclick="exportMasterXLSX()">⬇ Download full master report (Excel)</button>`;
-    h+=`<div class="card"><h2>Month-wise sales</h2><div class="rep-grid" style="margin-top:6px">`;
-    months.forEach(ym=>{h+=`<div><span>${monLabel(ym)}</span><b>${num(byMonth[ym])} pcs</b></div>`;});h+=`</div></div>`;
-    h+=`<div class="card"><h2>🏆 Top ranked products</h2>`;
-    itemsRanked.slice(0,10).forEach(([c,d2],i)=>{h+=`<div class="mv"><div class="l"><div class="t1">${medal(i)} <span class="chip A">${c}</span> ${(ITEMS[c]&&ITEMS[c].name)||""}</div><div class="t2">${d2.parties.size} parties · ${pct(d2.qty)} of sales</div></div><div class="qty plus">${num(d2.qty)}</div></div>`;});h+=`</div>`;
-    if(itemsRanked.length>3){const bottom=itemsRanked.slice(-Math.min(10,Math.max(1,itemsRanked.length-10))).reverse();
-      h+=`<div class="card"><h2>📉 Down ranked products</h2>`;
-      bottom.forEach(([c,d2])=>{const rank=itemsRanked.findIndex(x=>x[0]===c)+1;h+=`<div class="mv"><div class="l"><div class="t1">#${rank} <span class="chip B">${c}</span> ${(ITEMS[c]&&ITEMS[c].name)||""}</div><div class="t2">${d2.parties.size} parties · ${pct(d2.qty)} of sales</div></div><div class="qty minus">${num(d2.qty)}</div></div>`;});
-      h+=`<div style="font-size:12.5px;color:var(--muted);margin-top:6px">Plus <b>${num(zeroSale.length)}</b> items with zero sales (full list in Excel).</div></div>`;}
-    h+=`<div class="card"><h2>Party-wise sales</h2>`;
-    partiesRanked.slice(0,15).forEach(([pn,d2],i)=>{h+=`<div class="mv"><div class="l"><div class="t1">${medal(i)} ${pn}</div><div class="t2">${d2.items.size} items · ${pct(d2.qty)} of sales</div></div><div class="qty plus">${num(d2.qty)}</div></div>`;});
-    if(partiesRanked.length>15)h+=`<div style="font-size:12.5px;color:var(--muted)">…and ${partiesRanked.length-15} more in Excel.</div>`;h+=`</div>`;
-    h=`<div class="notice">Master Sales Report · <b>${f}</b> to <b>${t}</b>. Item × Party breakdown is in the Excel download.</div>`+h;
-    $("msOut").innerHTML=h;
-  };
-  try{await cachedThenServer(q,render);}catch(e){$("msOut").innerHTML='<div class="empty">Report failed: '+e.message+'</div>';}
-}
-function exportMasterXLSX(){
-  if(!can("reports")){denied();return;}if(!MASTER_DATA){toast("Generate the report first",true);return;}
-  const D=MASTER_DATA,wb=XLSX.utils.book_new();
-  const sh=(name,aoa,cols)=>{const ws=XLSX.utils.aoa_to_sheet(aoa);if(cols)ws["!cols"]=cols.map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,ws,name);};
-  sh("Summary",[["MASTER SALES REPORT"],["Period",D.f+" to "+D.t],[],["Total pieces sold",D.totalQty],["Sale entries",D.entries],["Items sold",D.itemsRanked.length],["Items with zero sales",D.zeroSale.length],["Parties",D.partiesRanked.length]],[26,20]);
-  sh("Month-wise",[["Month","Pieces sold"],...D.months.map(ym=>[ym,D.byMonth[ym]])],[12,14]);
-  sh("Product Analysis",[["Rank","Item Code","Item Name","Category","Total Sold","% of Sales","No. of Parties"],...D.itemsRanked.map(([c,d2],i)=>[i+1,c,(ITEMS[c]&&ITEMS[c].name)||"",catOf(ITEMS[c]),d2.qty,+(d2.qty*100/D.totalQty).toFixed(2),d2.parties.size])],[6,10,26,24,12,10,12]);
-  sh("Zero Sales",[["Item Code","Item Name","Category"],...D.zeroSale.map(c=>[c,(ITEMS[c]&&ITEMS[c].name)||"",catOf(ITEMS[c])])],[10,26,24]);
-  sh("Party-wise",[["Rank","Party","Total Bought","% of Sales","Different Items"],...D.partiesRanked.map(([pn,d2],i)=>[i+1,pn,d2.qty,+(d2.qty*100/D.totalQty).toFixed(2),d2.items.size])],[6,26,14,10,14]);
-  const rows=Object.entries(D.byItemParty).map(([k,q2])=>{const[c,pn]=k.split("|||");return[c,(ITEMS[c]&&ITEMS[c].name)||"",pn,q2];}).sort((a,b)=>a[0].localeCompare(b[0],undefined,{numeric:true})||b[3]-a[3]);
-  sh("Item x Party",[["Item Code","Item Name","Party","Pieces Sold"],...rows],[10,26,26,12]);
-  XLSX.writeFile(wb,"master_sales_report_"+D.f+"_to_"+D.t+".xlsx");toast("Master report downloaded ✔");
-}
-
-/* ---------- Items management ---------- */
-const renderItemManageD=debounce(()=>renderItemManage(),180);
-async function addItem(){
-  if(!can("items")){denied();return;}
-  const code=$("newCode").value.trim(),name=$("newName").value.trim()||DEFAULT_NAME,cat=$("newCat").value||DEFAULT_CAT;
-  if(!code){toast("Enter item code",true);return;}
-  if(ITEMS[code]){toast("Item "+code+" already exists",true);return;}
-  fire(db.collection("items").doc(code).set({name,cat,a:0,b:0,c:0,s:0,createdBy:USER,createdAt:firebase.firestore.FieldValue.serverTimestamp()}));
-  audit("Item added",code+" — "+name+" ("+cat+")");$("newCode").value="";toast("Item "+code+" added ✔");
-}
-async function deleteItem(code){
-  if(!can("items")){denied();return;}
-  const it=ITEMS[code];
-  if(it&&(it.a||it.b||it.c)){if(!await confirmDialog(code+" still has stock. Delete anyway?","Delete item"))return;}
-  else if(!await confirmDialog("Delete item "+code+"?","Delete item"))return;
-  fire(db.collection("items").doc(code).delete());audit("Item deleted",code);toast("Item "+code+" deleted ✔");
-}
-function renderItemManage(){
-  const box=$("itemManageList");if(!box)return;
-  const q=($("itemSearch")?.value||"").trim().toLowerCase();
-  const codes=sortedCodes().filter(c=>!q||c.toLowerCase().includes(q)||catOf(ITEMS[c]).toLowerCase().includes(q));
-  const btns=c=>can("items")?`<button class="btn ghost sm" onclick="openEditItem('${c}')">Edit</button><button class="btn danger sm" onclick="deleteItem('${c}')" style="margin-left:6px">Delete</button>`:"";
-  box.innerHTML=codes.slice(0,400).map(c=>`<div class="mv"><div class="l"><div class="t1">${c}</div><div class="t2">${ITEMS[c].name||""} · <b>${catOf(ITEMS[c])}</b></div></div><div style="align-self:center;white-space:nowrap">${btns(c)}</div></div>`).join("")||'<div class="empty">No items.</div>';
-}
-function openEditItem(code){
-  if(!can("items")){denied();return;}
-  const it=ITEMS[code];if(!it)return;
-  const opts=CATS.map(c=>`<option value="${c}" ${catOf(it)===c?"selected":""}>${c}</option>`).join("");
-  const sh=$("detailSheet");
-  sh.innerHTML=`<button class="close" onclick="detailOverlay.classList.remove('show')">✕</button>
-    <h3>Edit item ${code}</h3>
-    <label class="f">Item name</label><input id="editItName" maxlength="60" value="${(it.name||"").replace(/"/g,"&quot;")}">
-    <label class="f">Category</label><select id="editItCat">${opts}</select>
-    <button class="btn gold" onclick="saveEditItem('${code}')">Save item</button>`;
-  $("detailOverlay").classList.add("show");
-}
-async function saveEditItem(code){
-  if(!can("items")){denied();return;}
-  const name=$("editItName").value.trim(),cat=$("editItCat").value||DEFAULT_CAT;
-  if(!name){toast("Enter item name",true);return;}
-  fire(db.collection("items").doc(code).update({name,cat}));audit("Item edited",code+" — "+name+" ("+cat+")");
-  $("detailOverlay").classList.remove("show");toast("Item "+code+" updated ✔");
-}
-async function seedItems(){
-  if(!can("items")){denied();return;}
-  if(!await confirmDialog("Load all "+DEFAULT_CODES.length+" default items into A-Grade PVC Laminate Sheet?","Load items"))return;
-  toast("Loading items…");
-  try{
-    for(let i=0;i<DEFAULT_CODES.length;i+=400){const batch=db.batch();DEFAULT_CODES.slice(i,i+400).forEach(c=>batch.set(db.collection("items").doc(c),{name:DEFAULT_NAME,cat:DEFAULT_CAT,a:0,b:0,c:0,s:0,createdBy:USER,createdAt:firebase.firestore.FieldValue.serverTimestamp()}));await batch.commit();}
-    audit("Default items loaded",DEFAULT_CODES.length+" items");toast("All "+DEFAULT_CODES.length+" items loaded ✔");
-  }catch(e){toast(e.message,true);}
-}
-
-/* ---------- Bulk add items ---------- */
-let ITEM_ROWS=[];
-function downloadItemTemplate(){downloadCSV("items_template.csv",[["Item Code","Item Name","Category","A-Grade Qty","B-Grade Qty","Colour Mismatch Qty","Sample Qty"],["1003","MD PVC Laminate 1.25 MM","A-Grade PVC Laminate Sheet","100","10","0","0"],["1101","Liner Sheet","Liner White","50","5","0","0"],["1102","Louver Panel","Louvers","0","0","0","0"]]);}
-async function applyItemManual(){
-  if(!can("items")){denied();return;}
-  const name=$("biName").value.trim()||DEFAULT_NAME,cat=$("biCat").value||DEFAULT_CAT;
-  // Each line/entry: "code" or "code=A" or "code=A,B,CM,Sample"
-  const raw=$("biCodes").value.split(/[\n,;]+/).map(x=>x.trim()).filter(Boolean);
-  const seen={};const parsed=[];
-  raw.forEach(entry=>{
-    const parts=entry.split("=");
-    const code=parts[0].trim();if(!code||seen[code])return;seen[code]=true;
-    const q=(parts[1]||"").split(/[\s/|]+/).map(n=>{const v=parseInt(n,10);return isNaN(v)||v<0?0:v;});
-    parsed.push({code,a:q[0]||0,b:q[1]||0,c:q[2]||0,s:q[3]||0});
-  });
-  if(!parsed.length){toast("Enter at least one code",true);return;}
-  const fresh=parsed.filter(r=>!ITEMS[r.code]),exist=parsed.filter(r=>ITEMS[r.code]);
-  if(!fresh.length){toast("All these codes already exist",true);return;}
-  const withQty=fresh.filter(r=>r.a||r.b||r.c||r.s).length;
-  if(!await confirmDialog("Add "+fresh.length+" items as \""+cat+"\""+(withQty?" ("+withQty+" with quantity)":"")+(exist.length?" ("+exist.length+" skipped)":"")+"?","Add items"))return;
-  const batchId="B"+Date.now();
-  try{for(let i=0;i<fresh.length;i+=400){const batch=db.batch();fresh.slice(i,i+400).forEach(r=>batch.set(db.collection("items").doc(r.code),{name,cat,a:r.a,b:r.b,c:r.c,s:r.s,batchId,createdBy:USER,createdAt:firebase.firestore.FieldValue.serverTimestamp()}));await batch.commit();}
-    fire(db.collection("bulkBatches").doc(batchId).set({type:"items",count:fresh.length,codes:fresh.map(r=>r.code),fileName:"Typed codes ("+cat+")",cats:[cat],user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()}));
-    audit("Bulk items added",fresh.length+" items ("+cat+")");$("biCodes").value="";toast(fresh.length+" items added ✔"+(exist.length?" · "+exist.length+" skipped":""));
-  }catch(e){toast(e.message,true);}
-}
-function parseItemFile(input){
-  ITEM_ROWS=[];EXIST_ROWS=[];$("itemBulkPreview").innerHTML="";$("applyItemBulkBtn").style.display="none";$("applyExistUpdateBtn").style.display="none";
-  const file=input.files&&input.files[0];if(!file)return;
-  LAST_ITEM_FILENAME=file.name||"Excel/CSV upload";
-  const reader=new FileReader();
-  reader.onload=e=>{try{
-    const wb=XLSX.read(e.target.result,{type:"array"});const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:""});
-    const invalid=[];let start=0;if(rows.length&&String(rows[0][0]).toLowerCase().includes("code"))start=1;const seen={};
-    const qn=v=>{const n=parseInt(String(v??"").trim(),10);return isNaN(n)||n<0?0:n;};
-    for(let i=start;i<rows.length;i++){const r=rows[i];const code=String(r[0]??"").trim().replace(/\.0$/,"");const name=String(r[1]??"").trim()||DEFAULT_NAME;const cat=String(r[2]??"").trim()||DEFAULT_CAT;
-      const a=qn(r[3]),b=qn(r[4]),c=qn(r[5]),s=qn(r[6]);
-      if(!code&&!r[1]&&!r[2])continue;if(!code){invalid.push([i+1,"no code"]);continue;}if(seen[code]){invalid.push([i+1,code+" duplicate"]);continue;}seen[code]=true;
-      if(ITEMS[code]){
-        if(a||b||c||s)EXIST_ROWS.push({code,a,b,c,s});
-        else invalid.push([i+1,code+" exists — no quantity to add"]);
-        continue;
-      }
-      ITEM_ROWS.push({code,name,cat,a,b,c,s});}
-    const cats=[...new Set(ITEM_ROWS.map(r=>r.cat))];
-    const withQty=ITEM_ROWS.filter(r=>r.a||r.b||r.c||r.s).length;
-    let h=`<div class="notice" style="margin-top:10px">✔ <b>${ITEM_ROWS.length}</b> new items across <b>${cats.length}</b> categories${withQty?` · <b>${withQty}</b> with opening quantity`:""}`;
-    if(EXIST_ROWS.length){h+=`<br>🔁 <b>${EXIST_ROWS.length}</b> existing items — quantities in the file will be <b>added</b> to their current stock`;}
-    if(invalid.length){h+=`<br>✕ <b>${invalid.length}</b> skipped:<div style="font-size:12px;margin-top:4px">`+invalid.slice(0,12).map(v=>"Row "+v[0]+": "+v[1]).join("<br>")+(invalid.length>12?"<br>…":"")+"</div>";}h+="</div>";
-    $("itemBulkPreview").innerHTML=h;$("applyItemBulkBtn").style.display=ITEM_ROWS.length?"block":"none";$("applyExistUpdateBtn").style.display=EXIST_ROWS.length?"block":"none";
-  }catch(err){toast("Could not read file: "+err.message,true);}};
-  reader.readAsArrayBuffer(file);
-}
-let EXIST_ROWS=[];
-async function applyExistUpdate(){
-  if(!can("items")){denied();return;}if(!EXIST_ROWS.length)return;
-  const totA=EXIST_ROWS.reduce((s,r)=>s+r.a,0),totB=EXIST_ROWS.reduce((s,r)=>s+r.b,0),totC=EXIST_ROWS.reduce((s,r)=>s+r.c,0),totS=EXIST_ROWS.reduce((s,r)=>s+r.s,0);
-  if(!await confirmDialog(EXIST_ROWS.length+" existing items — add "+totA+" A-Grade, "+totB+" B-Grade/Damage, "+totC+" Colour Mismatch, "+totS+" Sample. Continue?","Update existing quantities"))return;
-  $("applyExistUpdateBtn").disabled=true;$("applyExistUpdateBtn").textContent="Updating…";let ok=0,fail=0;const errs=[];
-  const one=async r=>{
-    try{
-      const itemRef=db.collection("items").doc(r.code);
-      await db.runTransaction(async tr=>{
-        const doc=await tr.get(itemRef);if(!doc.exists)throw new Error("not found");
-        const d=doc.data(),upd={};
-        if(r.a)upd.a=(d.a||0)+r.a; if(r.b)upd.b=(d.b||0)+r.b; if(r.c)upd.c=(d.c||0)+r.c; if(r.s)upd.s=(d.s||0)+r.s;
-        tr.update(itemRef,upd);
-        const mk=(type,qty)=>tr.set(db.collection("movements").doc(),{code:r.code,type,label:TYPES[type].label,eff:TYPES[type].eff,dir:"in",qty,party:null,note:"Bulk item-file update",user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()});
-        if(r.a)mk("PROD_A",r.a); if(r.b)mk("PROD_B",r.b); if(r.c)mk("PROD_C",r.c); if(r.s)mk("PROD_S",r.s);
-      });ok++;
-    }catch(e){fail++;errs.push(r.code+": "+e.message);}
-  };
-  for(let i=0;i<EXIST_ROWS.length;i+=20){await Promise.all(EXIST_ROWS.slice(i,i+20).map(one));$("applyExistUpdateBtn").textContent="Updating… "+Math.min(i+20,EXIST_ROWS.length)+"/"+EXIST_ROWS.length;}
-  audit("Bulk item-file quantity update",ok+" items (+"+totA+"A +"+totB+"B +"+totC+"C +"+totS+"S)"+(fail?" ("+fail+" failed)":""));
-  toast(ok+" items updated ✔"+(fail?" · "+fail+" failed":""),fail>0);
-  EXIST_ROWS=[];$("applyExistUpdateBtn").style.display="none";$("applyExistUpdateBtn").textContent="Add quantities to existing items";$("applyExistUpdateBtn").disabled=false;
-  $("itemBulkPreview").innerHTML=errs.length?'<div class="notice">Some rows failed:<br>'+errs.slice(0,8).join("<br>")+'</div>':"";
-}
-let LAST_ITEM_FILENAME="";
-async function applyItemBulk(){
-  if(!can("items")){denied();return;}if(!ITEM_ROWS.length)return;
-  if(!await confirmDialog("Add "+ITEM_ROWS.length+" new items?","Add items"))return;
-  $("applyItemBulkBtn").disabled=true;toast("Adding items…");
-  const batchId="B"+Date.now();const codes=ITEM_ROWS.map(r=>r.code);
-  try{
-    for(let i=0;i<ITEM_ROWS.length;i+=400){const batch=db.batch();ITEM_ROWS.slice(i,i+400).forEach(r=>batch.set(db.collection("items").doc(r.code),{name:r.name,cat:r.cat,a:r.a||0,b:r.b||0,c:r.c||0,s:r.s||0,batchId,createdBy:USER,createdAt:firebase.firestore.FieldValue.serverTimestamp()}));await batch.commit();}
-    fire(db.collection("bulkBatches").doc(batchId).set({type:"items",count:codes.length,codes,fileName:LAST_ITEM_FILENAME||"Excel/CSV upload",cats:[...new Set(ITEM_ROWS.map(r=>r.cat))],user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()}));
-    audit("Bulk items added",ITEM_ROWS.length+" items ("+(LAST_ITEM_FILENAME||"Excel")+")");
-    toast("Done! "+ITEM_ROWS.length+" items added ✔");ITEM_ROWS=[];$("itemBulkPreview").innerHTML="";$("itemFile").value="";$("applyItemBulkBtn").style.display="none";
-  }catch(e){toast(e.message,true);}$("applyItemBulkBtn").disabled=false;
-}
-
-/* ---------- Bulk quantity update: add opening balance / stock to existing items (all 4 grades) ---------- */
-let GRADE_BULK_ROWS=[];
-function downloadGradeBulkTemplate(){downloadCSV("grade_bulk_template.csv",[["Item Code","A-Grade Qty to Add","B-Grade/Damage Qty to Add","Colour Mismatch Qty to Add","Sample Qty to Add"],["1003","20","10","0","0"],["1004","0","0","5","2"],["1005","15","8","3","0"]]);}
-function parseGradeBulkFile(input){
-  GRADE_BULK_ROWS=[];$("gradeBulkPreview").innerHTML="";$("applyGradeBulkBtn").style.display="none";
-  const file=input.files&&input.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{try{
-    const wb=XLSX.read(e.target.result,{type:"array"});const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:""});
-    let start=0;if(rows.length&&String(rows[0][0]).toLowerCase().includes("code"))start=1;
-    const qn=v=>{const n=parseInt(String(v??"").trim(),10);return isNaN(n)||n<0?0:n;};
-    const invalid=[];const seen={};
-    for(let i=start;i<rows.length;i++){const r=rows[i];const code=String(r[0]??"").trim().replace(/\.0$/,"");
-      if(!code)continue;
-      if(!ITEMS[code]){invalid.push([i+1,code+" — not found"]);continue;}
-      if(seen[code]){invalid.push([i+1,code+" — duplicate"]);continue;}
-      const addA=qn(r[1]),addB=qn(r[2]),addC=qn(r[3]),addS=qn(r[4]);
-      if(!addA&&!addB&&!addC&&!addS){invalid.push([i+1,code+" — no quantity"]);continue;}
-      seen[code]=true;GRADE_BULK_ROWS.push({code,addA,addB,addC,addS});
-    }
-    const totalA=GRADE_BULK_ROWS.reduce((s,r)=>s+r.addA,0),totalB=GRADE_BULK_ROWS.reduce((s,r)=>s+r.addB,0),totalC=GRADE_BULK_ROWS.reduce((s,r)=>s+r.addC,0),totalS=GRADE_BULK_ROWS.reduce((s,r)=>s+r.addS,0);
-    let h=`<div class="notice" style="margin-top:10px">✔ <b>${GRADE_BULK_ROWS.length}</b> items · +<b>${totalA}</b> A-Grade · +<b>${totalB}</b> B-Grade/Damage · +<b>${totalC}</b> Colour Mismatch · +<b>${totalS}</b> Sample`;
-    if(invalid.length){h+=`<br>✕ <b>${invalid.length}</b> skipped:<div style="font-size:12px;margin-top:4px">`+invalid.slice(0,12).map(v=>"Row "+v[0]+": "+v[1]).join("<br>")+(invalid.length>12?"<br>…":"")+"</div>";}
-    h+="</div>";
-    $("gradeBulkPreview").innerHTML=h;$("applyGradeBulkBtn").style.display=GRADE_BULK_ROWS.length?"block":"none";
-  }catch(err){toast("Could not read file: "+err.message,true);}};
-  reader.readAsArrayBuffer(file);
-}
-async function applyGradeBulk(){
-  if(!can("items")){denied();return;}
-  if(!GRADE_BULK_ROWS.length)return;
-  const totalA=GRADE_BULK_ROWS.reduce((s,r)=>s+r.addA,0),totalB=GRADE_BULK_ROWS.reduce((s,r)=>s+r.addB,0),totalC=GRADE_BULK_ROWS.reduce((s,r)=>s+r.addC,0),totalS=GRADE_BULK_ROWS.reduce((s,r)=>s+r.addS,0);
-  if(!await confirmDialog(GRADE_BULK_ROWS.length+" items — add "+totalA+" pcs A-Grade, "+totalB+" pcs B-Grade/Damage, "+totalC+" pcs Colour Mismatch and "+totalS+" pcs Sample. Continue?","Bulk quantity update"))return;
-  $("applyGradeBulkBtn").disabled=true;$("applyGradeBulkBtn").textContent="Updating…";let ok=0,fail=0;const errs=[];
-  const one=async r=>{
-    try{
-      const itemRef=db.collection("items").doc(r.code);
-      await db.runTransaction(async tr=>{
-        const doc=await tr.get(itemRef);if(!doc.exists)throw new Error("not found");
-        const d=doc.data(),upd={};
-        if(r.addA)upd.a=(d.a||0)+r.addA;
-        if(r.addB)upd.b=(d.b||0)+r.addB;
-        if(r.addC)upd.c=(d.c||0)+r.addC;
-        if(r.addS)upd.s=(d.s||0)+r.addS;
-        tr.update(itemRef,upd);
-        if(r.addA)tr.set(db.collection("movements").doc(),{code:r.code,type:"PROD_A",label:TYPES.PROD_A.label,eff:TYPES.PROD_A.eff,dir:"in",qty:r.addA,party:null,note:"Bulk opening balance upload",user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()});
-        if(r.addB)tr.set(db.collection("movements").doc(),{code:r.code,type:"PROD_B",label:TYPES.PROD_B.label,eff:TYPES.PROD_B.eff,dir:"in",qty:r.addB,party:null,note:"Bulk opening balance upload",user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()});
-        if(r.addC)tr.set(db.collection("movements").doc(),{code:r.code,type:"PROD_C",label:TYPES.PROD_C.label,eff:TYPES.PROD_C.eff,dir:"in",qty:r.addC,party:null,note:"Bulk opening balance upload",user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()});
-        if(r.addS)tr.set(db.collection("movements").doc(),{code:r.code,type:"PROD_S",label:TYPES.PROD_S.label,eff:TYPES.PROD_S.eff,dir:"in",qty:r.addS,party:null,note:"Bulk opening balance upload",user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()});
-      });ok++;
-    }catch(e){fail++;errs.push(r.code+": "+e.message);}
-  };
-  for(let i=0;i<GRADE_BULK_ROWS.length;i+=20){await Promise.all(GRADE_BULK_ROWS.slice(i,i+20).map(one));$("applyGradeBulkBtn").textContent="Updating… "+Math.min(i+20,GRADE_BULK_ROWS.length)+"/"+GRADE_BULK_ROWS.length;}
-  audit("Bulk opening balance added",ok+" items (+"+totalA+" A-Grade, +"+totalB+" B-Grade, +"+totalC+" Colour MM, +"+totalS+" Sample)"+(fail?" ("+fail+" failed)":""));
-  toast(ok+" items updated ✔"+(fail?" · "+fail+" failed":""),fail>0);
-  GRADE_BULK_ROWS=[];$("gradeBulkFile").value="";$("applyGradeBulkBtn").style.display="none";$("applyGradeBulkBtn").textContent="Add quantities";
-  $("gradeBulkPreview").innerHTML=errs.length?'<div class="notice">Some rows failed:<br>'+errs.slice(0,8).join("<br>")+'</div>':"";
-  $("applyGradeBulkBtn").disabled=false;
-}
-
-/* ---------- Bulk batches: view & delete a whole uploaded file ---------- */
-let BATCHES_CACHE=[];
-db.collection("bulkBatches").orderBy("ts","desc").limit(30).onSnapshot(snap=>{
-  BATCHES_CACHE=[];snap.forEach(d=>BATCHES_CACHE.push([d.id,d.data()]));renderBatches();
-},err=>{});
-function renderBatches(){
-  const box=$("batchList");if(!box)return;
-  if(!BATCHES_CACHE.length){box.innerHTML='<div class="empty">No bulk uploads yet. Files you upload here can be deleted later in one tap.</div>';return;}
-  box.innerHTML=BATCHES_CACHE.map(([id,b])=>{
-    const present=(b.codes||[]).filter(c=>ITEMS[c]).length;
-    return `<div class="mv"><div class="l"><div class="t1">📄 ${b.fileName||"Upload"} <span class="chip gold">${b.count} items</span></div>
-      <div class="t2">${present} still in stock · ${(b.cats||[]).join(", ")||"—"} · by <b>${b.user}</b> · ${fmtTS(b.ts)}</div></div>
-      ${can("items")?`<button class="btn danger sm" onclick="deleteBatch('${id}')">Delete file</button>`:""}</div>`;
-  }).join("");
-}
-async function deleteBatch(id){
-  if(!can("items")){denied();return;}
-  const rec=BATCHES_CACHE.find(x=>x[0]===id);if(!rec)return;
-  const b=rec[1];const codes=(b.codes||[]).filter(c=>ITEMS[c]);
-  const withStock=codes.filter(c=>{const it=ITEMS[c];return (it.a||0)+(it.b||0)+(it.c||0)>0;});
-  let msg="Delete all "+codes.length+" items that were added from \""+(b.fileName||"this upload")+"\"?";
-  if(withStock.length)msg+="\n\n⚠ "+withStock.length+" of them still have stock — those will be deleted too.";
-  if(!await confirmDialog(msg,"Delete uploaded file"))return;
-  toast("Deleting uploaded file data…");
-  try{
-    for(let i=0;i<codes.length;i+=400){const batch=db.batch();codes.slice(i,i+400).forEach(c=>batch.delete(db.collection("items").doc(c)));await batch.commit();}
-    fire(db.collection("bulkBatches").doc(id).delete());
-    audit("Bulk file deleted",(b.fileName||"upload")+" — "+codes.length+" items");
-    toast(codes.length+" items deleted ✔");
-  }catch(e){toast(e.message,true);}
-}
-
-/* ---------- Bulk category update ---------- */
-let CAT_ROWS=[];
-async function applyCatManual(){
-  if(!can("items")){denied();return;}
-  const cat=$("mcCat").value;if(!cat){toast("Choose a category",true);return;}
-  const codes=[...new Set($("mcCodes").value.split(/[\s,;]+/).map(c=>c.trim()).filter(Boolean))];
-  if(!codes.length){toast("Enter item codes",true);return;}
-  const valid=codes.filter(c=>ITEMS[c]),missing=codes.filter(c=>!ITEMS[c]);
-  if(!valid.length){toast("None of these codes exist",true);return;}
-  if(!await confirmDialog("Set category \""+cat+"\" for "+valid.length+" items"+(missing.length?" ("+missing.length+" skipped)":"")+"?","Apply category"))return;
-  try{for(let i=0;i<valid.length;i+=400){const batch=db.batch();valid.slice(i,i+400).forEach(c=>batch.update(db.collection("items").doc(c),{cat}));await batch.commit();}
-    audit("Bulk category update",valid.length+" items → "+cat);$("mcCodes").value="";toast(valid.length+" items → \""+cat+"\" ✔");
-  }catch(e){toast(e.message,true);}
-}
-function parseCatFile(input){
-  CAT_ROWS=[];$("catPreview").innerHTML="";$("applyCatBtn").style.display="none";
-  const file=input.files&&input.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{try{
-    const wb=XLSX.read(e.target.result,{type:"array"});const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:""});
-    const invalid=[];let start=0;if(rows.length&&String(rows[0][0]).toLowerCase().includes("code"))start=1;const seen={};
-    for(let i=start;i<rows.length;i++){const r=rows[i];const code=String(r[0]??"").trim().replace(/\.0$/,"");const cat=String(r[1]??"").trim();
-      if(!code&&!cat)continue;if(!code){invalid.push([i+1,"no code"]);continue;}if(!ITEMS[code]){invalid.push([i+1,code+" not found"]);continue;}if(!cat){invalid.push([i+1,code+" no category"]);continue;}if(seen[code]){invalid.push([i+1,code+" duplicate"]);continue;}seen[code]=true;CAT_ROWS.push({code,cat});}
-    let h=`<div class="notice" style="margin-top:10px">✔ <b>${CAT_ROWS.length}</b> items will be updated`;
-    if(invalid.length){h+=`<br>✕ <b>${invalid.length}</b> skipped:<div style="font-size:12px;margin-top:4px">`+invalid.slice(0,12).map(v=>"Row "+v[0]+": "+v[1]).join("<br>")+(invalid.length>12?"<br>…":"")+"</div>";}h+="</div>";
-    $("catPreview").innerHTML=h;$("applyCatBtn").style.display=CAT_ROWS.length?"block":"none";
-  }catch(err){toast("Could not read file: "+err.message,true);}};
-  reader.readAsArrayBuffer(file);
-}
-async function applyCatBulk(){
-  if(!can("items")){denied();return;}if(!CAT_ROWS.length)return;
-  if(!await confirmDialog("Update category of "+CAT_ROWS.length+" items?","Apply category"))return;
-  $("applyCatBtn").disabled=true;toast("Updating…");
-  try{for(let i=0;i<CAT_ROWS.length;i+=400){const batch=db.batch();CAT_ROWS.slice(i,i+400).forEach(r=>batch.update(db.collection("items").doc(r.code),{cat:r.cat}));await batch.commit();}
-    audit("Bulk category update",CAT_ROWS.length+" items (Excel)");toast("Done! "+CAT_ROWS.length+" updated ✔");CAT_ROWS=[];$("catPreview").innerHTML="";$("catFile").value="";$("applyCatBtn").style.display="none";
-  }catch(e){toast(e.message,true);}$("applyCatBtn").disabled=false;
-}
-
-/* ---------- Manage categories ---------- */
-function renderCatManage(){
-  const box=$("catManageList");if(!box)return;
-  box.innerHTML=CATS.map(c=>{const builtin=BUILTIN_CATS.includes(c);const used=Object.values(ITEMS).filter(it=>catOf(it)===c).length;
-    return `<div class="mv"><div class="l"><div class="t1">${c}</div><div class="t2">${used} items${builtin?" · built-in":""}</div></div>${(!builtin&&can("items"))?`<button class="btn danger sm" onclick="deleteCategory('${c.replace(/'/g,"\\'")}')">Delete</button>`:""}</div>`;}).join("");
-}
-async function addCategory(){
-  if(!can("items")){denied();return;}
-  const name=$("newCatName").value.trim();if(!name){toast("Enter a category name",true);return;}
-  if(CATS.includes(name)){toast("Category already exists",true);return;}
-  const extra=CATS.filter(c=>!BUILTIN_CATS.includes(c));extra.push(name);
-  fire(db.collection("meta").doc("categories").set({list:extra},{merge:true}));
-  audit("Category added",name);$("newCatName").value="";toast("Category \""+name+"\" added ✔");
-}
-async function deleteCategory(name){
-  if(!can("items")){denied();return;}
-  if(BUILTIN_CATS.includes(name)){toast("Built-in categories cannot be deleted",true);return;}
-  const used=Object.values(ITEMS).filter(it=>catOf(it)===name).length;
-  if(used){toast(used+" items still use this category — move them first",true);return;}
-  if(!await confirmDialog("Delete category \""+name+"\"?","Delete category"))return;
-  const extra=CATS.filter(c=>!BUILTIN_CATS.includes(c)&&c!==name);
-  fire(db.collection("meta").doc("categories").set({list:extra},{merge:true}));audit("Category deleted",name);toast("Category deleted ✔");
-}
-
-/* ---------- Master admin panel ---------- */
-function attachUsersAdmin(){
-  $("drawerMasterBtn").style.display="";
-  if(unsubUsers)return;
-  unsubUsers=db.collection("users").onSnapshot(snap=>{
-    USERS_CACHE=[];snap.forEach(d=>USERS_CACHE.push([d.id,d.data()]));
-    USERS_CACHE.sort((a,b)=>(b[1].role==="master"?1:0)-(a[1].role==="master"?1:0)||(a[1].name||"").localeCompare(b[1].name||""));
-    renderAdmin();
-  },err=>{});
-}
-function detachUsersAdmin(){$("drawerMasterBtn").style.display="none";if(unsubUsers){unsubUsers();unsubUsers=null;}USERS_CACHE=[];}
-function renderAdmin(){
-  const box=$("adminList");if(!box)return;
-  if(!USERS_CACHE.length){box.innerHTML='<div class="empty">No users yet.</div>';return;}
-  box.innerHTML=USERS_CACHE.map(([id,u])=>{
-    const isMe=id===UID,isMaster=u.role==="master",hasAuth=!!u.email;
-    const realEmail=hasAuth&&!u.email.endsWith(EMAIL_DOMAIN);
-    const p=isMaster?ALL_PERMS:{...DEFAULT_STAFF_PERMS,...(u.perms||{})};
-    const permRows=Object.entries(PERM_DEFS).map(([k2,lbl])=>`
-      <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;margin:4px 0;${isMaster?'opacity:.45':''}">
-        <input type="checkbox" style="width:auto" ${p[k2]?"checked":""} ${isMaster?"disabled":""} onchange="setPerm('${id}','${k2}',this.checked)"> ${lbl}
-      </label>`).join("");
-    return `<div style="border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:9px;${u.active===false?'opacity:.55':''}">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-        <div><b>${isMaster?"★ ":""}${u.name}</b> <span class="chip ${isMaster?'gold':'in'}">${isMaster?"MASTER":"Staff"}</span>
-        ${!hasAuth?'<span class="chip B">Old ID — recreate below</span>':''}
-        ${u.active===false?'<span class="chip out">Deactivated</span>':''} ${isMe?'<span class="chip A">You</span>':''}</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          ${!isMe?`<button class="btn ghost sm" onclick="toggleActive('${id}',${u.active===false})">${u.active===false?"Activate":"Deactivate"}</button>`:""}
-          ${realEmail?`<button class="btn ghost sm" onclick="sendReset('${u.email}')">Reset email</button>`:""}
-          ${!isMaster&&hasAuth?`<button class="btn ghost sm" onclick="makeMaster('${id}','${(u.name||"").replace(/'/g,"")}')">Make Master</button>`:""}
-          ${!isMe&&!isMaster?`<button class="btn danger sm" onclick="deleteUser('${id}','${(u.name||"").replace(/'/g,"")}')">Delete</button>`:""}
-        </div>
-      </div>
-      <div style="margin-top:6px">${permRows}</div>
+function renderStock() {
+  const box = $("stockList"); if (!box) return;
+  const q = ($("stockSearch")?.value || "").toLowerCase();
+  let h = "", totA = 0, totB = 0, totC = 0, totS = 0;
+  
+  sortedCodes().forEach(c => {
+    const it = ITEMS[c];
+    totA += it.a || 0; totB += it.b || 0; totC += it.c || 0; totS += it.s || 0;
+    if (q && !c.toLowerCase().includes(q) && !(it.name || "").toLowerCase().includes(q)) return;
+    
+    h += `<div class="stock-row">
+      <div><div class="code">${c}</div><div class="nm">${it.name || ""}</div></div>
+      <div class="v A">${num(it.a)}</div>
+      <div class="v B">${num(it.b)}</div>
+      <div class="v">${num((it.a||0)+(it.b||0)+(it.c||0))}</div>
     </div>`;
-  }).join("");
-}
-function setPerm(id,key,val){
-  fire(db.collection("users").doc(id).update({["perms."+key]:val}));
-  const u=USERS_CACHE.find(x=>x[0]===id);
-  audit("Permission changed",(u?u[1].name:id)+" — "+PERM_DEFS[key]+": "+(val?"ON":"OFF"));
-}
-function toggleActive(id,activate){
-  fire(db.collection("users").doc(id).update({active:activate}));
-  const u=USERS_CACHE.find(x=>x[0]===id);
-  audit(activate?"ID activated":"ID deactivated",(u?u[1].name:id));
-  toast(activate?"ID activated ✔":"ID deactivated ✔");
-}
-async function makeMaster(id,name){
-  if(!await confirmDialog("Make \""+name+"\" a MASTER ID? They will get full control.","Make Master"))return;
-  fire(db.collection("users").doc(id).update({role:"master",perms:ALL_PERMS}));
-  audit("Promoted to Master",name);toast(name+" is now a Master ID ✔");
-}
-async function deleteUser(id,name){
-  if(!await confirmDialog("Delete ID \""+name+"\"? Their old entries stay in history.","Delete ID"))return;
-  fire(db.collection("users").doc(id).delete());
-  audit("ID deleted",name);toast("ID \""+name+"\" deleted ✔");
-}
-async function createStaffUser(){
-  const n=$("nuName").value.trim(),realEmail=$("nuEmail").value.trim().toLowerCase(),pass=$("nuPass").value;
-  if(!n){toast("Enter a username",true);return;}
-  if(realEmail&&!realEmail.includes("@")){toast("Email looks invalid",true);return;}
-  if(pass.length<6){toast("Password must be at least 6 characters",true);return;}
-  const email=realEmail||emailFor(n);
-  try{
-    const sec=firebase.apps.find(a=>a.name==="Secondary")||firebase.initializeApp(firebaseConfig,"Secondary");
-    const cred=await sec.auth().createUserWithEmailAndPassword(email,pass);
-    await db.collection("users").doc(cred.user.uid).set({name:n,email,role:"staff",perms:DEFAULT_STAFF_PERMS,active:true,createdBy:USER,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-    await sec.auth().signOut();
-    audit("ID created",n+(realEmail?" ("+realEmail+")":""));
-    $("nuName").value="";$("nuEmail").value="";$("nuPass").value="";
-    toast("ID created for "+n+" — give them the username & password");
-  }catch(e){const c=e.code||"";
-    if(c.includes("email-already-in-use"))toast("This username / email is already taken",true);
-    else if(c.includes("weak-password"))toast("Password too weak — use at least 6 characters",true);
-    else toast("Could not create ID: "+e.message,true);
-  }
-}
-async function sendReset(email){try{await auth.sendPasswordResetEmail(email);toast("Password reset email sent to "+email);}catch(e){toast(e.message,true);}}
-async function changeMyPass(){
-  const cur=await promptDialog("Enter your CURRENT password:","Change password");if(cur===null)return;
-  const nw=await promptDialog("Enter a NEW password (min 6 characters):","Change password");if(nw===null)return;
-  if(nw.length<6){toast("New password must be at least 6 characters",true);return;}
-  try{
-    const user=auth.currentUser;
-    const credObj=firebase.auth.EmailAuthProvider.credential(user.email,cur);
-    await user.reauthenticateWithCredential(credObj);
-    await user.updatePassword(nw);toast("Password changed ✔");
-  }catch(e){const c=e.code||"";if(c.includes("wrong-password")||c.includes("invalid-credential"))toast("Current password is wrong",true);else toast(e.message,true);}
-}
-
-/* ---------- Lamp pull-cord login ---------- */
-(function(){
-  const cord=$("cord"),line=$("cordLine"),knob=$("cordKnob");if(!cord)return;
-  let startY=null;const BASE=76,MAX=58,TRIGGER=30;
-  function setPull(dy){line.style.height=(BASE+dy)+"px";knob.style.top=(70+dy)+"px";}
-  function lightOn(){const lp=$("loginPage");if(lp.classList.contains("lit"))return;lp.classList.add("lit");if(navigator.vibrate)try{navigator.vibrate(30);}catch(e){}setTimeout(()=>{const n=$("loginName");if(n&&!n.value)n.focus();},900);}
-  cord.addEventListener("pointerdown",e=>{startY=e.clientY;cord.setPointerCapture(e.pointerId);e.preventDefault();});
-  cord.addEventListener("pointermove",e=>{if(startY===null)return;const dy=Math.max(0,Math.min(MAX,e.clientY-startY));setPull(dy);});
-  function release(e){if(startY===null)return;const dy=Math.max(0,Math.min(MAX,e.clientY-startY));setPull(0);if(dy>=TRIGGER||dy<6)lightOn();startY=null;}
-  cord.addEventListener("pointerup",release);
-  cord.addEventListener("pointercancel",()=>{setPull(0);startY=null;});
-})();
-function resetLamp(){const lp=$("loginPage");if(lp)lp.classList.remove("lit");}
-
-/* ---------- Enter key submits login ---------- */
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("drawer").classList.contains("open"))closeDrawer();});
-["loginName","loginPin"].forEach(id=>{const el=$(id);if(el)el.addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});});
-
-/* ---------- Team chat ---------- */
-function escHtml(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-let CHAT_UNSUB=null;
-function attachChat(){
-  if(CHAT_UNSUB)return;
-  CHAT_UNSUB=db.collection("chat").orderBy("ts","asc").limitToLast(150).onSnapshot(snap=>{
-    const box=$("chatList");if(!box)return;
-    const nearBottom=(box.scrollTop+box.clientHeight)>=(box.scrollHeight-60);
-    box.innerHTML=snap.docs.map(d=>{
-      const m=d.data(),mine=m.uid===UID;
-      const tm=(m.ts&&m.ts.toDate)?m.ts.toDate().toLocaleString([],{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"}):"sending…";
-      return `<div class="chat-msg${mine?" me":""}">
-        <div class="who">${mine?"You":escHtml(m.user||"User")}</div>
-        ${m.tag?`<div class="tag">Item #${escHtml(m.tag)}</div>`:""}
-        <div>${escHtml(m.text)}</div>
-        <div class="tm">${tm}</div>
-      </div>`;
-    }).join("")||'<div class="empty" style="padding:20px 0">No messages yet — say hello 👋</div>';
-    if(nearBottom||!box.dataset.seen){box.scrollTop=box.scrollHeight;box.dataset.seen="1";}
-  },err=>{});
-}
-function detachChat(){if(CHAT_UNSUB){CHAT_UNSUB();CHAT_UNSUB=null;}const box=$("chatList");if(box){box.innerHTML="";delete box.dataset.seen;}}
-async function sendChatMsg(){
-  const textEl=$("chatText"),tagEl=$("chatItemTag");
-  const text=textEl.value.trim(),tag=tagEl.value.trim().replace(/^#/,"");
-  if(!text){toast("Type a message",true);return;}
-  if(!UID){toast("Sign in first",true);return;}
-  textEl.value="";tagEl.value="";
-  try{
-    await db.collection("chat").add({text,tag:tag||null,user:USER,uid:UID,ts:firebase.firestore.FieldValue.serverTimestamp()});
-  }catch(e){toast(e.message,true);textEl.value=text;tagEl.value=tag;}
-}
-
-/* ---------- Header mouse mascot: walks in, shows a board with the user's name, walks out ---------- */
-let mouseShownOnce=false;
-function runMouseShow(){
-  const chr=$("mouseChar"),board=$("mouseBoard"),nameEl=$("mouseBoardName"),stage=$("mouseStage");
-  const header=document.querySelector("header"),brand=document.querySelector("header .brand");
-  if(!chr||!board||!nameEl||!stage||!header||!brand||chr.classList.contains("busy"))return;
-  const name=(USER||"Friend").trim()||"Friend";
-  nameEl.textContent=name;nameEl.style.setProperty("--chars",Math.min(name.length,30));
-  const stageRect=stage.getBoundingClientRect(),brandRect=brand.getBoundingClientRect(),headerRect=header.getBoundingClientRect();
-  const stopX=Math.min((brandRect.right-stageRect.left)+14,(headerRect.right-stageRect.left)-96);
-  const exitX=(headerRect.right-stageRect.left)+80;
-  board.classList.remove("show");
-  chr.classList.add("busy");
-  chr.style.transition="none";chr.style.left=exitX+"px";chr.style.opacity="0";chr.classList.remove("walking");
-  void chr.offsetWidth;
-  requestAnimationFrame(()=>{
-    chr.style.transition="left 1.5s ease, opacity .3s ease";
-    chr.classList.add("walking");chr.style.opacity="1";chr.style.left=stopX+"px";
   });
-  setTimeout(()=>{chr.classList.remove("walking");board.classList.add("show");},1600);
-  setTimeout(()=>{board.classList.remove("show");},4000);
-  setTimeout(()=>{
-    chr.classList.add("walking");
-    chr.style.transition="left 1.4s ease, opacity .3s ease .9s";
-    chr.style.left=exitX+"px";chr.style.opacity="0";
-  },4350);
-  setTimeout(()=>{chr.classList.remove("walking","busy");},5850);
+  
+  $("stockSummary").innerHTML = `
+    <div class="box"><b style="color:var(--A)">${num(totA)}</b><span>A-Grade</span></div>
+    <div class="box"><b style="color:var(--B)">${num(totB)}</b><span>B-Grade</span></div>
+    <div class="box"><b style="color:var(--C)">${num(totC)}</b><span>Colour MM</span></div>
+    <div class="box"><b>${num(totS)}</b><span>Sample</span></div>`;
+  box.innerHTML = h || '<div class="empty">No items match search.</div>';
 }
 
-/* ---------- Init ---------- */
-(function init(){
-  const t=today();
-  ["repDate","histFrom","histTo","repCsvFrom","repCsvTo"].forEach(id=>{const el=$(id);if(el)el.value=t;});
-  const n=new Date();const first=new Date(n.getFullYear(),n.getMonth(),1).toISOString().slice(0,10);
-  if($("msFrom"))$("msFrom").value=first;if($("msTo"))$("msTo").value=t;
-  checkLogin();
-  setTimeout(hideBootSplash,4000);
-})();
-
-/* ---------- Service worker ---------- */
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("sw.js").catch(()=>{});
-  let swRefreshed=false;
-  navigator.serviceWorker.addEventListener("controllerchange",()=>{if(swRefreshed)return;swRefreshed=true;location.reload();});
+function setDir(d) {
+  curDir = d;
+  document.querySelectorAll("#dirSeg button").forEach(b => b.classList.toggle("on", b.dataset.d === d));
+  buildMvTree();
 }
+
+function buildMvTree() {
+  const box = $("mvTree"); if (!box) return;
+  const list = Object.entries(TYPES).filter(([k, t]) => t.dir === curDir);
+  const groups = {};
+  list.forEach(([k, t]) => { (groups[t.group || "Other"] = groups[t.group || "Other"] || []).push([k, t]); });
+  
+  let h = "";
+  Object.entries(groups).forEach(([g, arr]) => {
+    h += `<div class="mv-group-title">${g}</div>`;
+    arr.forEach(([k, t]) => {
+      h += `<button class="mv-btn" onclick="pickType('${k}')"><span>${t.label}</span><span>›</span></button>`;
+    });
+  });
+  box.innerHTML = h;
+}
+
+function pickType(k) {
+  curType = k;
+  const T = TYPES[k];
+  $("mvFormCard").style.display = "block";
+  $("mvFormTitle").textContent = T.label;
+  $("partyWrap").style.display = T.party ? "block" : "none";
+}
+
+function saveMovement() {
+  const code = $("mvItem").value, qty = parseInt($("mvQty").value, 10);
+  if (!code || !qty) return toast("Provide valid details", true);
+  
+  const T = TYPES[curType];
+  const itemRef = db.collection("items").doc(code);
+  
+  db.runTransaction(async tr => {
+    const doc = await tr.get(itemRef);
+    if (!doc.exists) throw new Error("Item not found");
+    const d = doc.data(), upd = {};
+    for (const [b, mult] of Object.entries(T.eff)) {
+      upd[b] = (d[b] || 0) + mult * qty;
+    }
+    tr.update(itemRef, upd);
+    tr.set(db.collection("movements").doc(), {
+      code, type: curType, qty, user: USER, ts: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }).then(() => {
+    toast("Saved movement!");
+    $("mvQty").value = "";
+  }).catch(e => toast(e.message, true));
+}
+
+function exportStockCSV() {
+  let csv = "Item Code,Item Name,A-Grade,B-Grade,Colour MM,Sample\n";
+  sortedCodes().forEach(c => {
+    const i = ITEMS[c];
+    csv += `"${c}","${i.name||""}",${i.a||0},${i.b||0},${i.c||0},${i.s||0}\n`;
+  });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+  a.download = "Stock_Report.csv";
+  a.click();
+}
+
+/* Bulk Opening Stock Excel/CSV Parser */
+function parseGradeBulkFile(input) {
+  const file = input.files && input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const wb = XLSX.read(e.target.result, { type: "array" });
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1 });
+    window.bulkGradeData = [];
+    for (let i = 1; i < rows.length; i++) {
+      const r = rows[i]; if (!r[0]) continue;
+      window.bulkGradeData.push({ code: String(r[0]), a: parseInt(r[1])||0, b: parseInt(r[2])||0, c: parseInt(r[3])||0, s: parseInt(r[4])||0 });
+    }
+    $("gradeBulkPreview").innerHTML = `<div class="notice" style="margin-top:8px;">Ready to update <b>${window.bulkGradeData.length}</b> items.</div>`;
+    $("applyGradeBulkBtn").style.display = "block";
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function applyGradeBulk() {
+  if (!window.bulkGradeData || !window.bulkGradeData.length) return;
+  toast("Updating bulk opening stock…");
+  const batch = db.batch();
+  window.bulkGradeData.forEach(r => {
+    const ref = db.collection("items").doc(r.code);
+    batch.set(ref, { a: r.a, b: r.b, c: r.c, s: r.s }, { merge: true });
+  });
+  batch.commit().then(() => {
+    toast("Bulk stock updated successfully ✔");
+    $("gradeBulkPreview").innerHTML = "";
+    $("applyGradeBulkBtn").style.display = "none";
+  });
+}
+
+function downloadGradeBulkTemplate() {
+  const csv = "Item Code,A-Grade Qty,B-Grade Qty,Colour MM Qty,Sample Qty\n1001,100,10,0,0\n1002,50,0,5,2";
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+  a.download = "Opening_Stock_Template.csv";
+  a.click();
+}
+
+buildMvTree();
 </script>
 </body>
 </html>
