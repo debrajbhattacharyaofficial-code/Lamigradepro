@@ -481,6 +481,12 @@ const BUILTIN_CATS = [
   "Louvers"
 ];
 const DEFAULT_CAT = "PVC Laminate Sheet";
+// old category names (pre-rename) mapped to their new name, for one-time migration of existing item data
+const LEGACY_CAT_MAP = {
+  "A-Grade PVC Laminate Sheet": "PVC Laminate Sheet",
+  "Colour Mismatch": "PVC Laminate Sheet",
+  "1.25MM B Grade PVC Laminate Sheet": "PVC Laminate Sheet"
+};
 // grouping of categories under top headings for the Stock page
 const CAT_GROUPS = [
   {group:"1.25MM PVC Laminate Sheet", cats:["PVC Laminate Sheet"]},
@@ -689,12 +695,29 @@ function scheduleItemRender(){
     if(itemsActive) renderItemManage();
   });
 }
+/* ---------- One-time fix: move items still tagged with an old/removed category name onto the new name ---------- */
+let _catMigrationBusy=false;
+async function migrateLegacyCategories(){
+  if(_catMigrationBusy||!ME||!can("items"))return;
+  const toFix=Object.entries(ITEMS).filter(([,it])=>LEGACY_CAT_MAP[it.cat]);
+  if(!toFix.length)return;
+  _catMigrationBusy=true;
+  try{
+    for(let i=0;i<toFix.length;i+=400){
+      const batch=db.batch();
+      toFix.slice(i,i+400).forEach(([code,it])=>{batch.update(db.collection("items").doc(code),{cat:LEGACY_CAT_MAP[it.cat]});});
+      await batch.commit();
+    }
+  }catch(e){/* will retry on next items snapshot */}
+  _catMigrationBusy=false;
+}
 db.collection("items").onSnapshot({includeMetadataChanges:false},snap=>{
   ITEMS={}; snap.forEach(d=>ITEMS[d.id]=d.data());
   _sortedCodesCache=null;
   $("connDot").classList.remove("off");
   _itemSelectsDirty=true;
   scheduleItemRender();
+  migrateLegacyCategories();
   const seed=$("seedCard"); if(seed) seed.style.display=(snap.empty&&can("items"))?"block":"none";
   $("seedCount").textContent=DEFAULT_CODES.length; $("itemCount").textContent="("+snap.size+")";
 },err=>{$("connDot").classList.add("off");});
