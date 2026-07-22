@@ -1,13 +1,13 @@
 {
-  "name": "LamiGrade Pro \u2014 PVC Laminate Inventory",
+  "name": "LamiGrade Inventory Management",
   "short_name": "LamiGrade",
-  "description": "Premium PVC laminate inventory: Inward/Outward movements, grade-wise stock (A, B/Damage, Colour Mismatch), category hierarchy, reports and master control with live multi-user sync.",
+  "description": "LamiGrade Inventory Management — PVC laminate inventory: Inward/Outward movements, grade-wise stock (A, B/Damage, Colour Mismatch), category hierarchy, reports and admin control with live multi-user sync.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#FFFFFF",
-  "theme_color": "#FFFFFF",
+  "background_color": "#0B0F14",
+  "theme_color": "#0B0F14",
   "icons": [
     {
       "src": "icon-192.png",

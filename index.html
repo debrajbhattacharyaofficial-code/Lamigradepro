@@ -4,15 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FFFFFF">
-<meta name="description" content="LamiGrade Pro — a private PVC laminate inventory management tool for internal business stock tracking.">
-<meta name="application-name" content="LamiGrade Pro">
+<meta name="description" content="LamiGrade Inventory Management — a private PVC laminate inventory management tool for internal business stock tracking.">
+<meta name="application-name" content="LamiGrade Inventory Management">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="LamiGrade Pro">
+<meta name="apple-mobile-web-app-title" content="LamiGrade">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex, nofollow">
-<title>LamiGrade Pro</title>
+<title>LamiGrade Inventory Management</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -40,45 +40,59 @@
   --C:#6B5FCE; --C-bg:rgba(107,95,206,.12);
   --radius:16px; --shadow:0 1px 2px rgba(15,15,17,.04), 0 10px 30px rgba(15,15,17,.07);
 }
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 html{scroll-behavior:smooth}
 html,body{margin:0;padding:0}
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45}
 h1,h2,h3,h4{font-family:'Sora',sans-serif;margin:0}
 button{font-family:inherit}
 ::-webkit-scrollbar{width:0;height:0}
-header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(255,255,255,.86);border-bottom:1px solid var(--line);padding:13px 16px;display:flex;align-items:center;justify-content:space-between;overflow:visible}
-header .brand{display:flex;align-items:center;gap:11px;position:relative}
-.logo-mark{width:38px;height:38px;border-radius:11px;background:#0E0E10;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden}
-header h1{font-size:17px;font-weight:800;letter-spacing:.2px;color:var(--ink)}
-header .sub{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700}
-.headerRight{display:flex;align-items:center;gap:8px;position:relative;z-index:6}
-.userchip{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:7px;cursor:pointer;transition:.15s ease}
-.userchip:active{transform:scale(.97);background:var(--gold-soft)}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--in);box-shadow:0 0 8px var(--in)}
+header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(255,255,255,.86);border-bottom:1px solid var(--line);padding:11px 14px;display:flex;align-items:center;gap:6px;overflow:visible}
+.menuBtn{flex:0 0 38px;width:38px;height:38px;border-radius:11px;background:#0E0E10;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:transform .09s ease,background .12s ease}
+.menuBtn:active{transform:scale(.92)}
+.menuBtn svg{width:19px;height:19px;fill:#fff}
+.headerTitle{flex:1;min-width:0;text-align:center}
+.headerTitle h1{font-size:16.5px;font-weight:800;letter-spacing:.2px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.headerTitle .sub{font-size:9px;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.headerSide{flex:0 0 38px;width:38px;height:38px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--in);box-shadow:0 0 8px var(--in);flex:0 0 auto}
 .dot.off{background:var(--out);box-shadow:0 0 8px var(--out)}
-main{max-width:820px;margin:0 auto;padding:14px;padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+main{max-width:820px;margin:0 auto;padding:14px;padding-bottom:calc(28px + env(safe-area-inset-bottom))}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:13px;scroll-margin-top:78px;transition:box-shadow .2s ease}
 .card h2{font-size:15.5px;margin-bottom:4px}
 .card .desc{font-size:12.5px;color:var(--ink2);margin:0 0 10px}
 .eyebrow{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:5px}
 .card.dspot{animation:dspotPulse 1.5s ease}
 @keyframes dspotPulse{0%,100%{box-shadow:var(--shadow)}30%{box-shadow:0 0 0 2px var(--gold),var(--shadow)}}
-/* ---- bottom tab bar navigation ---- */
-.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:70;display:flex;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:7px 4px calc(7px + env(safe-area-inset-bottom));box-shadow:0 -1px 0 rgba(15,15,17,.02),0 -8px 24px rgba(15,15,17,.05)}
-.bnav{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;color:var(--muted);font-size:10.5px;font-weight:700;padding:7px 2px;border-radius:13px;cursor:pointer;transition:color .15s ease,background .15s ease}
-.bnav svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.9;flex:0 0 auto;transition:transform .15s ease}
-.bnav.active{color:var(--ink)}
-.bnav:active svg{transform:scale(.88)}
-.bnav.active svg{stroke:var(--ink)}
+/* ---- side drawer navigation ---- */
+.drawer-overlay{position:fixed;inset:0;background:rgba(4,7,10,.5);z-index:180;opacity:0;pointer-events:none;transition:opacity .22s ease}
+.drawer-overlay.show{opacity:1;pointer-events:auto}
+.drawer{position:absolute;left:0;top:0;bottom:0;width:min(84vw,318px);background:var(--panel);transform:translateX(-100%);transition:transform .26s cubic-bezier(.22,.9,.3,1);overflow-y:auto;box-shadow:10px 0 34px rgba(0,0,0,.16);display:flex;flex-direction:column;will-change:transform;padding-bottom:env(safe-area-inset-bottom)}
+.drawer-overlay.show .drawer{transform:translateX(0)}
+.drawer-profile{padding:18px 16px 14px;border-bottom:1px solid var(--line);background:var(--bg2)}
+.dp-row{display:flex;align-items:center;gap:8px;font-size:15px;flex-wrap:wrap}
+.dp-actions{display:flex;gap:8px;margin-top:12px}
+.dp-actions .btn{margin-top:0;flex:1;padding:9px 10px;font-size:12.5px}
+.drawer-list{padding:8px;flex:1}
+.drawer-item{width:100%;display:flex;align-items:center;gap:12px;padding:13px 10px;border:none;background:none;border-radius:12px;color:var(--ink);font-size:14.5px;font-weight:700;cursor:pointer;transition:background .1s ease}
+.drawer-item:active{background:var(--panel2)}
+.drawer-item.active{background:var(--gold-soft);color:var(--ink)}
+.drawer-item svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.9;flex:0 0 auto}
+.drawer-item span{flex:1;text-align:left}
+.drawer-caret{width:16px !important;height:16px !important;stroke-width:2.4 !important;flex:0 0 auto;transition:transform .2s ease}
+.drawer-item.has-children.expanded .drawer-caret{transform:rotate(90deg)}
+.drawer-sub{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.drawer-subitem{display:block;width:100%;text-align:left;padding:11px 14px 11px 44px;border:none;background:none;color:var(--ink2);font-size:13.5px;font-weight:600;border-radius:10px;cursor:pointer;transition:background .1s ease,color .1s ease}
+.drawer-subitem:active{background:var(--panel2)}
+.drawer-subitem.active{color:var(--ink);background:var(--gold-soft);font-weight:700}
 .page{display:none}
-.page.active{display:block;animation:fade .32s cubic-bezier(.22,.9,.3,1)}
+.page.active{display:block;animation:fade .22s cubic-bezier(.22,.9,.3,1)}
 @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 label.f{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin:11px 0 5px}
 input,select,textarea{width:100%;padding:12px 13px;font-size:15px;font-family:inherit;border:1.5px solid var(--line);border-radius:11px;background:var(--bg2);color:var(--ink);outline:none;transition:.15s ease}
 input:focus,select:focus,textarea:focus{border-color:var(--ink);background:var(--panel)}
 select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%239A9AA1' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:34px}
-.btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--panel2);color:var(--ink);font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;border:1px solid var(--line);transition:transform .12s ease,box-shadow .12s ease,background .12s ease}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--panel2);color:var(--ink);font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;border:1px solid var(--line);transition:transform .09s ease,box-shadow .09s ease,background .09s ease}
 .btn:active{transform:scale(.985)}
 .btn.gold{background:#0E0E10;color:#fff;border:none;box-shadow:0 6px 18px rgba(14,14,16,.22)}
 .btn.gold:active{box-shadow:0 2px 8px rgba(14,14,16,.2)}
@@ -95,19 +109,27 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .seg button.on{background:var(--panel2);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.3)}
 .seg button.on.in{color:var(--in)}.seg button.on.out{color:var(--out)}
 .mv-group-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:12px 2px 7px}
-.mv-btn{width:100%;text-align:left;padding:14px 15px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg2);color:var(--ink);font-weight:600;font-size:14px;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;transition:.13s}
+.mv-btn{width:100%;text-align:left;padding:14px 15px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg2);color:var(--ink);font-weight:600;font-size:14px;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;transition:transform .09s ease,background .1s ease,border-color .1s ease}
 .mv-btn:active{transform:scale(.99)}
 .mv-btn.sel{border-color:var(--gold);background:var(--gold-soft)}
 .mv-btn .arrow{color:var(--muted);font-size:16px}
 .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:13px}
 .summary .box{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:14px;padding:13px 8px;text-align:center}
+.summary.clickable .box{cursor:pointer;transition:transform .09s ease,box-shadow .09s ease}
+.summary.clickable .box:active{transform:scale(.95);box-shadow:0 1px 2px rgba(15,15,17,.04)}
+.ov-current{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-bottom:9px;cursor:pointer;transition:transform .09s ease,box-shadow .09s ease}
+.ov-current:active{transform:scale(.98)}
+.ov-cur-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;margin-bottom:9px}
+.ov-cur-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}
+.ov-cur-grid b{display:block;font-size:18px;font-weight:800;font-family:'Sora',sans-serif;line-height:1.2}
+.ov-cur-grid span{font-size:10px;color:var(--muted);font-weight:600}
 .summary .box b{font-family:'Sora';font-size:19px;display:block}
 .summary .box span{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
 .cat-head{font-size:12px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.6px;margin:14px 2px 8px;display:flex;align-items:center;gap:8px}
 .cat-head .count{color:var(--muted);font-weight:500;text-transform:none;letter-spacing:0;font-size:11px}
 .subcat-head{font-size:11.5px;font-weight:700;color:var(--ink2);margin:10px 2px 6px 10px;border-left:2px solid var(--line);padding-left:8px}
 .stock-head{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:4px;padding:6px 12px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase}
-.stock-row{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:4px;align-items:center;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:11px;margin-bottom:6px;cursor:pointer;content-visibility:auto;contain-intrinsic-size:auto 56px;transition:transform .12s ease,background .12s ease}
+.stock-row{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:4px;align-items:center;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:11px;margin-bottom:6px;cursor:pointer;content-visibility:auto;contain-intrinsic-size:auto 56px;transition:transform .09s ease,background .1s ease}
 .stock-row:active{transform:scale(.98);background:var(--panel2)}
 .stock-row .code{font-family:'Sora';font-weight:700;font-size:14px}
 .stock-row .nm{font-size:10px;color:var(--muted)}
@@ -115,6 +137,8 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .stock-row .v.zero{color:var(--muted);opacity:.5}
 .stock-row .v.A{color:var(--A)}.stock-row .v.B{color:var(--B)}.stock-row .v.tot{color:var(--ink)}
 .mv{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:7px;display:flex;justify-content:space-between;gap:10px;content-visibility:auto;contain-intrinsic-size:auto 60px}
+.mv.tap{cursor:pointer;transition:transform .09s ease,background .1s ease}
+.mv.tap:active{transform:scale(.98);background:var(--panel2)}
 .mv .l{flex:1;min-width:0}
 .mv .t1{font-weight:700;font-size:13.5px}
 .mv .t2{font-size:11.5px;color:var(--muted);margin-top:2px}
@@ -125,7 +149,8 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .searchbar input{padding-left:40px}
 .searchbar svg{position:absolute;left:13px;top:13px;width:18px;height:18px;stroke:var(--muted);fill:none;stroke-width:2}
 .pill-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
-.pill{border:1.5px solid var(--line);background:var(--bg2);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:600;color:var(--ink2);cursor:pointer;transition:background .15s ease,color .15s ease,border-color .15s ease}
+.pill{border:1.5px solid var(--line);background:var(--bg2);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:600;color:var(--ink2);cursor:pointer;transition:background .1s ease,color .1s ease,border-color .1s ease,transform .09s ease}
+.pill:active{transform:scale(.94)}
 .pill.on{background:var(--gold);color:#fff;border-color:var(--gold)}
 .notice{background:var(--gold-soft);border:1px solid var(--line);color:var(--ink);border-left:3px solid var(--ink);border-radius:12px;padding:11px 13px;font-size:13px;margin-bottom:12px}
 .empty{text-align:center;color:var(--muted);padding:28px 10px;font-size:13.5px}
@@ -204,7 +229,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
       <div class="pull-hint" id="pullHint">Pull the cord to switch on ⬇</div>
     </div>
     <div class="login-card">
-      <div class="eyebrow" style="color:#C9A857;text-align:center">LamiGrade Pro</div>
+      <div class="eyebrow" style="color:#C9A857;text-align:center">LamiGrade Inventory Management</div>
       <h2 id="loginTitle">Welcome</h2>
       <p id="loginHint">Sign in with your username and password.</p>
       <label class="f">Username</label>
@@ -217,28 +242,97 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 </div>
 
 <header>
-  <div class="brand">
-    <div class="logo-mark">
-      <img src="icon-192.png" alt="LamiGrade Pro" width="38" height="38" style="width:100%;height:100%;object-fit:cover;border-radius:11px">
-    </div>
-    <div><h1>LamiGrade Pro</h1><div class="sub">Inventory System</div></div>
-  </div>
-  <div class="headerRight">
-    <div class="userchip" onclick="switchUser()"><span class="dot" id="connDot"></span><span id="userName">—</span></div>
-  </div>
+  <button class="menuBtn" id="menuBtn" onclick="openDrawer()" aria-label="Open menu">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg>
+  </button>
+  <div class="headerTitle"><h1>LamiGrade</h1><div class="sub">Inventory Management</div></div>
+  <div class="headerSide"></div>
 </header>
 
+<div class="drawer-overlay" id="drawerOverlay" onclick="if(event.target===this)closeDrawer()">
+  <nav class="drawer" id="drawer">
+    <div class="drawer-profile">
+      <div class="dp-row"><span class="dot" id="connDot"></span><b id="userName">—</b> <span class="chip gold" id="dpRoleChip" style="display:none">Admin</span></div>
+      <div class="dp-actions">
+        <button class="btn ghost sm" onclick="changeMyPass()">Change password</button>
+        <button class="btn ghost sm" onclick="switchUser()">Sign out</button>
+      </div>
+    </div>
+    <div class="drawer-list">
+      <button class="drawer-item" data-p="overview" onclick="goPage('overview')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg>
+        <span>Overview</span></button>
+      <button class="drawer-item" data-p="stock" onclick="goPage('stock')">
+        <svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
+        <span>Stock</span></button>
+      <button class="drawer-item" data-p="entry" onclick="goPage('entry')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+        <span>Entry</span></button>
+      <button class="drawer-item has-children" data-group="report" onclick="toggleDrawerGroup('report')">
+        <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+        <span>Report</span><svg class="drawer-caret" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <div class="drawer-sub" id="drawerSub-report">
+        <button class="drawer-subitem" data-sub="daily" onclick="goPage('report','daily')">Daily Balance</button>
+        <button class="drawer-subitem" data-sub="stockcsv" onclick="goPage('report','stockcsv')">Current Stock</button>
+        <button class="drawer-subitem" data-sub="hist" onclick="goPage('report','hist')">Movement History</button>
+        <button class="drawer-subitem" data-sub="admin-sales" onclick="goPage('report','admin-sales')">Admin Sales Report</button>
+        <button class="drawer-subitem" data-sub="lowstock" onclick="goPage('report','lowstock')">Production Needed</button>
+      </div>
+      <button class="drawer-item has-children" data-group="items" onclick="toggleDrawerGroup('items')">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+        <span>Items</span><svg class="drawer-caret" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <div class="drawer-sub" id="drawerSub-items">
+        <button class="drawer-subitem" data-sub="add" onclick="goPage('items','add')">Add Item</button>
+        <button class="drawer-subitem" data-sub="qty" onclick="goPage('items','qty')">Add Opening Balance / Quantity</button>
+        <button class="drawer-subitem" data-sub="bulkadd" onclick="goPage('items','bulkadd')">Bulk Add Items</button>
+        <button class="drawer-subitem" data-sub="batches" onclick="goPage('items','batches')">Delete a Bulk Upload</button>
+        <button class="drawer-subitem" data-sub="catbulk" onclick="goPage('items','catbulk')">Bulk Category Update</button>
+        <button class="drawer-subitem" data-sub="catmanage" onclick="goPage('items','catmanage')">Manage Categories</button>
+        <button class="drawer-subitem" data-sub="movetype" onclick="goPage('items','movetype')">Custom Movement Type</button>
+        <button class="drawer-subitem" data-sub="all" onclick="goPage('items','all')">All Items</button>
+        <button class="drawer-subitem" data-sub="audit" onclick="goPage('items','audit')">Audit Log</button>
+      </div>
+      <button class="drawer-item" data-p="master" id="drawerMasterBtn" style="display:none" onclick="goPage('master')">
+        <svg viewBox="0 0 24 24"><path d="M3 17l3-9 4 5 2-6 2 6 4-5 3 9z"/><path d="M4 20h16"/></svg>
+        <span>Admin</span></button>
+    </div>
+  </nav>
+</div>
+
 <main>
-<div class="page active" id="page-stock">
+<div class="page active" id="page-overview">
+  <div class="searchbar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="ovSearch" placeholder="Search item code or name…" oninput="renderOverviewSearchD()"></div>
+  <div id="ovSearchResults"></div>
+  <div class="ov-current" id="ovCurrentBox" onclick="goPage('stock')">
+    <div class="ov-cur-label">Current Stock</div>
+    <div class="ov-cur-grid" id="ovCurrentGrid"></div>
+  </div>
+  <div class="summary clickable" id="ovSummary" style="grid-template-columns:repeat(2,1fr)"></div>
+  <div class="notice" id="ovNoReports" style="display:none">Your ID cannot view reports — ask the Admin ID to enable it.</div>
+  <div id="ovReportsArea">
+    <div class="card" id="ovChartCard">
+      <div class="eyebrow">Last 6 months</div><h2>Monthly Stock Movement</h2>
+      <p class="desc">Total pieces sold across all items, month by month.</p>
+      <div id="ovChartWrap"><div class="empty">Loading…</div></div>
+    </div>
+    <div class="card" id="ovTopCard">
+      <div class="eyebrow">This month</div><h2>Top Items by Sales</h2>
+      <div id="ovTopList"><div class="empty">Loading…</div></div>
+    </div>
+  </div>
+</div>
+<div class="page" id="page-stock">
   <div class="summary" id="stockSummary"></div>
   <div class="searchbar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
     <input id="stockSearch" placeholder="Search item code or name…" oninput="renderStockD()"></div>
+  <div class="notice" id="stockSpecialNotice" style="display:none"></div>
   <div class="pill-row" id="catFilterRow"></div>
   <div id="stockList"></div>
 </div>
 
 <div class="page" id="page-entry">
-  <div class="notice" id="entryNoPerm" style="display:none">Your ID cannot record entries. Ask the Master ID to enable it.</div>
+  <div class="notice" id="entryNoPerm" style="display:none">Your ID cannot record entries. Ask the Admin ID to enable it.</div>
   <div id="entryArea">
     <div class="card">
       <div class="eyebrow">New movement</div><h2>Choose movement type</h2>
@@ -283,7 +377,8 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 </div>
 
 <div class="page" id="page-report">
-  <div class="notice" id="reportNoPerm" style="display:none">Your ID cannot generate reports. Ask the Master ID to enable it.</div>
+  <div class="notice" id="reportNoPerm" style="display:none">Your ID cannot generate reports. Ask the Admin ID to enable it.</div>
+  <div class="rep-section" data-sub="daily">
   <div class="card" id="repDailyCard"><div class="eyebrow">Report 1 — Daily balance</div><h2>Opening &amp; closing balance</h2>
     <p class="desc">Each item's opening stock, the day's movements, and closing stock — per grade.</p>
     <label class="f">Date</label><input type="date" id="repDate">
@@ -291,24 +386,32 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
     <button class="btn gold" onclick="runReport()">Show report</button>
     <button class="btn ghost" id="repDailyXlsx" style="display:none" onclick="exportDailyXLSX()">⬇ Download (Excel)</button></div>
   <div id="repOut"></div>
+  </div>
+  <div class="rep-section" data-sub="stockcsv" style="display:none">
   <div class="card" id="repStockCard"><div class="eyebrow">Report 2 — Current stock</div><h2>Current stock (CSV)</h2>
     <p class="desc">Full stock of every item with category, grades and total.</p>
     <button class="btn gold" onclick="exportStockCSV()">⬇ Download stock (CSV)</button></div>
+  </div>
+  <div class="rep-section" data-sub="hist" style="display:none">
   <div class="card" id="repHistCard"><div class="eyebrow">Report 3 — Movement report</div><h2>Movement history (CSV)</h2>
     <p class="desc">Every movement between two dates, with date, time, item, party and the user ID who made the entry.</p>
     <div class="row2"><div><label class="f">From</label><input type="date" id="repCsvFrom"></div>
       <div><label class="f">To</label><input type="date" id="repCsvTo"></div></div>
     <label class="f">Item (optional)</label><select id="repCsvItem"><option value="">All items</option></select>
     <button class="btn gold" onclick="exportHistReport()">⬇ Download movement report (CSV)</button></div>
-  <div class="card" id="repMasterCard"><div class="eyebrow">Report 4 — Master Sales Report</div><h2>Sales analysis</h2>
+  </div>
+  <div class="rep-section" data-sub="admin-sales" style="display:none">
+  <div class="card" id="repMasterCard"><div class="eyebrow">Report 4 — Admin Sales Report</div><h2>Sales analysis</h2>
     <p class="desc">Month-wise sales, item × party breakdown, product analysis, top &amp; down ranked products. Screen + Excel.</p>
     <div class="pill-row" style="margin-top:8px"><button class="pill" onclick="msQuick(0)">This month</button>
       <button class="pill" onclick="msQuick(2)">3 months</button><button class="pill" onclick="msQuick(5)">6 months</button>
       <button class="pill" onclick="msQuick(11)">One year</button></div>
     <div class="row2"><div><label class="f">From</label><input type="date" id="msFrom"></div>
       <div><label class="f">To</label><input type="date" id="msTo"></div></div>
-    <button class="btn gold" onclick="runMasterReport()">Generate master report</button></div>
+    <button class="btn gold" onclick="runMasterReport()">Generate report</button></div>
   <div id="msOut"></div>
+  </div>
+  <div class="rep-section" data-sub="lowstock" style="display:none">
   <div class="card" id="repLowCard"><div class="eyebrow">Report 5 — Production Needed</div><h2>Low stock — PVC Laminate Sheet</h2>
     <p class="desc">Items in <b>PVC Laminate Sheet</b> whose A-Grade quantity is below the threshold are flagged <b>Production Needed</b>.</p>
     <label class="f">Threshold (pcs)</label><input type="number" id="lowStockThreshold" value="15" min="1">
@@ -318,14 +421,19 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
       <button class="btn ghost sm" id="lowStockXlsxBtn" style="display:none" onclick="exportLowStockXLSX()">⬇ Excel</button>
     </div></div>
   <div id="lowStockOut"></div>
+  </div>
 </div>
 
 <div class="page" id="page-items">
+  <div class="notice" id="itemsSubNoPerm" style="display:none"></div>
+  <div class="item-section" data-sub="add">
   <div class="card" id="addItemCard"><div class="eyebrow">Manage items</div><h2>Add a single item</h2>
     <div class="row2"><div><label class="f">Item code</label><input id="newCode" placeholder="e.g. 1003" maxlength="14"></div>
       <div><label class="f">Item name</label><input id="newName" value="MD PVC Laminate 1.25 MM" maxlength="60"></div></div>
     <label class="f">Category</label><select id="newCat"></select>
     <button class="btn teal" onclick="addItem()">Add item</button></div>
+  </div>
+  <div class="item-section" data-sub="qty" style="display:none">
   <div class="card" id="qaCard"><div class="eyebrow">Manage items</div><h2>Add opening balance / quantity</h2>
     <p class="desc">For an item that already exists — add stock to any of the 4 grades, anytime, as many times as you like. Pick the item, see its current stock, and add.</p>
     <label class="f">Item</label>
@@ -347,6 +455,8 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
     <div id="gradeBulkPreview"></div>
     <button class="btn teal" id="applyGradeBulkBtn" style="display:none" onclick="applyGradeBulk()">Add quantities</button>
     <button class="btn ghost" onclick="downloadGradeBulkTemplate()">⬇ Sample template (CSV)</button></div>
+  </div>
+  <div class="item-section" data-sub="bulkadd" style="display:none">
   <div class="card" id="seedCard" style="display:none"><h2>Load default items</h2>
     <p class="desc">Database is empty. Load the <b id="seedCount"></b> default codes into <b>PVC Laminate Sheet</b>.</p>
     <button class="btn gold" onclick="seedItems()">Load default items</button></div>
@@ -367,9 +477,13 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
     <button class="btn teal" id="applyItemBulkBtn" style="display:none" onclick="applyItemBulk()">Add all items</button>
     <button class="btn gold" id="applyExistUpdateBtn" style="display:none;margin-top:8px" onclick="applyExistUpdate()">Add quantities to existing items</button>
     <button class="btn ghost" onclick="downloadItemTemplate()">⬇ Sample template (CSV)</button></div>
+  </div>
+  <div class="item-section" data-sub="batches" style="display:none">
   <div class="card" id="batchCard"><div class="eyebrow">Uploaded files</div><h2>Delete a bulk upload</h2>
     <p class="desc">Every Excel/CSV item upload is saved here. Tap "Delete file" to remove all items that came from that upload in one go.</p>
     <div id="batchList"><div class="empty">No bulk uploads yet.</div></div></div>
+  </div>
+  <div class="item-section" data-sub="catbulk" style="display:none">
   <div class="card" id="catBulkCard"><div class="eyebrow">Bulk category update</div><h2>Move items to a category</h2>
     <label class="f">Category</label><select id="mcCat"></select>
     <label class="f">Item codes (comma / space / new line)</label><textarea id="mcCodes" rows="3" placeholder="101, 102, 103"></textarea>
@@ -381,11 +495,15 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
     <input type="file" id="catFile" accept=".xlsx,.xls,.csv" onchange="parseCatFile(this)">
     <div id="catPreview"></div>
     <button class="btn teal" id="applyCatBtn" style="display:none" onclick="applyCatBulk()">Apply all rows</button></div>
+  </div>
+  <div class="item-section" data-sub="catmanage" style="display:none">
   <div class="card" id="catManageCard"><div class="eyebrow">Manage categories</div><h2>Categories</h2>
     <p class="desc">Add or delete your own category. Items keep their assigned category name.</p>
     <input id="newCatName" placeholder="New category name" maxlength="40">
     <button class="btn teal" onclick="addCategory()">Add category</button>
     <div id="catManageList" style="margin-top:10px"></div></div>
+  </div>
+  <div class="item-section" data-sub="movetype" style="display:none">
   <div class="card" id="ctCard"><div class="eyebrow">Manage movements</div><h2>Custom movement type</h2>
     <p class="desc">Create your own transfer route (From → To). Appears in the Entry tab.</p>
     <div class="row2"><div><label class="f">From</label><select id="ctFrom"><option value="">Outside (inward)</option><option value="a">A-Grade</option><option value="b">B-Grade</option><option value="c">Colour Mismatch</option><option value="s">Sample</option></select></div>
@@ -394,45 +512,32 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
     <label class="f" style="display:flex;align-items:center;gap:8px;margin-top:12px"><input type="checkbox" id="ctParty" style="width:auto"> Ask for a party name</label>
     <button class="btn teal" onclick="addCustomType()">Add movement type</button>
     <div id="customTypeList" style="margin-top:14px"></div></div>
-  <div class="card"><h2>All items <span id="itemCount" style="font-weight:400;font-size:13px;color:var(--muted)"></span></h2>
+  </div>
+  <div class="item-section" data-sub="all" style="display:none">
+  <div class="card" id="allItemsCard"><h2>All items <span id="itemCount" style="font-weight:400;font-size:13px;color:var(--muted)"></span></h2>
     <div class="searchbar" style="margin-top:8px"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       <input id="itemSearch" placeholder="Search…" oninput="renderItemManageD()"></div>
     <div id="itemManageList"></div></div>
-  <div class="card" id="acctCard"><div class="eyebrow">My account</div><h2>Change my password</h2>
-    <p class="desc">You'll be asked for your current password first.</p>
-    <button class="btn ghost" onclick="changeMyPass()">Change my password</button></div>
+  </div>
+  <div class="item-section" data-sub="audit" style="display:none">
   <div class="card" id="auditLogCard"><h2>Audit log</h2><p class="desc">Who added, edited or deleted what — with date &amp; time.</p>
     <div id="auditList"><div class="empty">Nothing yet.</div></div></div>
+  </div>
 </div>
 
 <div class="page" id="page-master">
-  <div class="card" id="adminCard" style="border-color:rgba(14,14,16,.35)"><div class="eyebrow">★ Master control</div>
+  <div class="card" id="adminCard" style="border-color:rgba(14,14,16,.35)"><div class="eyebrow">★ Admin control</div>
     <h2>User IDs &amp; permissions</h2>
-    <p class="desc">Only the Master sees this. Staff cannot self-register — you create every account here.</p>
+    <p class="desc">Only the Admin sees this. Staff cannot self-register — you create every account here.</p>
     <div style="border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px;background:var(--bg2)">
       <div class="eyebrow">Create a new user ID</div>
       <div class="row2"><div><label class="f">Username</label><input id="nuName" placeholder="e.g. Ramesh" maxlength="30"></div>
         <div><label class="f">Email (optional)</label><input id="nuEmail" placeholder="for reset" maxlength="60"></div></div>
       <label class="f">Password (min 6)</label><input id="nuPass" type="password" placeholder="Give to the user" maxlength="30">
       <button class="btn teal" onclick="createStaffUser()">Create user ID</button></div>
-    <div id="adminList"><div class="empty">Loading users…</div></div>
-    <button class="btn ghost" onclick="changeMyPass()">Change my Master password</button></div>
+    <div id="adminList"><div class="empty">Loading users…</div></div></div>
 </div>
 </main>
-
-<nav class="bottom-nav" id="bottomNav">
-  <button class="bnav active" data-p="stock" onclick="goPage('stock')">
-    <svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg><span>Stock</span></button>
-  <button class="bnav" data-p="entry" onclick="goPage('entry')">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>Entry</span></button>
-  <button class="bnav" data-p="report" onclick="goPage('report')">
-    <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Report</span></button>
-  <button class="bnav" data-p="items" onclick="goPage('items')">
-    <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Items</span></button>
-  <button class="bnav" data-p="master" id="drawerMasterBtn" style="display:none" onclick="goPage('master')">
-    <svg viewBox="0 0 24 24"><path d="M3 17l3-9 4 5 2-6 2 6 4-5 3 9z"/><path d="M4 20h16"/></svg><span>Master</span></button>
-</nav>
-
 
 <div class="overlay" id="detailOverlay" onclick="if(event.target===this)this.classList.remove('show')"><div class="sheet" id="detailSheet"></div></div>
 <div class="overlay" id="confirmOverlay"><div class="confirm-box">
@@ -522,7 +627,8 @@ let TYPES = {...BUILTIN_TYPES};
 let ITEMS={}, USER="", UID="", ME=null, PERMS={};
 let CATS = [...BUILTIN_CATS];
 let unsubMe=null, unsubUsers=null, USERS_CACHE=[];
-let CUSTOM_TYPES={}, STOCK_LIMIT=300, stockCat="", histRows=[], REPORT_DATA=null, MASTER_DATA=null;
+let CUSTOM_TYPES={}, STOCK_LIMIT=300, stockCat="", stockSpecial="", histRows=[], REPORT_DATA=null, MASTER_DATA=null;
+const LOW_STOCK_THRESHOLD=15;
 const SALE_A_CAT_ORDER=["PVC Laminate Sheet"];
 function mvItemCodes(){
   const codes=sortedCodes();
@@ -574,7 +680,7 @@ let _sortedCodesCache=null;
 function sortedCodes(){if(_sortedCodesCache)return _sortedCodesCache;return _sortedCodesCache=Object.keys(ITEMS).sort((x,y)=>(parseInt(x)||0)-(parseInt(y)||0)||x.localeCompare(y));}
 function today(){return new Date().toISOString().slice(0,10);}
 function can(p){return !!PERMS[p];}
-function denied(){toast("You don't have permission for this — ask the Master ID",true);}
+function denied(){toast("You don't have permission for this — ask the Admin ID",true);}
 function fire(pr){pr.catch(e=>toast(e.message||"Sync failed — check internet",true));}
 function audit(action,detail){fire(db.collection("audit").add({action,detail,user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()}));}
 function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);};}
@@ -590,7 +696,7 @@ const EMAIL_DOMAIN="@lamigrade.app";
 function emailFor(name){const n=name.trim().toLowerCase();if(n.includes("@"))return n;const c=n.replace(/[^a-z0-9._-]+/g,".").replace(/^\.+|\.+$/g,"");return (c||"user")+EMAIL_DOMAIN;}
 let SETUP_NEEDED=false;
 async function checkSetup(){try{const d=await db.collection("meta").doc("setup").get();SETUP_NEEDED=!d.exists;}catch(e){SETUP_NEEDED=false;}
-  if(SETUP_NEEDED){$("loginTitle").textContent="Create the Master ID";$("loginHint").textContent="You are the first user. This ID becomes the MASTER ID with full control. Choose a username and a strong password (min 6).";}
+  if(SETUP_NEEDED){$("loginTitle").textContent="Create the Admin ID";$("loginHint").textContent="You are the first user. This ID becomes the ADMIN ID with full control. Choose a username and a strong password (min 6).";}
   else{$("loginTitle").textContent="Welcome";$("loginHint").textContent="Sign in with your username and password.";}}
 function hideBootSplash(){
   const s=$("bootSplash");if(!s)return;
@@ -600,7 +706,7 @@ function hideBootSplash(){
 function checkLogin(){
   auth.onAuthStateChanged(user=>{
     hideBootSplash();
-    if(user){$("loginPage").classList.remove("show");subscribeMe(user.uid);}
+    if(user){$("loginPage").classList.remove("show");goPage('overview');subscribeMe(user.uid);}
     else{if(unsubMe){unsubMe();unsubMe=null;}detachUsersAdmin();ME=null;PERMS={};USER="";UID="";resetLamp();$("loginPage").classList.add("show");checkSetup();}
   });
 }
@@ -614,11 +720,11 @@ async function doLogin(){
       const cred=await auth.createUserWithEmailAndPassword(email,pass);
       await db.collection("users").doc(cred.user.uid).set({name:n,email,role:"master",perms:ALL_PERMS,active:true,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
       await db.collection("meta").doc("setup").set({done:true,ts:firebase.firestore.FieldValue.serverTimestamp()});
-      toast("Master ID created. Welcome, "+n+"!");
+      toast("Admin ID created. Welcome, "+n+"!");
     } else { await auth.signInWithEmailAndPassword(email,pass); toast("Welcome, "+n+"!"); }
     $("loginPin").value=""; $("loginPage").classList.remove("show");
   }catch(e){const c=e.code||"";
-    if(c.includes("user-not-found"))toast("No such ID. Ask the Master ID to create your account.",true);
+    if(c.includes("user-not-found"))toast("No such ID. Ask the Admin ID to create your account.",true);
     else if(c.includes("wrong-password")||c.includes("invalid-credential")||c.includes("invalid-login"))toast("Wrong username or password",true);
     else if(c.includes("too-many-requests"))toast("Too many attempts — wait a minute",true);
     else if(c.includes("email-already-in-use"))toast("This username is already taken",true);
@@ -630,36 +736,81 @@ async function doLogin(){
 function subscribeMe(uid){
   if(unsubMe)unsubMe(); UID=uid;
   unsubMe=db.collection("users").doc(uid).onSnapshot(doc=>{
-    if(!doc.exists){forceLogout("Your ID was removed by the Master ID.");return;}
+    if(!doc.exists){forceLogout("Your ID was removed by the Admin ID.");return;}
     ME=doc.data();
-    if(ME.active===false){forceLogout("Your ID has been deactivated by the Master ID.");return;}
+    if(ME.active===false){forceLogout("Your ID has been deactivated by the Admin ID.");return;}
     USER=ME.name||"User";
-    PERMS=ME.role==="master"?{...ALL_PERMS}:{...DEFAULT_STAFF_PERMS,...(ME.perms||{})};
-    $("userName").textContent=(ME.role==="master"?"★ ":"")+USER;
+    const isM=ME.role==="master";
+    PERMS=isM?{...ALL_PERMS}:{...DEFAULT_STAFF_PERMS,...(ME.perms||{})};
+    $("userName").textContent=(isM?"★ ":"")+USER;
+    const chip=$("dpRoleChip"); if(chip){chip.textContent=isM?"Admin":"Staff";chip.className="chip "+(isM?"gold":"in");chip.style.display="";}
     applyPerms();
-    if(ME.role==="master")attachUsersAdmin(); else detachUsersAdmin();
+    if(isM)attachUsersAdmin(); else detachUsersAdmin();
   },err=>{});
 }
 function forceLogout(msg){toast(msg,true);auth.signOut();}
 async function switchUser(){if(!isMaster()){auth.signOut();return;}if(await confirmDialog("Log out?","Log out"))auth.signOut();}
 
 /* ---------- Nav ---------- */
-function goPage(pg){
+let CURRENT_PAGE="overview", CURRENT_SUB="";
+const REPORT_SUB_DEFAULT="daily", ITEMS_SUB_DEFAULT="add";
+const ITEMS_SUB_PERM={add:"items",qty:"items",bulkadd:"items",batches:"items",catbulk:"items",catmanage:"items",movetype:"types",all:null,audit:null};
+const ITEMS_SUB_LABEL={add:"add items",qty:"add opening balance / quantity",bulkadd:"bulk add items",batches:"delete a bulk upload",catbulk:"update categories in bulk",catmanage:"manage categories",movetype:"add custom movement types"};
+function goPage(pg,sub){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   const el=$("page-"+pg); if(!el)return;
   el.classList.add("active"); window.scrollTo(0,0);
-  document.querySelectorAll(".bnav[data-p]").forEach(b=>b.classList.toggle("active",b.dataset.p===pg));
-  if(pg==="items"){renderItemManage();renderCatManage();renderBatches();}
+  CURRENT_PAGE=pg;
+  if(pg==="report"){CURRENT_SUB=sub||REPORT_SUB_DEFAULT;applyReportSub();}
+  else if(pg==="items"){CURRENT_SUB=sub||ITEMS_SUB_DEFAULT;applyItemsSub();renderItemManage();renderCatManage();renderBatches();}
+  else{CURRENT_SUB="";}
+  if(pg==="overview")loadOverviewData();
+  syncDrawerActive();
+  closeDrawer();
+}
+function applyReportSub(){
+  document.querySelectorAll("#page-report .rep-section").forEach(s=>{s.style.display=s.dataset.sub===CURRENT_SUB?"":"none";});
+}
+function applyItemsSub(){
+  document.querySelectorAll("#page-items .item-section").forEach(s=>{s.style.display=s.dataset.sub===CURRENT_SUB?"":"none";});
+  const need=ITEMS_SUB_PERM[CURRENT_SUB], notice=$("itemsSubNoPerm");
+  if(!notice)return;
+  if(need&&!can(need)){notice.style.display="";notice.textContent="Your ID cannot "+ITEMS_SUB_LABEL[CURRENT_SUB]+" — ask the Admin ID to enable it.";}
+  else notice.style.display="none";
+}
+/* ---------- Drawer menu ---------- */
+function openDrawer(){$("drawerOverlay").classList.add("show");syncDrawerActive();}
+function closeDrawer(){$("drawerOverlay").classList.remove("show");}
+function toggleDrawerGroup(name){
+  const sub=$("drawerSub-"+name),btn=document.querySelector('.drawer-item[data-group="'+name+'"]');
+  const isOpen=sub.classList.contains("open");
+  if(isOpen){sub.classList.remove("open");sub.style.maxHeight="0px";if(btn)btn.classList.remove("expanded");}
+  else{sub.classList.add("open");sub.style.maxHeight=sub.scrollHeight+"px";if(btn)btn.classList.add("expanded");}
+}
+function syncDrawerActive(){
+  document.querySelectorAll(".drawer-item[data-p]").forEach(b=>b.classList.toggle("active",b.dataset.p===CURRENT_PAGE));
+  document.querySelectorAll(".drawer-subitem[data-sub]").forEach(b=>{
+    const grp=b.closest(".drawer-sub").id.replace("drawerSub-","");
+    b.classList.toggle("active",grp===CURRENT_PAGE&&b.dataset.sub===CURRENT_SUB);
+  });
+  ["report","items"].forEach(g=>{
+    const sub=$("drawerSub-"+g),btn=document.querySelector('.drawer-item[data-group="'+g+'"]');
+    if(!sub)return;
+    if(g===CURRENT_PAGE){sub.classList.add("open");sub.style.maxHeight=sub.scrollHeight+"px";if(btn)btn.classList.add("expanded");}
+    else{sub.classList.remove("open");sub.style.maxHeight="0px";if(btn)btn.classList.remove("expanded");}
+  });
 }
 function applyPerms(){
   const hide=(id,ok)=>{const el=$(id);if(el)el.style.display=ok?"":"none";};
   hide("entryArea",can("entry")); hide("entryNoPerm",!can("entry"));
-  hide("addItemCard",can("items")); hide("qaCard",can("items")); hide("itemBulkCard",can("items")); hide("gradeBulkCard",can("items"));
+  hide("addItemCard",can("items")); hide("qaCard",can("items")); hide("itemBulkCard",can("items"));
   hide("catBulkCard",can("items")); hide("catManageCard",can("items")); hide("batchCard",can("items"));
   hide("ctCard",can("types"));
   hide("repDailyCard",can("reports")); hide("repStockCard",can("reports"));
   hide("repHistCard",can("reports")); hide("repMasterCard",can("reports")); hide("repLowCard",can("reports")); hide("reportNoPerm",!can("reports"));
   const seed=$("seedCard"); if(seed&&!can("items"))seed.style.display="none";
+  loadOverviewData();
+  if(CURRENT_PAGE==="items")applyItemsSub();
   renderRecent(); renderItemManage();
 }
 
@@ -688,7 +839,7 @@ function scheduleItemRender(){
   if(_itemsRenderQueued)return; _itemsRenderQueued=true;
   requestAnimationFrame(()=>{
     _itemsRenderQueued=false;
-    renderStock(); renderCatFilter();
+    renderStock(); renderCatFilter(); renderOverviewSummary();
     // only rebuild the big <option> lists + item-manage list when their tab is active or first time
     const itemsActive=$("page-items")?.classList.contains("active");
     if(_itemSelectsDirty){ fillItemSelects(); _itemSelectsDirty=false; }
@@ -753,6 +904,119 @@ function mvHTML(id,m,canAct){
   </div><div class="qty ${cls}">${sign}${num(m.qty)}</div>${editBtn}${delBtn}</div>`;
 }
 
+/* ---------- Overview / dashboard ---------- */
+function renderOverviewSummary(){
+  const grid=$("ovCurrentGrid"), box=$("ovSummary"); if(!grid||!box)return;
+  let a=0,b=0,c=0,outCount=0;
+  sortedCodes().forEach(code=>{
+    const it=ITEMS[code];
+    a+=it.a||0; b+=it.b||0; c+=it.c||0;
+    if((it.a||0)===0)outCount++;
+  });
+  const lowCount=computeLowStock(LOW_STOCK_THRESHOLD).length;
+  grid.innerHTML=`
+    <div><b style="color:var(--A)">${num(a)}</b><span>A-Grade</span></div>
+    <div><b style="color:var(--B)">${num(b)}</b><span>B-Grade</span></div>
+    <div><b style="color:var(--C)">${num(c)}</b><span>Colour Mismatch</span></div>`;
+  box.innerHTML=`
+    <div class="box" onclick="ovGoLowStock()"><b style="color:var(--B)">${num(lowCount)}</b><span>Low Stock</span></div>
+    <div class="box" onclick="ovGoOutStock()"><b style="color:var(--out)">${num(outCount)}</b><span>Out of Stock</span></div>`;
+}
+function ovGoLowStock(){stockCat="PVC Laminate Sheet";stockSpecial="low";STOCK_LIMIT=300;goPage('stock');renderCatFilter();renderStock();}
+function ovGoOutStock(){stockCat="";stockSpecial="out";STOCK_LIMIT=300;goPage('stock');renderCatFilter();renderStock();}
+function renderOverviewSearch(){
+  const box=$("ovSearchResults");if(!box)return;
+  const q=($("ovSearch")?.value||"").trim().toLowerCase();
+  if(!q){box.innerHTML="";box.style.display="none";return;}
+  box.style.display="";
+  const codes=sortedCodes().filter(c=>{
+    const it=ITEMS[c],cat=catOf(it);
+    return c.toLowerCase().includes(q)||(it.name||"").toLowerCase().includes(q)||cat.toLowerCase().includes(q);
+  }).slice(0,40);
+  if(!codes.length){box.innerHTML='<div class="empty">No matching items.</div>';return;}
+  let h=`<div class="stock-head"><div>Item</div><div style="text-align:center">A</div><div style="text-align:center">B</div><div style="text-align:center">Total</div></div>`;
+  codes.forEach(code=>{
+    const it=ITEMS[code],t=(it.a||0)+(it.b||0)+(it.c||0);
+    h+=`<div class="stock-row" onclick="openDetail('${code}')">
+      <div><div class="code">${code}</div><div class="nm">${it.name||""}</div></div>
+      <div class="v A ${!it.a?'zero':''}">${num(it.a)}</div>
+      <div class="v B ${!it.b?'zero':''}">${num(it.b)}</div>
+      <div class="v tot ${!t?'zero':''}">${num(t)}</div></div>`;
+  });
+  box.innerHTML=h;
+}
+const renderOverviewSearchD=debounce(renderOverviewSearch,100);
+let OV_LOADED=false;
+function loadOverviewData(force){
+  if(!$("ovNoReports"))return;
+  if(!can("reports")){$("ovNoReports").style.display="";$("ovReportsArea").style.display="none";return;}
+  $("ovNoReports").style.display="none";$("ovReportsArea").style.display="";
+  if(OV_LOADED&&!force)return;
+  OV_LOADED=true;
+  const n=new Date();
+  const monthStarts=[]; for(let i=5;i>=0;i--)monthStarts.push(new Date(n.getFullYear(),n.getMonth()-i,1));
+  const thisMonthStart=new Date(n.getFullYear(),n.getMonth(),1);
+  const q=db.collection("movements").where("ts",">=",monthStarts[0]);
+  const MN=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const render=snap=>{
+    const byMonth={}; monthStarts.forEach(d=>byMonth[d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")]=0);
+    const byItemThisMonth={};
+    snap.forEach(doc=>{
+      const m=doc.data(); if(!m.ts||!isSale(m))return;
+      const dt=m.ts.toDate(), ym=dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0");
+      if(ym in byMonth)byMonth[ym]+=(m.qty||0);
+      if(dt>=thisMonthStart)byItemThisMonth[m.code]=(byItemThisMonth[m.code]||0)+(m.qty||0);
+    });
+    const labels=Object.keys(byMonth).sort();
+    const shortLabels=labels.map(ym=>MN[parseInt(ym.slice(5),10)-1]);
+    const values=labels.map(ym=>byMonth[ym]);
+    renderOverviewChart(shortLabels,values);
+    const ranked=Object.entries(byItemThisMonth).sort((x,y)=>y[1]-x[1]).slice(0,8);
+    renderOverviewTopSellers(ranked);
+  };
+  cachedThenServer(q,render).catch(()=>{
+    $("ovChartWrap").innerHTML='<div class="empty">Could not load chart.</div>';
+    $("ovTopList").innerHTML='<div class="empty">Could not load top items.</div>';
+  });
+}
+function renderOverviewChart(labels,values){
+  const wrap=$("ovChartWrap");if(!wrap)return;
+  if(!values.length||values.every(v=>v===0)){wrap.innerHTML='<div class="empty">No sales recorded in the last 6 months.</div>';return;}
+  const W=300,H=130,padL=8,padR=8,padT=10,padB=22;
+  const max=Math.max(...values,1),n=values.length;
+  const stepX=n>1?(W-padL-padR)/(n-1):0;
+  const pts=values.map((v,i)=>[padL+i*stepX,padT+(1-(v/max))*(H-padT-padB)]);
+  let line=`M ${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+  for(let i=0;i<pts.length-1;i++){
+    const[x0,y0]=pts[i],[x1,y1]=pts[i+1],mx=((x0+x1)/2).toFixed(1),my=((y0+y1)/2).toFixed(1);
+    line+=` Q ${x0.toFixed(1)},${y0.toFixed(1)} ${mx},${my}`;
+  }
+  const last=pts[pts.length-1];
+  line+=` L ${last[0].toFixed(1)},${last[1].toFixed(1)}`;
+  const area=line+` L ${last[0].toFixed(1)},${(H-padB).toFixed(1)} L ${pts[0][0].toFixed(1)},${(H-padB).toFixed(1)} Z`;
+  const gridLines=[0,.5,1].map(f=>{const y=(padT+f*(H-padT-padB)).toFixed(1);return`<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" style="stroke:var(--line);stroke-width:1"/>`;}).join("");
+  const labelEls=labels.map((l,i)=>`<text x="${pts[i][0].toFixed(1)}" y="${H-4}" style="font-size:8px;fill:var(--muted)" text-anchor="middle">${l}</text>`).join("");
+  const dotEls=pts.map(([x,y])=>`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.4" style="fill:#fff;stroke:var(--ink);stroke-width:1.6"/>`).join("");
+  wrap.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block">
+    <defs><linearGradient id="ovAreaGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" style="stop-color:var(--ink);stop-opacity:.16"/><stop offset="100%" style="stop-color:var(--ink);stop-opacity:0"/>
+    </linearGradient></defs>
+    ${gridLines}<path d="${area}" style="fill:url(#ovAreaGrad);stroke:none"/>
+    <path d="${line}" style="fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"/>
+    ${dotEls}${labelEls}</svg>
+  <div style="display:flex;justify-content:flex-end;margin-top:4px;font-size:11px;color:var(--muted)">Peak: <b style="color:var(--ink);margin-left:3px">${num(max)}</b>&nbsp;pcs sold</div>`;
+}
+function renderOverviewTopSellers(ranked){
+  const box=$("ovTopList");if(!box)return;
+  if(!ranked||!ranked.length){box.innerHTML='<div class="empty">No sales recorded yet this month.</div>';return;}
+  const medal=i=>i===0?"🥇":i===1?"🥈":i===2?"🥉":"#"+(i+1);
+  box.innerHTML=ranked.map(([code,qty],i)=>{
+    const it=ITEMS[code]||{};
+    return `<div class="mv tap" onclick="openDetail('${code}')"><div class="l"><div class="t1">${medal(i)} <span class="chip A">${code}</span> ${it.name||""}</div>
+      <div class="t2">${catOf(it)}</div></div><div class="qty plus">${num(qty)}</div></div>`;
+  }).join("");
+}
+
 /* ---------- Stock page ---------- */
 const renderStockD=debounce(()=>{STOCK_LIMIT=300;renderStock();},180);
 function renderCatFilter(){
@@ -762,7 +1026,8 @@ function renderCatFilter(){
   box.innerHTML=`<button class="pill ${stockCat===""?"on":""}" onclick="setStockCat('')">All</button>`+
     cats.map(c=>`<button class="pill ${stockCat===c?"on":""}" onclick="setStockCat('${c.replace(/'/g,"\\'")}')">${c}</button>`).join("");
 }
-function setStockCat(c){stockCat=c;STOCK_LIMIT=300;renderCatFilter();renderStock();}
+function setStockCat(c){stockCat=c;stockSpecial="";STOCK_LIMIT=300;renderCatFilter();renderStock();}
+function clearStockSpecial(){stockSpecial="";STOCK_LIMIT=300;renderStock();}
 function renderStock(){
   const q=($("stockSearch")?.value||"").trim().toLowerCase();
   const codes=sortedCodes();
@@ -772,6 +1037,8 @@ function renderStock(){
     const it=ITEMS[code]; tot.a+=it.a||0; tot.b+=it.b||0; tot.c+=it.c||0; tot.s+=it.s||0;
     const cat=catOf(it);
     if(stockCat&&cat!==stockCat)return;
+    if(stockSpecial==="low"&&!(cat==="PVC Laminate Sheet"&&(it.a||0)<LOW_STOCK_THRESHOLD))return;
+    if(stockSpecial==="out"&&(it.a||0)!==0)return;
     if(q&&!code.toLowerCase().includes(q)&&!(it.name||"").toLowerCase().includes(q)&&!cat.toLowerCase().includes(q))return;
     (byCat[cat]=byCat[cat]||[]).push(code);
   });
@@ -808,6 +1075,12 @@ function renderStock(){
     <div class="box"><b style="color:var(--C)">${num(tot.c)}</b><span>Colour Mismatch</span></div>
     <div class="box"><b style="color:var(--gold)">${num(tot.s)}</b><span>Sample</span></div>`;
   $("stockSummary").style.gridTemplateColumns="repeat(4,1fr)";
+  const notice=$("stockSpecialNotice");
+  if(notice){
+    const label=stockSpecial==="low"?`Low Stock — PVC Laminate Sheet below ${LOW_STOCK_THRESHOLD} pcs A-Grade`:stockSpecial==="out"?"Out of Stock — 0 pcs A-Grade":"";
+    if(label){notice.style.display="";notice.innerHTML=`Showing: <b>${label}</b> · <button class="btn ghost sm" style="margin-left:6px" onclick="clearStockSpecial()">Clear</button>`;}
+    else notice.style.display="none";
+  }
 }
 
 /* ---------- Item detail ---------- */
@@ -1212,7 +1485,7 @@ function exportLowStockXLSX(){
   const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Production Needed");XLSX.writeFile(wb,"production_needed_"+LOWSTOCK_DATA.date+".xlsx");toast("Excel downloaded ✔");
 }
 
-/* ---------- Master Sales Report ---------- */
+/* ---------- Admin Sales Report ---------- */
 function msQuick(mb){const n=new Date();$("msFrom").value=new Date(n.getFullYear(),n.getMonth()-mb,1).toISOString().slice(0,10);$("msTo").value=today();runMasterReport();}
 async function runMasterReport(){
   if(!can("reports")){denied();return;}
@@ -1257,7 +1530,7 @@ async function runMasterReport(){
     h+=`<div class="card"><h2>Party-wise sales</h2>`;
     partiesRanked.slice(0,15).forEach(([pn,d2],i)=>{h+=`<div class="mv"><div class="l"><div class="t1">${medal(i)} ${pn}</div><div class="t2">${d2.items.size} items · ${pct(d2.qty)} of sales</div></div><div class="qty plus">${num(d2.qty)}</div></div>`;});
     if(partiesRanked.length>15)h+=`<div style="font-size:12.5px;color:var(--muted)">…and ${partiesRanked.length-15} more in Excel.</div>`;h+=`</div>`;
-    h=`<div class="notice">Master Sales Report · <b>${f}</b> to <b>${t}</b>. Item × Party breakdown is in the Excel download.</div>`+h;
+    h=`<div class="notice">Admin Sales Report · <b>${f}</b> to <b>${t}</b>. Item × Party breakdown is in the Excel download.</div>`+h;
     $("msOut").innerHTML=h;
   };
   try{await cachedThenServer(q,render);}catch(e){$("msOut").innerHTML='<div class="empty">Report failed: '+e.message+'</div>';}
@@ -1266,14 +1539,14 @@ function exportMasterXLSX(){
   if(!can("reports")){denied();return;}if(!MASTER_DATA){toast("Generate the report first",true);return;}
   const D=MASTER_DATA,wb=XLSX.utils.book_new();
   const sh=(name,aoa,cols)=>{const ws=XLSX.utils.aoa_to_sheet(aoa);if(cols)ws["!cols"]=cols.map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,ws,name);};
-  sh("Summary",[["MASTER SALES REPORT"],["Period",D.f+" to "+D.t],[],["Total pieces sold",D.totalQty],["Sale entries",D.entries],["Items sold",D.itemsRanked.length],["Items with zero sales",D.zeroSale.length],["Parties",D.partiesRanked.length]],[26,20]);
+  sh("Summary",[["ADMIN SALES REPORT"],["Period",D.f+" to "+D.t],[],["Total pieces sold",D.totalQty],["Sale entries",D.entries],["Items sold",D.itemsRanked.length],["Items with zero sales",D.zeroSale.length],["Parties",D.partiesRanked.length]],[26,20]);
   sh("Month-wise",[["Month","Pieces sold"],...D.months.map(ym=>[ym,D.byMonth[ym]])],[12,14]);
   sh("Product Analysis",[["Rank","Item Code","Item Name","Category","Total Sold","% of Sales","No. of Parties"],...D.itemsRanked.map(([c,d2],i)=>[i+1,c,(ITEMS[c]&&ITEMS[c].name)||"",catOf(ITEMS[c]),d2.qty,+(d2.qty*100/D.totalQty).toFixed(2),d2.parties.size])],[6,10,26,24,12,10,12]);
   sh("Zero Sales",[["Item Code","Item Name","Category"],...D.zeroSale.map(c=>[c,(ITEMS[c]&&ITEMS[c].name)||"",catOf(ITEMS[c])])],[10,26,24]);
   sh("Party-wise",[["Rank","Party","Total Bought","% of Sales","Different Items"],...D.partiesRanked.map(([pn,d2],i)=>[i+1,pn,d2.qty,+(d2.qty*100/D.totalQty).toFixed(2),d2.items.size])],[6,26,14,10,14]);
   const rows=Object.entries(D.byItemParty).map(([k,q2])=>{const[c,pn]=k.split("|||");return[c,(ITEMS[c]&&ITEMS[c].name)||"",pn,q2];}).sort((a,b)=>a[0].localeCompare(b[0],undefined,{numeric:true})||b[3]-a[3]);
   sh("Item x Party",[["Item Code","Item Name","Party","Pieces Sold"],...rows],[10,26,26,12]);
-  XLSX.writeFile(wb,"master_sales_report_"+D.f+"_to_"+D.t+".xlsx");toast("Master report downloaded ✔");
+  XLSX.writeFile(wb,"admin_sales_report_"+D.f+"_to_"+D.t+".xlsx");toast("Admin report downloaded ✔");
 }
 
 /* ---------- Items management ---------- */
@@ -1575,7 +1848,7 @@ async function deleteCategory(name){
   fire(db.collection("meta").doc("categories").set({list:extra},{merge:true}));audit("Category deleted",name);toast("Category deleted ✔");
 }
 
-/* ---------- Master admin panel ---------- */
+/* ---------- Admin panel (master role) ---------- */
 function attachUsersAdmin(){
   $("drawerMasterBtn").style.display="";
   if(unsubUsers)return;
@@ -1599,13 +1872,13 @@ function renderAdmin(){
       </label>`).join("");
     return `<div style="border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:9px;${u.active===false?'opacity:.55':''}">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-        <div><b>${isMaster?"★ ":""}${u.name}</b> <span class="chip ${isMaster?'gold':'in'}">${isMaster?"MASTER":"Staff"}</span>
+        <div><b>${isMaster?"★ ":""}${u.name}</b> <span class="chip ${isMaster?'gold':'in'}">${isMaster?"ADMIN":"Staff"}</span>
         ${!hasAuth?'<span class="chip B">Old ID — recreate below</span>':''}
         ${u.active===false?'<span class="chip out">Deactivated</span>':''} ${isMe?'<span class="chip A">You</span>':''}</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
           ${!isMe?`<button class="btn ghost sm" onclick="toggleActive('${id}',${u.active===false})">${u.active===false?"Activate":"Deactivate"}</button>`:""}
           ${realEmail?`<button class="btn ghost sm" onclick="sendReset('${u.email}')">Reset email</button>`:""}
-          ${!isMaster&&hasAuth?`<button class="btn ghost sm" onclick="makeMaster('${id}','${(u.name||"").replace(/'/g,"")}')">Make Master</button>`:""}
+          ${!isMaster&&hasAuth?`<button class="btn ghost sm" onclick="makeMaster('${id}','${(u.name||"").replace(/'/g,"")}')">Make Admin</button>`:""}
           ${!isMe&&!isMaster?`<button class="btn danger sm" onclick="deleteUser('${id}','${(u.name||"").replace(/'/g,"")}')">Delete</button>`:""}
         </div>
       </div>
@@ -1625,9 +1898,9 @@ function toggleActive(id,activate){
   toast(activate?"ID activated ✔":"ID deactivated ✔");
 }
 async function makeMaster(id,name){
-  if(!await confirmDialog("Make \""+name+"\" a MASTER ID? They will get full control.","Make Master"))return;
+  if(!await confirmDialog("Make \""+name+"\" an ADMIN ID? They will get full control.","Make Admin"))return;
   fire(db.collection("users").doc(id).update({role:"master",perms:ALL_PERMS}));
-  audit("Promoted to Master",name);toast(name+" is now a Master ID ✔");
+  audit("Promoted to Admin",name);toast(name+" is now an Admin ID ✔");
 }
 async function deleteUser(id,name){
   if(!await confirmDialog("Delete ID \""+name+"\"? Their old entries stay in history.","Delete ID"))return;
