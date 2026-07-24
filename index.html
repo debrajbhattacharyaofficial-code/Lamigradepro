@@ -23,9 +23,6 @@
 <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=optional" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{
@@ -80,6 +77,12 @@ main{max-width:820px;margin:0 auto;padding:14px;padding-bottom:calc(28px + env(s
 .drawer-item:active{background:var(--panel2)}
 .drawer-item.active{background:var(--gold-soft);color:var(--ink)}
 .drawer-item svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.9;flex:0 0 auto}
+.drawer-item[data-p="overview"] svg{stroke:var(--sale)}
+.drawer-item[data-p="stock"] svg{stroke:var(--A)}
+.drawer-item[data-p="entry"] svg{stroke:#E08A2B}
+.drawer-item[data-group="report"] svg{stroke:var(--movement)}
+.drawer-item[data-group="items"] svg{stroke:#8B5FBF}
+.drawer-item[data-p="master"] svg{stroke:var(--gold)}
 .drawer-item span{flex:1;text-align:left}
 .drawer-caret{width:16px !important;height:16px !important;stroke-width:2.4 !important;flex:0 0 auto;transition:transform .16s ease}
 .drawer-item.has-children.expanded .drawer-caret{transform:rotate(90deg)}
@@ -287,6 +290,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
         <button class="drawer-subitem" data-sub="hist" onclick="goPage('report','hist')">Movement History</button>
         <button class="drawer-subitem" data-sub="admin-sales" onclick="goPage('report','admin-sales')">Admin Sales Report</button>
         <button class="drawer-subitem" data-sub="lowstock" onclick="goPage('report','lowstock')">Production Needed</button>
+        <button class="drawer-subitem" data-sub="orderlookup" onclick="goPage('report','orderlookup')">Order Lookup</button>
       </div>
       <button class="drawer-item has-children" data-group="items" onclick="toggleDrawerGroup('items')">
         <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
@@ -379,8 +383,20 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
       </div>
       <div id="partyWrap" style="display:none"><label class="f" id="partyLabel">Party name</label>
         <input id="mvParty" placeholder="e.g. Sharma Traders" maxlength="60"></div>
+      <div id="orderNoWrap" style="display:none"><label class="f">Order number</label>
+        <input id="mvOrderNo" placeholder="e.g. ORD-1234" maxlength="40"></div>
       <label class="f">Note (optional)</label><input id="mvNote" placeholder="Any remark…" maxlength="80">
       <button class="btn gold" id="saveMvBtn" onclick="saveMovement()">Save movement</button>
+    </div>
+    <div class="card" id="bulkSaleCard">
+      <div class="eyebrow">Sale To Party</div><h2>Bulk sale entry</h2>
+      <p class="desc">Upload a CSV/Excel to record many sales at once. Each row needs an item code and quantity; party name and order number are each optional, but every row needs at least one of the two.</p>
+      <div class="fmt-tbl"><table><thead><tr><th>A<br>Item Code</th><th>B<br>Quantity</th><th>C<br>Party Name</th><th>D<br>Order Number</th></tr></thead>
+      <tbody><tr><td>101</td><td>50</td><td>Sharma Traders</td><td></td></tr><tr><td>102</td><td>30</td><td></td><td>ORD-2231</td></tr></tbody></table></div>
+      <input type="file" id="bulkSaleFile" accept=".xlsx,.xls,.csv" onchange="parseBulkSaleFile(this)">
+      <div id="bulkSalePreview"></div>
+      <button class="btn gold" id="applyBulkSaleBtn" style="display:none" onclick="applyBulkSale()">Save all sales</button>
+      <button class="btn ghost" onclick="downloadBulkSaleTemplate()">⬇ Sample template (CSV)</button>
     </div>
   </div>
   <div class="card"><h2>Recent entries</h2><div id="recentList"><div class="empty">No entries yet.</div></div></div>
@@ -431,6 +447,13 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
       <button class="btn ghost sm" id="lowStockXlsxBtn" style="display:none" onclick="exportLowStockXLSX()">⬇ Excel</button>
     </div></div>
   <div id="lowStockOut"></div>
+  </div>
+  <div class="rep-section" data-sub="orderlookup" style="display:none">
+  <div class="card" id="repOrderCard"><div class="eyebrow">Report 6 — Order Lookup</div><h2>Search by order number</h2>
+    <p class="desc">Find every sale recorded against an order number — date, time, item and quantity.</p>
+    <label class="f">Order number</label><input id="orderLookupInput" placeholder="e.g. ORD-1234" maxlength="40" onkeydown="if(event.key==='Enter')runOrderLookup()">
+    <button class="btn gold" onclick="runOrderLookup()">Search</button></div>
+  <div id="orderLookupOut"></div>
   </div>
 </div>
 
@@ -568,6 +591,9 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   </div>
 </div></div>
 <div id="toast"></div>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script>
 /* ============ FIREBASE CONFIG — paste yours below ============ */
 const firebaseConfig = {
@@ -710,8 +736,7 @@ async function checkSetup(){try{const d=await db.collection("meta").doc("setup")
   else{$("loginTitle").textContent="Welcome";$("loginHint").textContent="Sign in with your username and password.";}}
 function hideBootSplash(){
   const s=$("bootSplash");if(!s)return;
-  const go=()=>{s.style.opacity="0";setTimeout(()=>s.remove(),260);};
-  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(go).catch(go);else go();
+  s.style.opacity="0";setTimeout(()=>s.remove(),260);
 }
 function checkLogin(){
   auth.onAuthStateChanged(user=>{
@@ -1130,7 +1155,7 @@ function buildMvTree(){
   let h="";
   Object.entries(groups).forEach(([g,arr])=>{
     h+=`<div class="mv-group-title">${g}</div>`;
-    arr.forEach(([k,t])=>{h+=`<button class="mv-btn ${curType===k?'sel':''}" onclick="pickType('${k}')"><span>${t.label}${t.party?' <small>party name required</small>':''}</span><span class="arrow">›</span></button>`;});
+    arr.forEach(([k,t])=>{h+=`<button class="mv-btn ${curType===k?'sel':''}" onclick="pickType('${k}')"><span>${t.label}${t.sale?' <small>party name or order number</small>':t.party?' <small>party name required</small>':''}</span><span class="arrow">›</span></button>`;});
   });
   box.innerHTML=h||'<div class="empty">No movement types here.</div>';
 }
@@ -1141,7 +1166,8 @@ function pickType(k){
   $("mvFormEye").textContent=(T.dir==="in"?"Inward":"Outward")+" movement";
   $("mvFormTitle").textContent=T.label;
   $("partyWrap").style.display=T.party?"block":"none";
-  $("partyLabel").textContent=T.sale?"Party name (required)":"Party name";
+  $("orderNoWrap").style.display=T.sale?"block":"none";
+  $("partyLabel").textContent=T.sale?"Party name (or order number below)":"Party name";
   if($("mvItemSearch"))$("mvItemSearch").value="";
   fillMvItemOptions();
   showItemStock();
@@ -1231,12 +1257,83 @@ function parseMvBulkText(){
   return {rows,invalid};
 }
 
+/* ---------- Bulk Sale Entry (CSV/Excel, per-row party/order number) ---------- */
+let BULK_SALE_ROWS=[];
+function downloadBulkSaleTemplate(){downloadCSV("bulk_sale_template.csv",[["Item Code","Quantity","Party Name","Order Number"],["101","50","Sharma Traders",""],["102","30","","ORD-2231"]]);}
+function parseBulkSaleFile(input){
+  BULK_SALE_ROWS=[];$("bulkSalePreview").innerHTML="";$("applyBulkSaleBtn").style.display="none";
+  const file=input.files&&input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{try{
+    const wb=XLSX.read(e.target.result,{type:"array"});
+    const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:""});
+    let start=0;if(rows.length&&String(rows[0][0]).toLowerCase().includes("code"))start=1;
+    const parsed=[],invalid=[];
+    for(let i=start;i<rows.length;i++){
+      const code=String(rows[i][0]??"").trim().replace(/\.0$/,"");
+      if(!code)continue;
+      const qty=parseInt(String(rows[i][1]??"").trim(),10);
+      const party=String(rows[i][2]??"").trim();
+      const orderNo=String(rows[i][3]??"").trim().toUpperCase();
+      const rn=i+1;
+      if(!ITEMS[code]){invalid.push({row:rn,reason:code+" — item not found"});continue;}
+      if(!qty||qty<1){invalid.push({row:rn,reason:code+" — invalid quantity"});continue;}
+      if(!party&&!orderNo){invalid.push({row:rn,reason:code+" — needs party name or order number"});continue;}
+      const avail=ITEMS[code].a||0;
+      if(qty>avail){invalid.push({row:rn,reason:code+" — only "+avail+" pcs A-Grade available"});continue;}
+      parsed.push({code,qty,party,orderNo});
+    }
+    renderBulkSalePreview(parsed,invalid);
+  }catch(err){toast("Could not read file: "+err.message,true);}};
+  reader.readAsArrayBuffer(file);
+}
+function renderBulkSalePreview(rows,invalid){
+  BULK_SALE_ROWS=rows;
+  const box=$("bulkSalePreview");
+  if(!rows.length){box.innerHTML='<div class="notice">No valid rows found.'+(invalid.length?" "+invalid.length+" skipped.":"")+'</div>';$("applyBulkSaleBtn").style.display="none";return;}
+  let totalQty=0;rows.forEach(r=>totalQty+=r.qty);
+  let h=`<div class="notice">${rows.length} valid row${rows.length===1?"":"s"} · <b>${num(totalQty)}</b> pcs total`+(invalid.length?` · <b>${invalid.length} skipped</b>`:"")+`</div>`;
+  h+=rows.slice(0,50).map(r=>{
+    const it=ITEMS[r.code]||{};
+    return `<div class="mv"><div class="l"><div class="t1"><span class="chip A">${r.code}</span> ${it.name||""}</div>
+      <div class="t2">${r.party||"—"}${r.orderNo?" · "+r.orderNo:""}</div></div><div class="qty minus">${num(r.qty)}</div></div>`;
+  }).join("");
+  if(rows.length>50)h+=`<div class="empty">…and ${rows.length-50} more rows</div>`;
+  if(invalid.length)h+=`<div class="notice">Skipped:<br>`+invalid.slice(0,8).map(x=>"Row "+x.row+": "+x.reason).join("<br>")+`</div>`;
+  box.innerHTML=h;
+  $("applyBulkSaleBtn").style.display="";
+}
+async function applyBulkSale(){
+  if(!can("entry")){denied();return;}
+  if(!BULK_SALE_ROWS.length){toast("Upload a file first",true);return;}
+  if(!await confirmDialog(BULK_SALE_ROWS.length+" sale entries. Save all? This reduces A-Grade stock for each item.","Save bulk sale"))return;
+  const btn=$("applyBulkSaleBtn");btn.disabled=true;btn.textContent="Saving…";
+  let ok=0,fail=0;const errs=[];const T=TYPES.SALE_A;
+  const one=async r=>{
+    try{
+      const itemRef=db.collection("items").doc(r.code),mvRef=db.collection("movements").doc();
+      await db.runTransaction(async tr=>{
+        const doc=await tr.get(itemRef);if(!doc.exists)throw new Error("not found");
+        const d=doc.data(),next=(d.a||0)-r.qty;if(next<0)throw new Error("not enough A-Grade stock");
+        tr.update(itemRef,{a:next});
+        tr.set(mvRef,{code:r.code,type:"SALE_A",label:T.label,eff:T.eff,dir:T.dir,qty:r.qty,party:r.party||null,orderNo:r.orderNo||null,note:null,user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()});
+      });ok++;
+    }catch(e){fail++;errs.push(r.code+": "+e.message);}
+  };
+  for(let i=0;i<BULK_SALE_ROWS.length;i+=20){await Promise.all(BULK_SALE_ROWS.slice(i,i+20).map(one));btn.textContent="Saving… "+Math.min(i+20,BULK_SALE_ROWS.length)+"/"+BULK_SALE_ROWS.length;}
+  audit("Bulk sale entry",ok+" × Sale To Party"+(fail?" ("+fail+" failed)":""));
+  toast(ok+" sales saved ✔"+(fail?" · "+fail+" failed":""),fail>0);
+  if(errs.length)$("bulkSalePreview").innerHTML='<div class="notice">Some rows failed:<br>'+errs.slice(0,8).join("<br>")+'</div>';
+  else{$("bulkSalePreview").innerHTML="";$("bulkSaleFile").value="";}
+  BULK_SALE_ROWS=[];btn.disabled=false;btn.textContent="Save all sales";
+}
+
 async function saveMovement(){
   if(!can("entry")){denied();return;}
   if(!curType){toast("Choose a movement type",true);return;}
   const T=TYPES[curType];
-  const party=$("mvParty").value.trim(),note=$("mvNote").value.trim();
-  if(T.sale&&!party){toast("Party name is required for a sale",true);return;}
+  const party=$("mvParty").value.trim(),note=$("mvNote").value.trim(),orderNo=($("mvOrderNo")?.value||"").trim().toUpperCase();
+  if(T.sale&&!party&&!orderNo){toast("Enter a party name or an order number",true);return;}
   if(T.party&&!party&&!T.sale){toast("Enter party name",true);return;}
 
   if(MV_MODE==="bulk"){
@@ -1252,14 +1349,14 @@ async function saveMovement(){
           const d=doc.data(),upd={};
           for(const[b,mult]of Object.entries(T.eff)){const next=(d[b]||0)+mult*r.qty;if(next<0)throw new Error("low "+BUCKETS[b]);upd[b]=next;}
           tr.update(itemRef,upd);
-          tr.set(mvRef,{code:r.code,type:curType,label:T.label,eff:T.eff,dir:T.dir,qty:r.qty,party:party||null,note:note||null,user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()});
+          tr.set(mvRef,{code:r.code,type:curType,label:T.label,eff:T.eff,dir:T.dir,qty:r.qty,party:party||null,orderNo:orderNo||null,note:note||null,user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()});
         });ok++;
       }catch(e){fail++;errs.push(r.code+": "+e.message);}
     };
     // run in parallel chunks of 20 for speed while staying within limits
     for(let i=0;i<rows.length;i+=20){await Promise.all(rows.slice(i,i+20).map(one));$("saveMvBtn").textContent="Saving… "+Math.min(i+20,rows.length)+"/"+rows.length;}
     audit("Bulk movement",ok+" × "+T.label+(fail?" ("+fail+" failed)":""));
-    $("mvBulkText").value="";$("mvParty").value="";$("mvNote").value="";
+    $("mvBulkText").value="";$("mvParty").value="";$("mvNote").value="";if($("mvOrderNo"))$("mvOrderNo").value="";
     toast(ok+" entries saved ✔"+(fail?" · "+fail+" failed":""),fail>0);
     if(errs.length)$("mvBulkPreview").innerHTML='<div class="notice">Some rows failed:<br>'+errs.slice(0,8).join("<br>")+'</div>';
     $("saveMvBtn").disabled=false;$("saveMvBtn").textContent="Save movement";return;
@@ -1276,9 +1373,9 @@ async function saveMovement(){
       const d=doc.data(),upd={};
       for(const[b,mult]of Object.entries(T.eff)){const next=(d[b]||0)+mult*qty;if(next<0)throw new Error("Not enough stock in "+BUCKETS[b]+" (available: "+(d[b]||0)+")");upd[b]=next;}
       tr.update(itemRef,upd);
-      tr.set(mvRef,{code,type:curType,label:T.label,eff:T.eff,dir:T.dir,qty,party:party||null,note:note||null,user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()});
+      tr.set(mvRef,{code,type:curType,label:T.label,eff:T.eff,dir:T.dir,qty,party:party||null,orderNo:orderNo||null,note:note||null,user:USER,ts:firebase.firestore.FieldValue.serverTimestamp()});
     });
-    $("mvQty").value="";$("mvParty").value="";$("mvNote").value="";
+    $("mvQty").value="";$("mvParty").value="";$("mvNote").value="";if($("mvOrderNo"))$("mvOrderNo").value="";
     toast("Saved: "+T.label+" · "+code+" · "+qty+" pcs");
   }catch(e){toast(e.message,true);}
   $("saveMvBtn").disabled=false;
@@ -1500,6 +1597,32 @@ function exportLowStockXLSX(){
   LOWSTOCK_DATA.rows.forEach(r=>aoa.push([r.code,r.name,"PVC Laminate Sheet",r.aQty,LOWSTOCK_DATA.threshold,"Production Needed"]));
   const ws=XLSX.utils.aoa_to_sheet(aoa);ws["!cols"]=[{wch:10},{wch:28},{wch:26},{wch:12},{wch:10},{wch:18}];
   const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Production Needed");XLSX.writeFile(wb,"production_needed_"+LOWSTOCK_DATA.date+".xlsx");toast("Excel downloaded ✔");
+}
+
+/* ---------- Order Lookup (Report 6) ---------- */
+async function runOrderLookup(){
+  if(!can("reports")){denied();return;}
+  const q=($("orderLookupInput").value||"").trim().toUpperCase();
+  if(!q){toast("Enter an order number",true);return;}
+  $("orderLookupOut").innerHTML='<div class="empty">Searching…</div>';
+  try{
+    const snap=await db.collection("movements").where("orderNo","==",q).get();
+    if(snap.empty){$("orderLookupOut").innerHTML='<div class="empty">No sales found for order <b>'+q+'</b>.</div>';return;}
+    let totalQty=0; const rows=[];
+    snap.forEach(doc=>{const m=doc.data();totalQty+=(m.qty||0);rows.push(m);});
+    rows.sort((a,b)=>(b.ts?b.ts.toMillis():0)-(a.ts?a.ts.toMillis():0));
+    let h=`<div class="notice">Order <b>${q}</b> — ${rows.length} entr${rows.length===1?"y":"ies"}, <b>${num(totalQty)}</b> pcs total.</div>`;
+    rows.forEach(m=>{
+      const dt=m.ts?m.ts.toDate():null;
+      const dateStr=dt?dt.toLocaleDateString():"—";
+      const timeStr=dt?dt.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):"—";
+      const it=ITEMS[m.code]||{};
+      h+=`<div class="mv"><div class="l"><div class="t1"><span class="chip A">${m.code}</span> ${it.name||""}</div>
+        <div class="t2">${dateStr} · ${timeStr}${m.party?" · "+m.party:""}</div></div>
+        <div class="qty minus">${num(m.qty)}</div></div>`;
+    });
+    $("orderLookupOut").innerHTML=h;
+  }catch(e){$("orderLookupOut").innerHTML='<div class="empty">Search failed: '+e.message+'</div>';}
 }
 
 /* ---------- Admin Sales Report ---------- */
