@@ -1,4 +1,4 @@
-const CACHE = "lamigrade-v33";
+const CACHE = "lamigrade-v34";
 const SHELL = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", e => {

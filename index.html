@@ -61,6 +61,12 @@ main{max-width:820px;margin:0 auto;padding:14px;padding-bottom:calc(28px + env(s
 .card h2{font-size:15.5px;margin-bottom:4px}
 .card .desc{font-size:12.5px;color:var(--ink2);margin:0 0 10px}
 .eyebrow{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:5px}
+#page-stock .eyebrow,#page-stock .cat-head{color:var(--A)}
+#page-entry .eyebrow{color:#E08A2B}
+#page-report .eyebrow{color:var(--movement)}
+#page-items .eyebrow{color:#8B5FBF}
+#page-master .eyebrow{color:#B8891F}
+#page-overview .eyebrow{color:var(--sale)}
 .card.dspot{animation:dspotPulse 1.5s ease}
 @keyframes dspotPulse{0%,100%{box-shadow:var(--shadow)}30%{box-shadow:0 0 0 2px var(--gold),var(--shadow)}}
 /* ---- side drawer navigation ---- */
@@ -101,7 +107,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .btn:active{transform:scale(.985)}
 .btn.gold{background:#0E0E10;color:#fff;border:none;box-shadow:0 6px 18px rgba(14,14,16,.22)}
 .btn.gold:active{box-shadow:0 2px 8px rgba(14,14,16,.2)}
-.btn.teal{background:#fff;color:var(--ink);border:1.5px solid #0E0E10}
+.btn.teal{background:var(--movement);color:#fff;border:none;box-shadow:0 6px 16px rgba(15,156,140,.24)}
 .btn.ghost{background:var(--panel2)}
 .btn.danger{background:#fff;color:var(--out);border:1.5px solid var(--out)}
 .btn.sm{width:auto;padding:9px 15px;font-size:13px;margin-top:0}
@@ -117,9 +123,15 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .mv-btn{width:100%;text-align:left;padding:14px 15px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg2);color:var(--ink);font-weight:600;font-size:14px;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;transition:transform .07s ease,background .08s ease,border-color .08s ease}
 .mv-btn:active{transform:scale(.99)}
 .mv-btn.sel{border-color:var(--gold);background:var(--gold-soft)}
+.mv-btn.in.sel{border-color:var(--in);background:var(--in-soft)}
+.mv-btn.out.sel{border-color:var(--out);background:var(--out-soft)}
 .mv-btn .arrow{color:var(--muted);font-size:16px}
 .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:13px}
 .summary .box{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:14px;padding:13px 8px;text-align:center}
+.summary .box.grade-a{background:linear-gradient(180deg,var(--A-bg),var(--panel))}
+.summary .box.grade-b{background:linear-gradient(180deg,var(--B-bg),var(--panel))}
+.summary .box.grade-c{background:linear-gradient(180deg,var(--C-bg),var(--panel))}
+.summary .box.grade-s{background:linear-gradient(180deg,var(--gold-soft),var(--panel))}
 .summary.clickable .box{cursor:pointer;transition:transform .07s ease,box-shadow .07s ease}
 .summary.clickable .box:active{transform:scale(.95);box-shadow:0 1px 2px rgba(15,15,17,.04)}
 .ov-current{background:linear-gradient(135deg,#1C1D22,#0A0A0C);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:14px;margin-bottom:9px;cursor:pointer;transition:transform .07s ease,box-shadow .07s ease;box-shadow:0 8px 22px rgba(0,0,0,.2)}
@@ -1112,10 +1124,10 @@ function renderStock(){
   if(total>shown)h+=`<button class="btn ghost" onclick="STOCK_LIMIT+=300;renderStock()">Show more (${num(total-shown)} more)</button>`;
   $("stockList").innerHTML=h||'<div class="empty">No items match. Add items from the Items tab.</div>';
   $("stockSummary").innerHTML=`
-    <div class="box"><b style="color:var(--A)">${num(tot.a)}</b><span>A-Grade</span></div>
-    <div class="box"><b style="color:var(--B)">${num(tot.b)}</b><span>B / Damage</span></div>
-    <div class="box"><b style="color:var(--C)">${num(tot.c)}</b><span>Colour Mismatch</span></div>
-    <div class="box"><b style="color:var(--gold)">${num(tot.s)}</b><span>Sample</span></div>`;
+    <div class="box grade-a"><b style="color:var(--A)">${num(tot.a)}</b><span>A-Grade</span></div>
+    <div class="box grade-b"><b style="color:var(--B)">${num(tot.b)}</b><span>B / Damage</span></div>
+    <div class="box grade-c"><b style="color:var(--C)">${num(tot.c)}</b><span>Colour Mismatch</span></div>
+    <div class="box grade-s"><b style="color:var(--gold)">${num(tot.s)}</b><span>Sample</span></div>`;
   $("stockSummary").style.gridTemplateColumns="repeat(4,1fr)";
   const notice=$("stockSpecialNotice");
   if(notice){
@@ -1132,10 +1144,10 @@ async function openDetail(code){
   sh.innerHTML=`<button class="close" onclick="detailOverlay.classList.remove('show')">✕</button>
     <h3>${code} <span style="font-weight:400;font-size:12px;color:var(--muted)">${it.name||""}</span></h3>
     <div style="margin:4px 0 10px"><span class="chip gold">${catOf(it)}</span></div>
-    <div class="summary" style="grid-template-columns:repeat(4,1fr)"><div class="box"><b style="color:var(--A)">${num(it.a)}</b><span>A-Grade</span></div>
-      <div class="box"><b style="color:var(--B)">${num(it.b)}</b><span>B / Damage</span></div>
-      <div class="box"><b style="color:var(--C)">${num(it.c)}</b><span>Colour Mismatch</span></div>
-      <div class="box"><b style="color:var(--gold)">${num(it.s)}</b><span>Sample</span></div></div>
+    <div class="summary" style="grid-template-columns:repeat(4,1fr)"><div class="box grade-a"><b style="color:var(--A)">${num(it.a)}</b><span>A-Grade</span></div>
+      <div class="box grade-b"><b style="color:var(--B)">${num(it.b)}</b><span>B / Damage</span></div>
+      <div class="box grade-c"><b style="color:var(--C)">${num(it.c)}</b><span>Colour Mismatch</span></div>
+      <div class="box grade-s"><b style="color:var(--gold)">${num(it.s)}</b><span>Sample</span></div></div>
     <div class="eyebrow" style="margin:10px 0 8px">Movement history (latest 200)</div>
     <div id="detailMv"><div class="empty">Loading…</div></div>`;
   $("detailOverlay").classList.add("show");
@@ -1155,7 +1167,7 @@ function buildMvTree(){
   let h="";
   Object.entries(groups).forEach(([g,arr])=>{
     h+=`<div class="mv-group-title">${g}</div>`;
-    arr.forEach(([k,t])=>{h+=`<button class="mv-btn ${curType===k?'sel':''}" onclick="pickType('${k}')"><span>${t.label}${t.sale?' <small>party name or order number</small>':t.party?' <small>party name required</small>':''}</span><span class="arrow">›</span></button>`;});
+    arr.forEach(([k,t])=>{h+=`<button class="mv-btn ${curDir} ${curType===k?'sel':''}" onclick="pickType('${k}')"><span>${t.label}${t.sale?' <small>party name or order number</small>':t.party?' <small>party name required</small>':''}</span><span class="arrow">›</span></button>`;});
   });
   box.innerHTML=h||'<div class="empty">No movement types here.</div>';
 }
@@ -1204,10 +1216,10 @@ function showQaStock(){
   const it=ITEMS[sel.value];
   if(!it){box.innerHTML="";return;}
   box.innerHTML=`<div class="summary" style="grid-template-columns:repeat(4,1fr);margin-top:8px;margin-bottom:0">
-    <div class="box"><b style="color:var(--A)">${num(it.a||0)}</b><span>A-Grade</span></div>
-    <div class="box"><b style="color:var(--B)">${num(it.b||0)}</b><span>B / Damage</span></div>
-    <div class="box"><b style="color:var(--C)">${num(it.c||0)}</b><span>Colour MM</span></div>
-    <div class="box"><b style="color:var(--gold)">${num(it.s||0)}</b><span>Sample</span></div></div>`;
+    <div class="box grade-a"><b style="color:var(--A)">${num(it.a||0)}</b><span>A-Grade</span></div>
+    <div class="box grade-b"><b style="color:var(--B)">${num(it.b||0)}</b><span>B / Damage</span></div>
+    <div class="box grade-c"><b style="color:var(--C)">${num(it.c||0)}</b><span>Colour MM</span></div>
+    <div class="box grade-s"><b style="color:var(--gold)">${num(it.s||0)}</b><span>Sample</span></div></div>`;
 }
 async function addSingleGradeQty(){
   if(!can("items")){denied();return;}
